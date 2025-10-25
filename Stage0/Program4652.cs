@@ -6,7 +6,7 @@
         Welcome2851();
         Console.ReadKey();
     }
-
+    
     static partial void Welcome2851();
     private static void Welcome4652()
     {
