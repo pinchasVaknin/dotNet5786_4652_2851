@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalFacade", "DalFacade\DalFacade.csproj", "{78A04389-0C60-4747-8DF1-A393C780106A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DallList", "DallList\DallList.csproj", "{4C92DDCC-5AB5-4F99-863F-00AE9C0D32D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalList", "DallList\DalList.csproj", "{4C92DDCC-5AB5-4F99-863F-00AE9C0D32D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalTest", "DalTest\DalTest.csproj", "{5AA9BCEC-76FB-451C-A338-0A2A318C156B}"
 EndProject

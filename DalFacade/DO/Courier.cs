@@ -9,6 +9,6 @@ public record Courier
     bool courierEnabled,
     double? maxCourierDistance,
     DateTime? seniorityOfCourier,
-    courierDeliveryWay courierDeliveryWay//car/motorcycle/bicycle/walk
+    courierDeliveryWay courierDeliveryWay
 );
 
