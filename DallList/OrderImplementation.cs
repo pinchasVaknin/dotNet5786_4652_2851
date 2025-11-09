@@ -45,7 +45,7 @@ public class OrderImplementation : IOrder
 
         // If no matching order exists, throw an exception
         if (temp == null)
-            throw new Exception("Order with this ID does not exist");
+            throw new Exception($"Order with ID={id} does not exist");
 
         // Otherwise, remove the order from the data source
         else DataSource.Orders.Remove(temp);

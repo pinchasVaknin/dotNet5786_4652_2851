@@ -9,7 +9,7 @@ public class CourierImplementation : ICourier
     {
         // if already Exists.
         if (Read(item.courierId) != null)
-            throw new Exception("An object of type Courier with the same ID already exists");
+            throw new Exception($"Courier with ID={item.courierId} already exists");
 
         // else add this Courier.
         DataSource.Couriers.Add(item);
@@ -21,7 +21,7 @@ public class CourierImplementation : ICourier
 
         // If no matching courier exists, throw an exception
         if (temp == null)
-            throw new Exception("Courier with this ID does not exist");
+            throw new Exception($"Courier with ID={id} does not exist");
 
         // Otherwise, remove the courier from the data source
         else DataSource.Couriers.Remove(temp);

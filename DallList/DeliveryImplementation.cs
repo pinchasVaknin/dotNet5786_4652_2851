@@ -23,7 +23,7 @@ public class DeliveryImplementation : IDelivery
 
         // If no matching Delivery exists, throw an exception
         if (temp == null)
-            throw new Exception("Delivery with this ID does not exist");
+            throw new Exception($"Delivery with ID={id} does not exist");
 
         // Otherwise, remove the Delivery from the data source
         else DataSource.Deliverys.Remove(temp);

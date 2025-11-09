@@ -34,7 +34,30 @@ internal static class Config
     internal static TimeSpan riskTimeRnge { get; set; } = TimeSpan.Zero;
     internal static TimeSpan UnactiveTimeRnge { get; set; } = TimeSpan.Zero;
 
+    internal static void Reset()
+    {
+        s_nextOrderId = startOrderId;
+        s_nextDeliveryId = startDeliveryId;
 
+        Clock = DateTime.Now;
+
+        adminId = 0;
+        adminPassword = string.Empty;
+
+        companyAdress = null;
+        latitude = null;
+        longitude = null;
+        maxAirDistance = null;
+
+        avgCarSpeed = 0;
+        avgMotorcycleSpeed = 0;
+        avgBicyleSpeed = 0;
+        avgWalkSpeed = 0;
+
+        maxDelTimeRnge = TimeSpan.Zero;
+        riskTimeRnge = TimeSpan.Zero;
+        UnactiveTimeRnge = TimeSpan.Zero;
+    }
 
 
 
