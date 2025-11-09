@@ -16,14 +16,20 @@ public class CourierImplementation : ICourier
     }
     public void Delete(int id)
     {
-        if(Read(id) == null)
+        // Retrieve the courier with the specified ID (returns null if not found)
+        Courier? temp = Read(id);
+
+        // If no matching courier exists, throw an exception
+        if (temp == null)
             throw new Exception("Courier with this ID does not exist");
-        else
-            DataSource.Couriers.Remove;
+
+        // Otherwise, remove the courier from the data source
+        else DataSource.Couriers.Remove(temp);
     }
     public void DeleteAll()
     {
-        throw new NotImplementedException();
+        // Remove all couriers from the data source
+        DataSource.Couriers.Clear();
     }
     public Courier? Read(int id)
     {
@@ -32,12 +38,16 @@ public class CourierImplementation : ICourier
     }
     public List<Courier> ReadAll()
     {
+        // Return a copy of the courier list
         return new List<Courier>(DataSource.Couriers);
     }
     public void Update(Courier item)
     {
-        
+        // Remove the existing courier with the same ID (throws if it does not exist)
+        Delete(item.courierId);
+
+        // Add the updated courier back to the collection (throws if the ID already exists)
+        Create(item);
     }
-    
 
 }

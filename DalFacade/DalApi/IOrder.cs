@@ -1,6 +1,6 @@
 ﻿namespace DalApi;
 using DO;
-internal interface IOrder
+public interface IOrder
 {
     void Create(Order item); //Creates new Order object in DAL
     Order? Read(int id); //Reads Order object by its ID

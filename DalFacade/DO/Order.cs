@@ -2,8 +2,7 @@
 
 public record Order
 (
-    int OrderId,//need to be run number
-    
+    int orderId,//need to be run number
     string? orderDetail,
     string orderAdress,
     double orderLatitude,
