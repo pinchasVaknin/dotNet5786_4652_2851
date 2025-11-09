@@ -16,7 +16,10 @@ public class CourierImplementation : ICourier
     }
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        if(Read(id) == null)
+            throw new Exception("Courier with this ID does not exist");
+        else
+            DataSource.Couriers.Remove;
     }
     public void DeleteAll()
     {
@@ -29,10 +32,12 @@ public class CourierImplementation : ICourier
     }
     public List<Courier> ReadAll()
     {
-        throw new NotImplementedException();
+        return new List<Courier>(DataSource.Couriers);
     }
     public void Update(Courier item)
     {
-        throw new NotImplementedException();
+        
     }
+    
+
 }
