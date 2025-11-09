@@ -1,7 +1,10 @@
 ﻿namespace DO;
 
-public enum courierDeliveryWay { }
-public enum DeliveryWay { }
+public enum courierVehicleType
+{
+    Car, Motorcycle, Bicycle, Foot
+}
+public enum ShipmentType { }
 public enum DeliveryFinishType { }
 public enum typeOfOrder { }
 

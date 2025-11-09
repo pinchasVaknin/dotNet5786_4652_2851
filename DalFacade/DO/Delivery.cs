@@ -7,6 +7,6 @@ public record Delivery
     double? deliveryMaxDistance,
     DateTime deliveryDate,
     DateTime deliveryFinishDate,
-    DeliveryWay deliveryWay,
+    ShipmentType shipmentType,
     DeliveryFinishType deliveryFinishType
 );
