@@ -6,7 +6,7 @@ public record Courier
     string courierCellPhone,
     string courierEmail,
     string courierPassword,
-    string courieraddress, // Address from which the courier starts work
+    string courierAddress, // Address from which the courier starts work
     bool courierEnabled,
     double? maxCourierDistance,
     DateTime? seniorityOfCourier,
