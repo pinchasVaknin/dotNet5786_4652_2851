@@ -4,7 +4,7 @@ public record Order
 (
     int orderId,//need to be run number
     string? orderDetail,
-    string orderAdress,
+    string orderAddress,
     double orderLatitude,
     double orderLongitude,
     string orderCostumerFullName,
