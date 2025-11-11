@@ -2,8 +2,6 @@
 using Dal;
 using DalApi;
 using DO;
-using System.Drawing;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 internal class Program
 {
@@ -14,10 +12,48 @@ internal class Program
     private static IConfig? s_dalConfig = new ConfigImplementation(); //stage 1
 
 
-    // -------------------- Menus -------------------- \\
-    private static char RootMenu()
+    // -------------------- Main -------------------- \\
+    static void Main(string[] args)
     {
-        Console.WriteLine("==== MAIN MENU ====");
+
+        // Always start with a clean console and show the clock.
+        Console.Clear();
+        Console.WriteLine($"Clock: {s_dalConfig.Clock:yyyy-MM-dd HH:mm:ss}");
+
+        // show the root menu until user chooses Exit
+        while (true)
+        {
+            try
+            {
+                switch (RootMenu())
+                {
+                    case 0: Console.WriteLine("Bye!"); return;
+                    case 1: DoInitialization(); break;
+                    case 2: PrintCounts(); break;
+                    case 3: CourierMenu(); break;
+                    case 4: OrderMenu(); break;
+                    case 5: DeliveryMenu(); break;
+                    case 6: ResetAllData(); break;
+                    default: Console.WriteLine("Unknown option."); break;
+                }
+            }
+            catch (Exception msg)
+            {
+                Console.WriteLine(msg);
+            }
+
+            Console.WriteLine("\nPress ENTER to continue...");
+            Console.ReadLine();
+            Console.Clear();
+        }
+    }
+
+
+
+    // -------------------- Menus -------------------- \\
+    private static int RootMenu()
+    {
+        Console.WriteLine(@"// ==== MAIN MENU ==== \\");
         Console.WriteLine("1) Initialization.Do ");
         Console.WriteLine("2) Print entities count summary ");
         Console.WriteLine("3) Couriers ");
@@ -26,7 +62,7 @@ internal class Program
         Console.WriteLine("6) Reset ALL data ");
         Console.WriteLine("0) Exit ");
         Console.Write("Choose: ");
-        return ReadChar();
+        return ReadIntOfMenu();
     }
     private static void CourierMenu()
     {
@@ -34,25 +70,17 @@ internal class Program
         {
             Console.Clear();
             Console.WriteLine("---- COURIERS MENU ----");
-            Console.WriteLine("0) Back");
-            Console.WriteLine("1) Create");
-            Console.WriteLine("2) Read by Id");
-            Console.WriteLine("3) ReadAll");
-            Console.WriteLine("4) Update");
-            Console.WriteLine("5) Delete by Id");
-            Console.WriteLine("6) DeleteAll");
-            Console.Write("Choose: ");
-            var number = ReadChar();
-            if (number == '0') return;
+            var number = shopMenu();
 
             switch (number)
             {
-                case '1': CreateCourier(); break;
-                case '2': ReadCourier(); break;
-                case '3': ReadAllCouriers(); break;
-                case '4': UpdateCourier(); break;
-                case '5': DeleteCourier(); break;
-                case '6': s_dalCourier.DeleteAll(); Console.WriteLine("All couriers deleted."); break;
+                case 0: return;
+                case 1: CreateCourier(); break;
+                case 2: ReadCourier(); break;
+                case 3: ReadAllCouriers(); break;
+                case 4: UpdateCourier(); break;
+                case 5: DeleteCourier(); break;
+                case 6: s_dalCourier.DeleteAll(); Console.WriteLine("All couriers deleted."); break;
                 default: Console.WriteLine("Unknown option."); break;
             }
             Console.WriteLine("\nPress ENTER...");
@@ -65,25 +93,17 @@ internal class Program
         {
             Console.Clear();
             Console.WriteLine("---- ORDERS MENU ----");
-            Console.WriteLine("0) Back");
-            Console.WriteLine("1) Create");
-            Console.WriteLine("2) Read   (by Id)");
-            Console.WriteLine("3) ReadAll");
-            Console.WriteLine("4) Update");
-            Console.WriteLine("5) Delete (by Id)");
-            Console.WriteLine("6) DeleteAll");
-            Console.Write("Choose: ");
-            var number = ReadChar();
-            if (number == '0') return;
+            var number = shopMenu();
 
             switch (number)
             {
-                case '1': CreateOrder(); break;
-                case '2': ReadOrder(); break;
-                case '3': ReadAllOrders(); break;
-                case '4': UpdateOrder(); break;
-                case '5': DeleteOrder(); break;
-                case '6': s_dalOrder.DeleteAll(); Console.WriteLine("All orders deleted."); break;
+                case 0: return;
+                case 1: CreateOrder(); break;
+                case 2: ReadOrder(); break;
+                case 3: ReadAllOrders(); break;
+                case 4: UpdateOrder(); break;
+                case 5: DeleteOrder(); break;
+                case 6: s_dalOrder.DeleteAll(); Console.WriteLine("All orders deleted."); break;
                 default: Console.WriteLine("Unknown option."); break;
             }
 
@@ -97,25 +117,17 @@ internal class Program
         {
             Console.Clear();
             Console.WriteLine("---- DELIVERIES MENU ----");
-            Console.WriteLine("0) Back");
-            Console.WriteLine("1) Create");
-            Console.WriteLine("2) Read   (by Id)");
-            Console.WriteLine("3) ReadAll");
-            Console.WriteLine("4) Update");
-            Console.WriteLine("5) Delete (by Id)");
-            Console.WriteLine("6) DeleteAll");
-            Console.Write("Choose: ");
-            var number = ReadChar();
-            if (number == '0') return;
+            var number = shopMenu();
 
             switch (number)
             {
-                case '1': CreateDelivery(); break;
-                case '2': ReadDelivery(); break;
-                case '3': ReadAllDeliveries(); break;
-                case '4': UpdateDelivery(); break;
-                case '5': DeleteDelivery(); break;
-                case '6': s_dalDelivery.DeleteAll(); Console.WriteLine("All deliveries deleted."); break;
+                case 0: return;
+                case 1: CreateDelivery(); break;
+                case 2: ReadDelivery(); break;
+                case 3: ReadAllDeliveries(); break;
+                case 4: UpdateDelivery(); break;
+                case 5: DeleteDelivery(); break;
+                case 6: s_dalDelivery.DeleteAll(); Console.WriteLine("All deliveries deleted."); break;
                 default: Console.WriteLine("Unknown option."); break;
             }
 
@@ -123,9 +135,20 @@ internal class Program
             Console.ReadLine();
         }
     }
+    private static int shopMenu()
+    {
+        Console.WriteLine("0) Back");
+        Console.WriteLine("1) Create");
+        Console.WriteLine("2) Read by Id");
+        Console.WriteLine("3) ReadAll");
+        Console.WriteLine("4) Update");
+        Console.WriteLine("5) Delete by Id");
+        Console.WriteLine("6) DeleteAll");
+        Console.Write("Choose: ");
+        return ReadIntOfMenu();
+    }
 
-
-    // -------------------- Stage ops (init/print/reset) --------------------
+    // -------------------- Stage ops (init/print/reset) -------------------- \\
     private static void DoInitialization()
     {
         // The Do method is assumed to seed base data using the DAL instances.
@@ -134,7 +157,7 @@ internal class Program
     }
     private static void PrintCounts()
     {
-        Console.WriteLine("---- COUNTS ----");
+        Console.WriteLine(@"// ---- COUNTS ---- \\");
         Console.WriteLine($"Couriers  : {s_dalCourier.ReadAll().Count()}");
         Console.WriteLine($"Orders    : {s_dalOrder.ReadAll().Count()}");
         Console.WriteLine($"Deliveries: {s_dalDelivery.ReadAll().Count()}");
@@ -204,7 +227,7 @@ internal class Program
     private static void ReadAllCouriers()
     {
         foreach (var c in s_dalCourier.ReadAll())
-            Console.WriteLine(c);
+            Console.WriteLine($"{c} \n");
     }
     private static void UpdateCourier()
     {
@@ -322,7 +345,7 @@ internal class Program
     private static void ReadAllOrders()
     {
         foreach (var o in s_dalOrder.ReadAll())
-            Console.WriteLine(o);
+            Console.WriteLine($"{o} \n");
     }
     private static void UpdateOrder()
     {
@@ -402,7 +425,7 @@ internal class Program
     private static void ReadAllDeliveries()
     {
         foreach (var d in s_dalDelivery.ReadAll())
-            Console.WriteLine(d);
+            Console.WriteLine($"{d} \n");
     }
     private static void UpdateDelivery()
     {
@@ -492,10 +515,17 @@ internal class Program
 
 
     // -------------------- Read helpers -------------------- \\
-    private static char ReadChar()
+    private static int ReadIntOfMenu()
     {
-        var s = Console.ReadLine();
-        return string.IsNullOrWhiteSpace(s) ? '\0' : s.Trim()[0];
+        while (true)
+        {
+            if (int.TryParse(Console.ReadLine(), out int number))
+            {
+                if (number >= 0 && number <= 6) return number;
+            }
+            Console.WriteLine("\nTry again...");
+            Console.Write("Choose: ");
+        }
     }
     private static string ReadRequired(string prompt)
     {
@@ -520,7 +550,7 @@ internal class Program
             Console.Write(prompt);
             if (int.TryParse(Console.ReadLine(), out int v))
             {
-                if (200000000 < v && 400000000 > v) return v;
+                /*if (200000000 < v && 400000000 > v)*/ return v;
             }
             Console.WriteLine("Invalid integer. Try again.");
         }
@@ -589,43 +619,4 @@ internal class Program
         }
     }
 
-
-    // -------------------- Main entry point -------------------- \\
-    static void Main(string[] args)
-    {
-
-        // Always start with a clean console and show the clock.
-        Console.Clear();
-        Console.WriteLine($"Clock: {s_dalConfig.Clock:yyyy-MM-dd HH:mm:ss}");
-
-        // show the root menu until user chooses Exit
-        while (true)
-        {
-            try
-            {
-                switch (RootMenu())
-                {
-                    case '1': DoInitialization(); break;
-                    case '2': PrintCounts(); break;
-                    case '3': CourierMenu(); break;
-                    case '4': OrderMenu(); break;
-                    case '5': DeliveryMenu(); break;
-                    case '6': ResetAllData(); break;
-                    case '0': Console.WriteLine("Bye!"); return;
-                    default: Console.WriteLine("Unknown option."); break;
-                }
-            }
-            catch (Exception msg)
-            {
-                Console.WriteLine(msg);
-            }
-
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.ReadLine();
-            Console.Clear();
-        }
-    }
-
-
 }
-
