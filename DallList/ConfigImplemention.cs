@@ -3,7 +3,7 @@ using DalApi;
 using DO;
 using System;
 
-public class ConfigImplementation : IConfig
+internal class ConfigImplementation : IConfig
 {
     public DateTime Clock
     {

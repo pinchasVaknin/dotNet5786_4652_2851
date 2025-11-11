@@ -2,14 +2,17 @@
 using Dal;
 using DalApi;
 using DO;
+using System.Data;
 
 internal class Program
 {
 
-    private static ICourier? s_dalCourier = new CourierImplementation(); //stage 1
-    private static IDelivery? s_dalDelivery = new DeliveryImplementation(); //stage 1
-    private static IOrder? s_dalOrder = new OrderImplementation(); //stage 1
-    private static IConfig? s_dalConfig = new ConfigImplementation(); //stage 1
+    //private static ICourier? s_dalCourier = new CourierImplementation(); //stage 1
+    //private static IDelivery? s_dalDelivery = new DeliveryImplementation(); //stage 1
+    //private static IOrder? s_dalOrder = new OrderImplementation(); //stage 1
+    //private static IConfig? s_dalConfig = new ConfigImplementation(); //stage 1
+
+    static readonly IDal s_dal = new DalList(); //stage 2
 
 
     // -------------------- Main -------------------- \\
@@ -18,8 +21,7 @@ internal class Program
 
         // Always start with a clean console and show the clock.
         Console.Clear();
-        Console.WriteLine($"Clock: {s_dalConfig.Clock:yyyy-MM-dd HH:mm:ss}");
-
+        Console.WriteLine($"Clock: {s_dal.Config.Clock:yyyy-MM-dd HH:mm:ss}");
         // show the root menu until user chooses Exit
         while (true)
         {
@@ -80,7 +82,7 @@ internal class Program
                 case 3: ReadAllCouriers(); break;
                 case 4: UpdateCourier(); break;
                 case 5: DeleteCourier(); break;
-                case 6: s_dalCourier.DeleteAll(); Console.WriteLine("All couriers deleted."); break;
+                case 6: s_dal.Courier.DeleteAll(); Console.WriteLine("All couriers deleted."); break;
                 default: Console.WriteLine("Unknown option."); break;
             }
             Console.WriteLine("\nPress ENTER...");
@@ -103,7 +105,7 @@ internal class Program
                 case 3: ReadAllOrders(); break;
                 case 4: UpdateOrder(); break;
                 case 5: DeleteOrder(); break;
-                case 6: s_dalOrder.DeleteAll(); Console.WriteLine("All orders deleted."); break;
+                case 6: s_dal.Order.DeleteAll(); Console.WriteLine("All orders deleted."); break;
                 default: Console.WriteLine("Unknown option."); break;
             }
 
@@ -127,7 +129,7 @@ internal class Program
                 case 3: ReadAllDeliveries(); break;
                 case 4: UpdateDelivery(); break;
                 case 5: DeleteDelivery(); break;
-                case 6: s_dalDelivery.DeleteAll(); Console.WriteLine("All deliveries deleted."); break;
+                case 6: s_dal.Delivery.DeleteAll(); Console.WriteLine("All deliveries deleted."); break;
                 default: Console.WriteLine("Unknown option."); break;
             }
 
@@ -152,24 +154,24 @@ internal class Program
     private static void DoInitialization()
     {
         // The Do method is assumed to seed base data using the DAL instances.
-        Initialization.Do(s_dalCourier, s_dalDelivery, s_dalOrder, s_dalConfig);
+        Initialization.Do(s_dal); //stage 2
         Console.WriteLine("Initialization.Do completed.");
     }
     private static void PrintCounts()
     {
         Console.WriteLine(@"// ---- COUNTS ---- \\");
-        Console.WriteLine($"Couriers  : {s_dalCourier.ReadAll().Count()}");
-        Console.WriteLine($"Orders    : {s_dalOrder.ReadAll().Count()}");
-        Console.WriteLine($"Deliveries: {s_dalDelivery.ReadAll().Count()}");
-        Console.WriteLine($"Clock     : {s_dalConfig.Clock:yyyy-MM-dd HH:mm:ss}");
+        Console.WriteLine($"Couriers  : {s_dal.Courier.ReadAll().Count()}");
+        Console.WriteLine($"Orders    : {s_dal.Order.ReadAll().Count()}");
+        Console.WriteLine($"Deliveries: {s_dal.Delivery.ReadAll().Count()}");
+        Console.WriteLine($"Clock     : {s_dal.Config.Clock:yyyy-MM-dd HH:mm:ss}");
     }
     private static void ResetAllData()
     {
         // Fully reset system data (as per slides: DeleteAll + ResetConfig)
-        s_dalCourier.DeleteAll();
-        s_dalOrder.DeleteAll();
-        s_dalDelivery.DeleteAll();
-        s_dalConfig.Reset();
+        s_dal.Courier.DeleteAll();
+        s_dal.Order.DeleteAll();
+        s_dal.Delivery.DeleteAll();
+        s_dal.Config.Reset();
         Console.WriteLine("All lists cleared and Config reset.");
     }
 
@@ -215,24 +217,26 @@ internal class Program
             courierVehicleType: VehicleType
         );
 
-        s_dalCourier.Create(newCourier);
+        s_dal.Courier.Create(newCourier);
         Console.WriteLine("Courier created.");
     }
     private static void ReadCourier()
     {
         int id = ReadInt("Courier Id: ");
-        var check = s_dalCourier.Read(id);
-        Console.WriteLine(check);
+        var c = s_dal.Courier.Read(id);
+        if (c == null) throw new DalDoesNotExistException($"Courier with ID={id} does not exist");
+        Console.WriteLine(c);
     }
     private static void ReadAllCouriers()
     {
-        foreach (var c in s_dalCourier.ReadAll())
+        foreach (var c in s_dal.Courier.ReadAll())
             Console.WriteLine($"{c} \n");
     }
     private static void UpdateCourier()
     {
         int id = ReadInt("Courier Id to update: ");
-        var c = s_dalCourier.Read(id);
+        var c = s_dal.Courier.Read(id);
+        if (c == null) throw new DalDoesNotExistException($"Courier with ID={id} does not exist");
 
         Console.WriteLine($"Current: {c}");
         string fullName = ReadOptional($"Full name [{c.courierFullName}]: ", c.courierFullName);
@@ -291,13 +295,13 @@ internal class Program
             courierVehicleType = vehicleType
         };
 
-        s_dalCourier.Update(updated);
+        s_dal.Courier.Update(updated);
         Console.WriteLine("Courier updated.");
     }
     private static void DeleteCourier()
     {
         int id = ReadInt("Courier Id to delete: ");
-        s_dalCourier.Delete(id);
+        s_dal.Courier.Delete(id);
         Console.WriteLine("Courier deleted.");
     }
 
@@ -333,25 +337,27 @@ internal class Program
             typeOfOrder: kind
         );
 
-        s_dalOrder.Create(o);
+        s_dal.Order.Create(o);
         Console.WriteLine("Order created.");
     }
     private static void ReadOrder()
     {
         int id = ReadInt("Order Id: ");
-        var o = s_dalOrder.Read(id);
+        var o = s_dal.Order.Read(id);
+        if (o == null) throw new DalDoesNotExistException($"Order with ID={id} does not exist");
         Console.WriteLine(o);
     }
     private static void ReadAllOrders()
     {
-        foreach (var o in s_dalOrder.ReadAll())
+        foreach (var o in s_dal.Order.ReadAll())
             Console.WriteLine($"{o} \n");
     }
     private static void UpdateOrder()
     {
         int id = ReadInt("Order Id to update: ");
-        var o = s_dalOrder.Read(id);
+        var o = s_dal.Order.Read(id);
         Console.WriteLine($"Current: {o}");
+        if (o == null) throw new DalDoesNotExistException($"Order with ID={id} does not exist");
 
         string detail = ReadOptional($"Detail [{o.orderDetail}]: ", o.orderDetail);
         string address = ReadOptional($"Address [{o.orderAddress}]: ", o.orderAddress);
@@ -368,13 +374,13 @@ internal class Program
             orderCostumerPhone = phone
         };
 
-        s_dalOrder.Update(updated);
+        s_dal.Order.Update(updated);
         Console.WriteLine("Order updated.");
     }
     private static void DeleteOrder()
     {
         int id = ReadInt("Order Id to delete: ");
-        s_dalOrder.Delete(id);
+        s_dal.Order.Delete(id);
         Console.WriteLine("Order deleted.");
     }
 
@@ -413,26 +419,27 @@ internal class Program
             deliveryFinishType: finishType
         );
 
-        s_dalDelivery.Create(d);
+        s_dal.Delivery.Create(d);
         Console.WriteLine("Delivery created.");
     }
     private static void ReadDelivery()
     {
         int id = ReadInt("Delivery Id: ");
-        var d = s_dalDelivery.Read(id);
+        var d = s_dal.Delivery.Read(id);
+        if (d == null) throw new DalDoesNotExistException($"Delivery with ID={id} does not exist");
         Console.WriteLine(d);
     }
     private static void ReadAllDeliveries()
     {
-        foreach (var d in s_dalDelivery.ReadAll())
+        foreach (var d in s_dal.Delivery.ReadAll())
             Console.WriteLine($"{d} \n");
     }
     private static void UpdateDelivery()
     {
         // Fetch current entity
         int id = ReadInt("Delivery Id to update: ");
-        var d = s_dalDelivery.Read(id);
-        if (d is null) { Console.WriteLine("Delivery not found."); return; }
+        var d = s_dal.Delivery.Read(id);
+        if (d == null) throw new DalDoesNotExistException($"Delivery with ID={id} does not exist");
 
         Console.WriteLine($"Current: {d}");
 
@@ -503,13 +510,13 @@ internal class Program
             deliveryFinishType = finishType
         };
 
-        s_dalDelivery.Update(updated);
+        s_dal.Delivery.Update(updated);
         Console.WriteLine("Delivery updated.");
     }
     private static void DeleteDelivery()
     {
         int id = ReadInt("Delivery Id to delete: ");
-        s_dalDelivery.Delete(id);
+        s_dal.Delivery.Delete(id);
         Console.WriteLine("Delivery deleted.");
     }
 
@@ -570,7 +577,7 @@ internal class Program
         var s = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(s)) return current;
         if (double.TryParse(s, out double v)) return v;
-        throw new FormatException("Invalid number.");
+        throw new DalInvalidNumberException("Invalid number.");
     }
     private static int ReadIntOptional(string prompt, int current)
     {
@@ -578,7 +585,7 @@ internal class Program
         var s = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(s)) return current;
         if (int.TryParse(s, out int v)) return v;
-        throw new FormatException("Invalid integer.");
+        throw new DalInvalidNumberException("Invalid integer.");
     }
     private static bool ReadBool(string prompt)
     {
@@ -606,7 +613,7 @@ internal class Program
         var s = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(s)) return null;
         if (DateTime.TryParse(s, out DateTime dt)) return dt;
-        throw new FormatException("Invalid date/time.");
+        throw new DalInvalidDateException("Invalid date/time.");
     }
     private static TEnum ReadEnum<TEnum>(string prompt) where TEnum : struct, Enum
     {

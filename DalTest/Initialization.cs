@@ -6,10 +6,11 @@ using System.Net;
 
 public static class Initialization
 {
-    private static ICourier? s_dalCourier; // stage 1: Data access layer for couriers
-    private static IOrder? s_dalOrder; // stage 1: Data access layer for orders
-    private static IDelivery? s_dalDelivery; // stage 1: Data access layer for deliveries
-    private static IConfig? s_dalConfig; // stage 1: Data access layer for configuration
+    //private static ICourier? s_dalCourier; // stage 1: Data access layer for couriers
+    //private static IOrder? s_dalOrder; // stage 1: Data access layer for orders
+    //private static IDelivery? s_dalDelivery; // stage 1: Data access layer for deliveries
+    //private static IConfig? s_dalConfig; // stage 1: Data access layer for configuration
+    private static IDal? s_dal; // stage 2
 
     const int MIN_COURIER_ID = 200000000; // Minimum value for courier ID
     const int MAX_COURIER_ID = 400000000; // Maximum value for courier ID
@@ -18,20 +19,21 @@ public static class Initialization
 
 
     //--- Main boot function ---\\
-    public static void Do (ICourier dalCourier, IDelivery dalDelivery, IOrder dalOrder, IConfig dalConfig)
+    public static void Do (IDal dal)
     {
         // Guard: DAL order, Delivery, Courier, config must be initialized before seeding
-        s_dalCourier = dalCourier ?? throw new NullReferenceException("DAL courier cannot be null!");   // stage 1
-        s_dalDelivery = dalDelivery ?? throw new NullReferenceException("DAL delivery cannot be null!");// stage 1
-        s_dalOrder = dalOrder ?? throw new NullReferenceException("DAL order cannot be null!");         // stage 1
-        s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL config cannot be null!");      // stage 1
+        //s_dalCourier = dalCourier ?? throw new NullReferenceException("DAL courier cannot be null!");   // stage 1
+        //s_dalDelivery = dalDelivery ?? throw new NullReferenceException("DAL delivery cannot be null!");// stage 1
+        //s_dalOrder = dalOrder ?? throw new NullReferenceException("DAL order cannot be null!");         // stage 1
+        //s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL config cannot be null!");      // stage 1
+        s_dal = dal ?? throw new NullReferenceException ("DAL object can not be null!"); // stage 2
 
         Console.WriteLine("Reset configuration and lists...");
-        // stage 1 Restart
-        s_dalConfig.Reset();
-        s_dalCourier.DeleteAll();
-        s_dalOrder.DeleteAll();
-        s_dalDelivery.DeleteAll();
+        //s_dalConfig.Reset();      // stage 1 Restart
+        //s_dalCourier.DeleteAll(); // stage 1 Restart
+        //s_dalOrder.DeleteAll();   // stage 1 Restart
+        //s_dalDelivery.DeleteAll();// stage 1 Restart
+        s_dal.ResetDB(); // stage 2
 
         Console.WriteLine("Create initial data...");
         // stage 1 Creation
@@ -68,7 +70,7 @@ public static class Initialization
             int id;
             do
                 id = s_rand.Next(MIN_COURIER_ID, MAX_COURIER_ID); // Random ID in valid range
-            while (s_dalCourier!.Read(id) != null); // Ensure ID is not taken
+            while (s_dal!.Courier.Read(id) != null); // Ensure ID is not taken
 
             // Generate email and phone based on name + random pattern
             string email = name.Trim().ToLower().Replace(" ", ".").Replace("’", "") + "@courier.com";
@@ -90,8 +92,8 @@ public static class Initialization
             DO.courierVehicleType courierVehicleType = (DO.courierVehicleType)s_rand.Next(0, 3);
 
             // Employment start time randomly chosen sometime over the past 3 years
-            DateTime startBase = new DateTime(s_dalConfig!.Clock.Year - 3, 1, 1);
-            int range = (s_dalConfig.Clock - startBase).Days;
+            DateTime startBase = new DateTime(s_dal!.Config.Clock.Year - 3, 1, 1);
+            int range = (s_dal.Config.Clock - startBase).Days;
             DateTime employmentStartTime = startBase.AddDays(s_rand.Next(range));
 
             // Randomly pick a vehicle type from enum values
@@ -113,7 +115,7 @@ public static class Initialization
             DO.ShipmentType preferredType = types[s_rand.Next(types.Length)];
 
             // Create and save courier in DAL
-            s_dalCourier!.Create(new Courier(
+            s_dal!.Courier.Create(new Courier(
              courierId: id,
              courierFullName: name,
              courierCellPhone: phone,
@@ -224,12 +226,12 @@ public static class Initialization
         openCount += Math.Max(0, extra); // allocate any remainder to OPEN
 
         // Company coordinates (seeded manually in Config at stage 1). Defaults are fallbacks.
-        double companyLat = s_dalConfig.latitude ?? 31.7886;
-        double companyLon = s_dalConfig.longitude ?? 35.2034;
+        double companyLat = s_dal.Config.latitude ?? 31.7886;
+        double companyLon = s_dal.Config.longitude ?? 35.2034;
 
         // All order categories (enum values) + the project simulation clock
         var allKinds = Enum.GetValues<typeOfOrder>();
-        var clock = s_dalConfig.Clock;
+        var clock = s_dal.Config.Clock;
 
         // Build a flat sequence of status tags, then iterate once to create all orders
         var statuses = Enumerable.Repeat("OPEN", openCount)
@@ -279,7 +281,7 @@ public static class Initialization
             string detail = $"[{statusTag}] {product} • {kind} • {weight:F1}kg • ~{airKm:F1}km";
 
             // Persist via DAL: orderId = 0 so DAL assigns the next running ID
-            s_dalOrder!.Create(new Order(
+            s_dal!.Order.Create(new Order(
                 orderId: 0,
                 orderDetail: detail,
                 orderAddress: addr.orderAddress,
@@ -298,15 +300,15 @@ public static class Initialization
     private static void createDeliverys()
     {
         // Fetch current couriers and orders; if either is empty, there is nothing to do
-        var couriers = s_dalCourier.ReadAll();
-        var orders = s_dalOrder.ReadAll();
+        var couriers = s_dal.Courier.ReadAll();
+        var orders = s_dal.Order.ReadAll();
 
         // check if empty
-        if (couriers.Count == 0 || orders.Count == 0)
+        if (!couriers.Any() || !orders.Any())
             return;
 
         // Create deliveries for a subset of orders (e.g., ~60%).
-        int total = orders.Count;
+        int total = orders.Count();
         int targetDeliveries = Math.Max(1, (int)(total * 0.6));
 
         // get enum values for random sampling
@@ -325,10 +327,10 @@ public static class Initialization
         // Create deliveries for the first `targetDeliveries` shuffled orders
         for (int k = 0; k < targetDeliveries; k++)
         {
-            var order = orders[orderIndexes[k]];
+            var order = orders.ElementAt(orderIndexes[k]);
 
             // Pick a random courier for this delivery
-            var courier = couriers[s_rand.Next(couriers.Count)];
+            var courier = couriers.ElementAt(s_rand.Next(couriers.Count()));
 
             // Base timestamps
             DateTime deliveryDate = order.orderDate.AddHours(s_rand.Next(0, 24)).AddMinutes(s_rand.Next(0, 60));
@@ -346,10 +348,10 @@ public static class Initialization
             else finishType = DeliveryFinishType.Returned;                 // ~5%
 
             // Max distance policy used for later checks.
-            double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dalConfig.maxAirDistance : null;
+            double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dal.Config.maxAirDistance : null;
 
             // Persist via DAL (DeliveryImplementation will assign the running deliveryId).
-            s_dalDelivery.Create(new Delivery(
+            s_dal.Delivery.Create(new Delivery(
                 deliveryId: 0,                    // NextDeliveryId
                 orderId: order.orderId,           // link order
                 courierId: courier.courierId,     // link courier
@@ -364,30 +366,30 @@ public static class Initialization
     private static void createConfig()
     {
         // System clock
-        s_dalConfig.Clock = DateTime.Now;
+        s_dal.Config.Clock = DateTime.Now;
 
         // Admin credentials
-        s_dalConfig.adminId = 1001;                     // admin id
-        s_dalConfig.adminPassword = "ChangeMe!1234";    // password
+        s_dal.Config.adminId = 1001;                     // admin id
+        s_dal.Config.adminPassword = "ChangeMe!1234";    // password
 
         // Company address and its geo-coordinates
-        s_dalConfig.companyAdress = "Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem"; // textual address
-        s_dalConfig.latitude = 31.7479;
-        s_dalConfig.longitude = 35.1880;
+        s_dal.Config.companyAdress = "Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem"; // textual address
+        s_dal.Config.latitude = 31.7479;
+        s_dal.Config.longitude = 35.1880;
 
         // Global acceptance constraint: maximum straight-line (air) distance for orders (km)
-        s_dalConfig.maxAirDistance = 25.0;
+        s_dal.Config.maxAirDistance = 25.0;
 
         // Average speeds (km/h)
-        s_dalConfig.avgCarSpeed = 35.0;         // Car average
-        s_dalConfig.avgMotorcycleSpeed = 40.0;  // Motorcycle average
-        s_dalConfig.avgBicyleSpeed = 15.0;      // Bicyle average
-        s_dalConfig.avgWalkSpeed = 5.0;         // Walk average
+        s_dal.Config.avgCarSpeed = 35.0;         // Car average
+        s_dal.Config.avgMotorcycleSpeed = 40.0;  // Motorcycle average
+        s_dal.Config.avgBicyleSpeed = 15.0;      // Bicyle average
+        s_dal.Config.avgWalkSpeed = 5.0;         // Walk average
 
         // Time policy ranges
-        s_dalConfig.maxDelTimeRnge = TimeSpan.FromHours(3);     // deliveries should usually complete within ~3h
-        s_dalConfig.riskTimeRnge = TimeSpan.FromMinutes(30);    // if ETA exceeds by 30m → mark as "at risk"
-        s_dalConfig.UnactiveTimeRnge = TimeSpan.FromDays(45);   // 45 days of inactivity is considered stale
+        s_dal.Config.maxDelTimeRnge = TimeSpan.FromHours(3);     // deliveries should usually complete within ~3h
+        s_dal.Config.riskTimeRnge = TimeSpan.FromMinutes(30);    // if ETA exceeds by 30m → mark as "at risk"
+        s_dal.Config.UnactiveTimeRnge = TimeSpan.FromDays(45);   // 45 days of inactivity is considered stale
     }
 
 

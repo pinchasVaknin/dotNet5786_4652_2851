@@ -3,7 +3,7 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 
-public class DeliveryImplementation : IDelivery
+internal class DeliveryImplementation : IDelivery
 {
     public void Create(Delivery item)
     {
@@ -23,7 +23,7 @@ public class DeliveryImplementation : IDelivery
 
         // If no matching Delivery exists, throw an exception
         if (temp == null)
-            throw new Exception($"Delivery with ID={id} does not exist");
+            throw new DalDoesNotExistException($"Delivery with ID={id} does not exist");
 
         // Otherwise, remove the Delivery from the data source
         else DataSource.Deliverys.Remove(temp);
@@ -36,13 +36,17 @@ public class DeliveryImplementation : IDelivery
     public Delivery? Read(int id)
     {
         // if Exists deliveryId return.
-        return DataSource.Deliverys.Find(same => same.deliveryId == id);
+        //return DataSource.Deliverys.Find(same => same.deliveryId == id); //stage 1
+        return DataSource.Deliverys.FirstOrDefault(item => item.deliveryId == id); //stage 2
     }
-    public List<Delivery> ReadAll()
+    public Delivery? Read(Func<Delivery, bool> filter)
     {
-        // Return a copy of the Delivery list
-        return new List<Delivery>(DataSource.Deliverys);
+        foreach (var item in DataSource.Deliverys) { if (filter(item)) return item; } return null;
     }
+    public IEnumerable <Delivery> ReadAll(Func<Delivery, bool>? filter = null) //stage 2
+        => filter == null
+            ? DataSource.Deliverys.Select(item => item)
+            : DataSource.Deliverys.Where(filter);
     public void Update(Delivery item)
     {
         int newId = item.deliveryId;
@@ -56,4 +60,10 @@ public class DeliveryImplementation : IDelivery
         // Add the copy to the data source
         DataSource.Deliverys.Add(copy);
     }
+
+    /*public List<Delivery> ReadAll() //stage 1
+    {
+        // Return a copy of the Delivery list
+        return new List<Delivery>(DataSource.Deliverys);
+    }*/
 }
