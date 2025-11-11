@@ -119,7 +119,7 @@ public static class Initialization
              courierCellPhone: phone,
              courierEmail: email,
              courierPassword: password,
-             courieraddress: address, // Address from which the courier starts work
+             courierAddress: address, // Address from which the courier starts work
              courierEnabled: isActive,
              maxCourierDistance: MaxDistance,
              seniorityOfCourier: employmentStartTime,
