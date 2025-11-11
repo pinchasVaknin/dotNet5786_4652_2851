@@ -16,7 +16,7 @@ internal static class Config
 
 
     internal static int adminId { get; set; } = 0;
-    internal static string adminPassword { get; set; } = "admin1234";// must to change
+    internal static string adminPassword { get; set; } = "ChangeMe!1234";
 
 
     internal static string? companyAdress { get; set; } = null;
