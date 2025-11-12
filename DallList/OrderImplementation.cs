@@ -2,6 +2,9 @@
 using DalApi;
 using DO;
 
+/// <summary>
+/// CRUD on Order
+/// </summary>
 internal class OrderImplementation : IOrder
 {
     public void Create(Order item)

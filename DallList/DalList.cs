@@ -2,6 +2,9 @@
 using DalApi;
 using DO;
 
+/// <summary>
+/// build and resets
+/// </summary>
 sealed public class DalList : IDal
 {
     public ICourier Courier { get; } = new CourierImplementation();

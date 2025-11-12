@@ -1,5 +1,8 @@
 ﻿namespace Dal;
 
+/// <summary>
+/// default and restart
+/// </summary>
 internal static class Config
 {
     internal const int startOrderId = 0;

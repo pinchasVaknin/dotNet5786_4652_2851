@@ -3,6 +3,9 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 
+/// <summary>
+/// CRUD on Delivery
+/// </summary>
 internal class DeliveryImplementation : IDelivery
 {
     public void Create(Delivery item)

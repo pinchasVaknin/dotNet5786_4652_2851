@@ -3,6 +3,9 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 
+/// <summary>
+/// CRUD on Courier
+/// </summary>
 internal class CourierImplementation : ICourier
 {
     public void Create(Courier item)

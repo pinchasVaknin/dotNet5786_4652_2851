@@ -1,4 +1,8 @@
 ﻿namespace Dal;
+
+/// <summary>
+/// list of Couriers, Deliverys and Orders
+/// </summary>
 internal static class DataSource
 {
     internal static List<DO.Courier> Couriers { get; } = new();

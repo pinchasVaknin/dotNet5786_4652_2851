@@ -19,14 +19,14 @@ public static class Initialization
 
 
     //--- Main boot function ---\\
-    public static void Do (IDal dal)
+    public static void Do(IDal dal)
     {
         // Guard: DAL order, Delivery, Courier, config must be initialized before seeding
         //s_dalCourier = dalCourier ?? throw new NullReferenceException("DAL courier cannot be null!");   // stage 1
         //s_dalDelivery = dalDelivery ?? throw new NullReferenceException("DAL delivery cannot be null!");// stage 1
         //s_dalOrder = dalOrder ?? throw new NullReferenceException("DAL order cannot be null!");         // stage 1
         //s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL config cannot be null!");      // stage 1
-        s_dal = dal ?? throw new NullReferenceException ("DAL object can not be null!"); // stage 2
+        s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!"); // stage 2
 
         Console.WriteLine("Reset configuration and lists...");
         //s_dalConfig.Reset();      // stage 1 Restart
@@ -63,7 +63,7 @@ public static class Initialization
             "Jaffa", "King George", "Ben Yehuda", "Aza", "Herzl",
             "Hillel", "Agripas", "Jabotinsky", "Begin", "Bialik"
         };
-
+        
         foreach (string name in courierNames)
         {
             // Generate unique courier ID
@@ -203,20 +203,6 @@ public static class Initialization
         ("Baka, Pierre Koenig 36, Jerusalem",            31.75142, 35.22291)
         };
 
-        // Compact electronics catalog: (category enum, array of product names)
-        var Catalog = new (typeOfOrder Kind, string[] Items)[]
-        {
-        (typeOfOrder.Smartphone,    new[] { "iPhone 14", "Galaxy S23", "Pixel 8", "Xiaomi 13" }),
-        (typeOfOrder.Laptop,        new[] { "Dell XPS 13", "MacBook Air M2", "HP Spectre x360", "Lenovo ThinkPad X1" }),
-        (typeOfOrder.Tablet,        new[] { "iPad Air", "Galaxy Tab S9", "Xiaomi Pad 6" }),
-        (typeOfOrder.TV,            new[] { "LG OLED C3 55", "Samsung QLED Q80 65", "Sony Bravia 50" }),
-        (typeOfOrder.Camera,        new[] { "Canon EOS R10", "Sony a6400", "Nikon Z50" }),
-        (typeOfOrder.Audio,         new[] { "Sony WH-1000XM5", "AirPods Pro 2", "Bose QC45", "JBL Flip 6" }),
-        (typeOfOrder.SmartHome,     new[] { "Google Nest Hub", "Amazon Echo", "Philips Hue Starter" }),
-        (typeOfOrder.GamingConsole, new[] { "PlayStation 5", "Xbox Series X", "Nintendo Switch OLED" }),
-        (typeOfOrder.Accessory,     new[] { "USB-C Cable 100W", "GaN Charger 65W", "NVMe SSD 1TB", "4K HDMI 2.1 Cable" })
-        };
-
         // Quantity requirements: total >= 50; at least 20 OPEN, 10 IN_PROGRESS, 20 CLOSED
         int totalOrder = 50;
         int openCount = 20;
@@ -244,8 +230,38 @@ public static class Initialization
             var addr = addresses[s_rand.Next(addresses.Count)];
             // Random category and product within that category
             var kind = allKinds[s_rand.Next(allKinds.Length)];
-            var items = Catalog.First(same => same.Kind == kind).Items;
-            string product = items[s_rand.Next(items.Length)];
+
+            // Compact electronics catalog: (category enum, array of product names)
+            string[] items = kind switch
+            {
+                typeOfOrder.Smartphone => Enum.GetNames<Catalog.SmartphoneDetails>(),
+                typeOfOrder.Laptop => Enum.GetNames<Catalog.LaptopDetails>(),
+                typeOfOrder.Tablet => Enum.GetNames<Catalog.TabletDetails>(),
+                typeOfOrder.TV => Enum.GetNames<Catalog.TVDetails>(),
+                typeOfOrder.Camera => Enum.GetNames<Catalog.CameraDetails>(),
+                typeOfOrder.Audio => Enum.GetNames<Catalog.AudioDetails>(),
+                typeOfOrder.SmartHome => Enum.GetNames<Catalog.SmartHomeDetails>(),
+                typeOfOrder.GamingConsole => Enum.GetNames<Catalog.GamingConsoleDetails>(),
+                typeOfOrder.Accessory => Enum.GetNames<Catalog.AccessoryDetails>(),
+                _ => Array.Empty<string>()
+            };
+
+            // chosening product from Catalog
+            string product = "";
+            int count = s_rand.Next(1, 4); // Randomly choose how many products between 1 and 3
+
+            List<string> chosenProducts = new(); // Create a list to keep track of the chosen products
+
+            // Loop to randomly pick products
+            for (int i = 0; i < count; i++)
+            {
+                string chosen = items[s_rand.Next(items.Length)];
+                if (!chosenProducts.Contains(chosen)) 
+                    chosenProducts.Add(chosen);
+            }
+            // Combine all chosen products into one string separated by commas
+            product = string.Join(", ", chosenProducts);
+
 
             // Random customer + phone in Israeli format 05X-XXXXXXX
             string customer = customers[s_rand.Next(customers.Length)];
@@ -272,17 +288,23 @@ public static class Initialization
             // Sample weight/size within the category ranges, and sample fragility
             double weight = pack.weightMin + s_rand.NextDouble() * (pack.weightMax - pack.weightMin);
             double size = pack.sizeMin + s_rand.NextDouble() * (pack.sizeMax - pack.sizeMin);
+            weight = Math.Round(weight, 1);
+            size = Math.Round(size, 1);
             bool fragile = pack.fragP;
 
             // Compute straight-line (air) distance company <-> order address (km)
             double airKm = Haversine(companyLat, companyLon, addr.lat, addr.lon);
 
+            //
+            string orderStatusTag = $"[{statusTag}]";
+
             // Human-readable detail: status tag + product + category + weight + ~air distance
-            string detail = $"[{statusTag}] {product} • {kind} • {weight:F1}kg • ~{airKm:F1}km";
+            string detail = $" {product} => {kind} , {weight}kg , ~{airKm:F1}km";
 
             // Persist via DAL: orderId = 0 so DAL assigns the next running ID
             s_dal!.Order.Create(new Order(
                 orderId: 0,
+                orderStatus: orderStatusTag,
                 orderDetail: detail,
                 orderAddress: addr.orderAddress,
                 orderLatitude: addr.lat,
@@ -392,6 +414,76 @@ public static class Initialization
         s_dal.Config.UnactiveTimeRnge = TimeSpan.FromDays(45);   // 45 days of inactivity is considered stale
     }
 
+    /*
+    public enum SmartphoneDetails
+    {
+        iPhone_14,
+        Galaxy_S23,
+        Pixel_8,
+        Xiaomi_13,
+        /
+        [Description("iPhone 14")]
+        iPhone14,
+        [Description("Galaxy S23")]
+        GalaxyS23,
+        [Description("Pixel 8")]
+        Pixel8,
+        [Description("Xiaomi 13")]
+        Xiaomi13 
+        /
+    }
+    public enum LaptopDetails
+    {
+        Dell_XPS_13,
+        MacBook_Air_M2,
+        HP_Spectre_x360,
+        Lenovo_ThinkPad_X1
+    }
+    public enum TabletDetails
+    {
+        iPad_Air,
+        Galaxy_Tab_S9,
+        Xiaomi_Pad_6
+    }
+    public enum TVDetails
+    {
+        LG_OLED_C3_55,
+        Samsung_QLED_Q80_65,
+        Sony_Bravia_50
+    }
+    public enum CameraDetails
+    {
+        Canon_EOS_R10,
+        Sony_a6400,
+        Nikon_Z50
+    }
+    public enum AudioDetails
+    {
+        Sony_WH_1000XM5,
+        AirPods_Pro_2,
+        Bose_QC45,
+        JBL_Flip_6
+    }
+    public enum SmartHomeDetails
+    {
+        Google_Nest_Hub,
+        Amazon_Echo,
+        Philips_Hue_Starter
+    }
+    public enum GamingConsoleDetails
+    {
+        PlayStation_5,
+        Xbox_Series_X,
+        Nintendo_Switch_OLED
+    }
+    public enum AccessoryDetails
+    {
+        USB_C_Cable_100W,
+        GaN_Charger_65W,
+        NVMe_SSD_1TB,
+        HDMI_4K_2_1_Cable
+    }
+    */
 
     //--- Helper functions ---\\
     private static double Haversine(double srcLat, double srcLon, double dstLat, double dstLon)
