@@ -62,8 +62,4 @@ internal static class Config
         UnactiveTimeRnge = TimeSpan.Zero;
     }
 
-
-
-
-
 }

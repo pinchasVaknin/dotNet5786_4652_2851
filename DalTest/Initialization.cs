@@ -10,6 +10,7 @@ public static class Initialization
     //private static IOrder? s_dalOrder; // stage 1: Data access layer for orders
     //private static IDelivery? s_dalDelivery; // stage 1: Data access layer for deliveries
     //private static IConfig? s_dalConfig; // stage 1: Data access layer for configuration
+
     private static IDal? s_dal; // stage 2
 
     const int MIN_COURIER_ID = 200000000; // Minimum value for courier ID
@@ -88,9 +89,6 @@ public static class Initialization
             // Max weight the courier can carry (5, 10, or 15 KG)
             double maxWeight = s_rand.Next(1, 4) * 5.0;
 
-            // Random vehicle type from enum
-            DO.courierVehicleType courierVehicleType = (DO.courierVehicleType)s_rand.Next(0, 3);
-
             // Employment start time randomly chosen sometime over the past 3 years
             DateTime startBase = new DateTime(s_dal!.Config.Clock.Year - 3, 1, 1);
             int range = (s_dal.Config.Clock - startBase).Days;
@@ -103,12 +101,18 @@ public static class Initialization
             // Random max travel distance depending on vehicle type (or null sometimes)
             double? MaxDistance = (s_rand.NextDouble() < 0.6) ? VehicleType switch
             {
-                courierVehicleType.Car => 10 + s_rand.NextDouble() * (35 - 10),
-                courierVehicleType.Motorcycle => 8 + s_rand.NextDouble() * (25 - 8),
-                courierVehicleType.Bicycle => 3 + s_rand.NextDouble() * (12 - 3),
-                courierVehicleType.Foot => 1 + s_rand.NextDouble() * (4 - 1),
-                _ => (double?)null
+                courierVehicleType.Car        =>  10 + s_rand.NextDouble() * (35 - 10),
+                courierVehicleType.Motorcycle =>   8 + s_rand.NextDouble() * (25 - 8),
+                courierVehicleType.Bicycle    =>   3 + s_rand.NextDouble() * (12 - 3),
+                courierVehicleType.Foot       =>   1 + s_rand.NextDouble() * (4 - 1),
+                _ => null
             } : null;
+            // round the MaxDistance
+            if (MaxDistance is not null)
+            {
+                MaxDistance = Math.Round(MaxDistance.Value, 3);
+            }
+
 
             // Choose preferred shipment type randomly
             DO.ShipmentType[] types = Enum.GetValues<DO.ShipmentType>();
@@ -256,8 +260,9 @@ public static class Initialization
             for (int i = 0; i < count; i++)
             {
                 string chosen = items[s_rand.Next(items.Length)];
-                if (!chosenProducts.Contains(chosen)) 
+                if (!chosenProducts.Contains(chosen))
                     chosenProducts.Add(chosen);
+                else count--; // if hit the same try again
             }
             // Combine all chosen products into one string separated by commas
             product = string.Join(", ", chosenProducts);
@@ -295,7 +300,7 @@ public static class Initialization
             // Compute straight-line (air) distance company <-> order address (km)
             double airKm = Haversine(companyLat, companyLon, addr.lat, addr.lon);
 
-            //
+            // order Status
             string orderStatusTag = $"[{statusTag}]";
 
             // Human-readable detail: status tag + product + category + weight + ~air distance
@@ -367,14 +372,14 @@ public static class Initialization
             if (p < 85) finishType = DeliveryFinishType.Completed;        // ~85%
             else if (p < 92) finishType = DeliveryFinishType.Cancelled;   // ~7%
             else if (p < 95) finishType = DeliveryFinishType.Failed;      // ~3%
-            else finishType = DeliveryFinishType.Returned;                 // ~5%
+            else finishType = DeliveryFinishType.Returned;                // ~5%
 
             // Max distance policy used for later checks.
             double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dal.Config.maxAirDistance : null;
 
             // Persist via DAL (DeliveryImplementation will assign the running deliveryId).
             s_dal.Delivery.Create(new Delivery(
-                deliveryId: 0,                    // NextDeliveryId
+                deliveryId: 0,                    // Next Delivery Id
                 orderId: order.orderId,           // link order
                 courierId: courier.courierId,     // link courier
                 deliveryMaxDistance: maxDistance, // per delivery

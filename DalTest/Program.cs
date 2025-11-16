@@ -203,9 +203,9 @@ internal class Program
     {
         // display entity totals and clock time
         Console.WriteLine(@"// ---- COUNTS ---- \\");
-        Console.WriteLine($"Couriers  : {s_dal.Courier.ReadAll().Count()}");   // number of couriers
-        Console.WriteLine($"Orders    : {s_dal.Order.ReadAll().Count()}");       // number of orders
-        Console.WriteLine($"Deliveries: {s_dal.Delivery.ReadAll().Count()}");   // number of deliveries
+        Console.WriteLine($"Couriers  : {s_dal.Courier.ReadAll().Count()}");        // number of couriers
+        Console.WriteLine($"Orders    : {s_dal.Order.ReadAll().Count()}");          // number of orders
+        Console.WriteLine($"Deliveries: {s_dal.Delivery.ReadAll().Count()}");       // number of deliveries
         Console.WriteLine($"Clock     : {s_dal.Config.Clock:yyyy-MM-dd HH:mm:ss}"); // current clock time
     }
 
@@ -306,8 +306,8 @@ internal class Program
     /// <exception cref="DalInvalidVehicleTypeException"> Thrown if the Vehicle is invalid </exception>
     private static void UpdateCourier()
     {
-        int id = ReadInt("Courier Id to update: ");
-        var c = s_dal.Courier.Read(id);
+        int id = ReadInt("Courier Id to update: "); // read courier Id
+        var c = s_dal.Courier.Read(id); // get existing courier if exist or null
         if (c == null) throw new DalDoesNotExistException($"Courier with ID={id} does not exist");
 
         Console.WriteLine($"Current: {c}");
