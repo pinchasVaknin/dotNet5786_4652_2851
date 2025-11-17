@@ -2,4 +2,25 @@
 "1.0" encoding=
 "utf-8"?>
 <config>
+  <NextOrderId>0</NextOrderId>
+  <NextDeliveryId>0</NextDeliveryId>
+
+  <Clock>2025-01-01T00:00:00</Clock>
+
+  <adminId>1001</adminId>
+  <adminPassword>ChangeMe!1234</adminPassword>
+
+  <companyAdress>Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem</companyAdress>
+  <latitude>31.7479</latitude>
+  <longitude>35.1880</longitude>
+  <maxAirDistance>25.0</maxAirDistance>
+
+  <avgCarSpeed>35.0</avgCarSpeed>
+  <avgMotorcycleSpeed>40.0</avgMotorcycleSpeed>
+  <avgBicyleSpeed>15.0</avgBicyleSpeed>
+  <avgWalkSpeed>5.0</avgWalkSpeed>
+
+  <maxDelTimeRnge>03:00:00</maxDelTimeRnge>
+  <riskTimeRnge>00:30:00</riskTimeRnge>
+  <UnactiveTimeRnge>45.00:00:00</UnactiveTimeRnge>
 </config>

@@ -1,7 +1,5 @@
 ﻿namespace Dal;
 using DalApi;
-using DO;
-using System;
 
 /// <summary>
 /// get, set and default
@@ -88,4 +86,3 @@ internal class ConfigImplementation : IConfig
         Config.Reset();
     }
 }
-

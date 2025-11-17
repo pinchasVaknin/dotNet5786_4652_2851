@@ -95,27 +95,84 @@ static class XMLTools
         int num = root.ToIntNullable(elemName) ?? throw new FormatException($"can't convert:  {xmlFileName}, {elemName}");
         return num;
     }
+    public static double GetConfigDoubleVal(string xmlFileName, string elemName)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        double num = root.ToIntNullable(elemName) ?? throw new FormatException($"can't convert:  {xmlFileName}, {elemName}");
+        return num;
+    }
+    public static double? GetConfigDoubleNullableVal(string xmlFileName, string elemName)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        return root.ToDoubleNullable(elemName);
+    }
     public static DateTime GetConfigDateVal(string xmlFileName, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
         DateTime dt = root.ToDateTimeNullable(elemName) ?? throw new FormatException($"can't convert:  {xmlFileName}, {elemName}");
         return dt;
     }
-    public static string? GetConfigStringVal(string xmlFileName, string elemName)
+    public static string GetConfigStringVal(string xmlFileName, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
-        return root.Element(elemName)?.Value;
+        string val = (string?)root.Element(elemName) ?? throw new FormatException($"can't convert: {xmlFileName}, {elemName}");
+        return val;
     }
+    public static string? GetConfigStringNullableVal(string xmlFileName, string elemName)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        return (string?)root.Element(elemName);
+    }
+    public static TimeSpan GetConfigTimeSpanVal(string xmlFileName, string elemName)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        if (TimeSpan.TryParse((string?)root.Element(elemName), out TimeSpan result))
+            return result;
+
+        throw new FormatException($"can't convert: {xmlFileName}, {elemName}");
+    }
+
+
     public static void SetConfigIntVal(string xmlFileName, string elemName, int elemVal)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
         root.Element(elemName)?.SetValue((elemVal).ToString());
         XMLTools.SaveListToXMLElement(root, xmlFileName);
     }
+    public static void SetConfigDoubleVal(string xmlFileName, string elemName, double elemVal)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        root.Element(elemName)?.SetValue((elemVal).ToString());
+        XMLTools.SaveListToXMLElement(root, xmlFileName);
+    }
+    public static void SetConfigDoubleNullableVal(string xmlFileName, string elemName, double? elemVal)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        root.Element(elemName)?.SetValue(elemVal?.ToString());
+        XMLTools.SaveListToXMLElement(root, xmlFileName);
+    }
     public static void SetConfigDateVal(string xmlFileName, string elemName, DateTime elemVal)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
         root.Element(elemName)?.SetValue((elemVal).ToString());
+        XMLTools.SaveListToXMLElement(root, xmlFileName);
+    }
+    public static void SetConfigStringVal(string xmlFileName, string elemName, string elemVal)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        root.Element(elemName)?.SetValue(elemVal);
+        XMLTools.SaveListToXMLElement(root, xmlFileName);
+    }
+    public static void SetConfigStringNullableVal(string xmlFileName, string elemName, string? elemVal)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        root.Element(elemName)?.SetValue(elemVal ?? "");
+        XMLTools.SaveListToXMLElement(root, xmlFileName);
+    }
+    public static void SetConfigTimeSpanVal(string xmlFileName, string elemName, TimeSpan elemVal)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        root.Element(elemName)?.SetValue(elemVal.ToString());
         XMLTools.SaveListToXMLElement(root, xmlFileName);
     }
     #endregion
