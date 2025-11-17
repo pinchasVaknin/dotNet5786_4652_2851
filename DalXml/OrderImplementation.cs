@@ -11,6 +11,24 @@ internal class OrderImplementation : IOrder
     {
         throw new NotImplementedException();
     }
+    static Order getOrder(XElement s)
+    {
+        return new DO.Order()//
+        {
+            orderId = s.ToIntNullable("Id") ?? throw new FormatException("can't convert id"),
+            orderStatus = s.Element("Status")?.Value ?? "",
+            orderDetail = (string?)s.Element("Detail") ?? null,
+            orderAddress = s.Element("Address")?.Value ?? "",
+            orderLatitude = s.ToDoubleNullable("Latitude") ?? 0,
+            orderLongitude = s.ToDoubleNullable("Longitude") ?? 0,
+            orderCostumerFullName = (string?)s.Element("CostumerFullName") ?? "",
+            orderCostumerPhone = (string?)s.Element("CostumerPhone") ?? "",
+            orderWeight = s.ToDoubleNullable("Weight") ?? 0,
+            fragile = (bool?)s.Element("Fragile") ?? false,
+            orderSize = s.ToDoubleNullable("Size") ?? 0,
+            orderDate = s.ToDateTimeNullable("Date") ?? DateTime.MinValue,
+            typeOfOrder = s.ToEnumNullable<typeOfOrder>("TypeOfOrder") ?? typeOfOrder.Smartphone,
+        };
 
     public void Delete(int id)
     {

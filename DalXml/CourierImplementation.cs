@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 internal class CourierImplementation : ICourier
 {
-    public void Create(Courier item)
+    public void Create(Courier item)// change
     {
         throw new NotImplementedException();
     }
@@ -24,12 +24,12 @@ internal class CourierImplementation : ICourier
         XMLTools.SaveListToXMLSerializer(new List<Courier>(), Config.s_couriers_xml);
     }
 
-    public Courier? Read(int id)
+    public Courier? Read(int id)//change
     {
         throw new NotImplementedException();
     }
 
-    public Courier? Read(Func<Courier, bool> filter)
+    public Courier? Read(Func<Courier, bool> filter)//change
     {
         throw new NotImplementedException();
     }
