@@ -1,5 +1,8 @@
 ﻿namespace Dal;
 
+/// <summary>
+/// default and restart
+/// </summary>
 internal static class Config
 {
     internal const int startOrderId = 0;
@@ -58,9 +61,5 @@ internal static class Config
         riskTimeRnge = TimeSpan.Zero;
         UnactiveTimeRnge = TimeSpan.Zero;
     }
-
-
-
-
 
 }

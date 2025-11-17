@@ -3,7 +3,10 @@ using DalApi;
 using DO;
 using System;
 
-public class ConfigImplementation : IConfig
+/// <summary>
+/// get, set and default
+/// </summary>
+internal class ConfigImplementation : IConfig
 {
     public DateTime Clock
     {

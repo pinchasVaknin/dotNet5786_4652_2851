@@ -3,13 +3,16 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 
-public class CourierImplementation : ICourier
+/// <summary>
+/// CRUD on Courier
+/// </summary>
+internal class CourierImplementation : ICourier
 {
     public void Create(Courier item)
     {
         // if already Exists.
         if (Read(item.courierId) != null)
-            throw new Exception($"Courier with ID={item.courierId} already exists");
+            throw new DalAlreadyExistsException($"Courier with ID={item.courierId} already exists");
 
         // else add this Courier.
         DataSource.Couriers.Add(item);
@@ -21,7 +24,7 @@ public class CourierImplementation : ICourier
 
         // If no matching courier exists, throw an exception
         if (temp == null)
-            throw new Exception($"Courier with ID={id} does not exist");
+            throw new DalDoesNotExistException($"Courier with ID={id} does not exist");
 
         // Otherwise, remove the courier from the data source
         else DataSource.Couriers.Remove(temp);
@@ -34,13 +37,17 @@ public class CourierImplementation : ICourier
     public Courier? Read(int id)
     {
         // if Exists courierId return.
-        return DataSource.Couriers.Find(same => same.courierId == id);
+        //return DataSource.Couriers.Find(same => same.courierId == id); //stage 1
+        return DataSource.Couriers.FirstOrDefault(item => item.courierId == id); //stage 2
     }
-    public List<Courier> ReadAll()
+    public Courier? Read(Func<Courier, bool> filter)
     {
-        // Return a copy of the courier list
-        return new List<Courier>(DataSource.Couriers);
+        foreach (var item in DataSource.Couriers) { if (filter(item)) return item; } return null;
     }
+    public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null) //stage 2
+        => filter == null
+            ? DataSource.Couriers.Select(item => item)
+            : DataSource.Couriers.Where(filter);
     public void Update(Courier item)
     {
         // Remove the existing courier with the same ID (throws if it does not exist)
@@ -50,4 +57,9 @@ public class CourierImplementation : ICourier
         Create(item);
     }
 
+/*public List<Courier> ReadAll()
+    {
+        // Return a copy of the courier list
+        return new List<Courier>(DataSource.Couriers);
+    }*/
 }

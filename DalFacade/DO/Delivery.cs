@@ -1,7 +1,7 @@
 ﻿namespace DO;
 public record Delivery
 (
-    int deliveryId,
+    int deliveryId, //need to be run number
     int orderId,
     int courierId,
     double? deliveryMaxDistance,
