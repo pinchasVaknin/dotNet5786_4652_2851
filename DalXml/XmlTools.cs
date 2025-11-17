@@ -26,7 +26,7 @@ static class XMLTools
         }
         catch (Exception ex)
         {
-            throw new DalXMLFileLoadCreateException($"fail to create xml file: {s_xmlDir + xmlFilePath}, {ex.Message}");
+            throw new DalXMLFileLoadCreateException($"fail to create xml file: {xmlFilePath}, {ex.Message}");
         }
     }
     public static List<T> LoadListFromXMLSerializer<T>(string xmlFileName) where T : class
@@ -36,7 +36,7 @@ static class XMLTools
         try
         {
             if (!File.Exists(xmlFilePath)) return new();
-            using FileStream file = new(xmlFilePath, FileMode.Open);
+            using FileStream file = new(xmlFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             XmlSerializer x = new(typeof(List<T>));
             return x.Deserialize(file) as List<T> ?? new();
         }
@@ -64,7 +64,6 @@ static class XMLTools
     public static XElement LoadListFromXMLElement(string xmlFileName)
     {
         string xmlFilePath = s_xmlDir + xmlFileName;
-
         try
         {
             if (File.Exists(xmlFilePath))
@@ -84,7 +83,7 @@ static class XMLTools
     public static int GetAndIncreaseConfigIntVal(string xmlFileName, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
-        int nextId = root.ToIntNullable(elemName) ?? throw new FormatException($"can't convert:  {xmlFileName}, {elemName}");
+        int nextId = root.ToIntNullable(elemName) ?? throw new DalInvalidIntegerException($"can't convert:  {xmlFileName}, {elemName}");
         root.Element(elemName)?.SetValue((nextId + 1).ToString());
         XMLTools.SaveListToXMLElement(root, xmlFileName);
         return nextId;
@@ -92,13 +91,13 @@ static class XMLTools
     public static int GetConfigIntVal(string xmlFileName, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
-        int num = root.ToIntNullable(elemName) ?? throw new FormatException($"can't convert:  {xmlFileName}, {elemName}");
+        int num = root.ToIntNullable(elemName) ?? throw new DalInvalidIntegerException($"can't convert:  {xmlFileName}, {elemName}");
         return num;
     }
     public static double GetConfigDoubleVal(string xmlFileName, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
-        double num = root.ToIntNullable(elemName) ?? throw new FormatException($"can't convert:  {xmlFileName}, {elemName}");
+        double num = root.ToIntNullable(elemName) ?? throw new DalInvalidDoubleException($"can't convert:  {xmlFileName}, {elemName}");
         return num;
     }
     public static double? GetConfigDoubleNullableVal(string xmlFileName, string elemName)
@@ -109,13 +108,13 @@ static class XMLTools
     public static DateTime GetConfigDateVal(string xmlFileName, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
-        DateTime dt = root.ToDateTimeNullable(elemName) ?? throw new FormatException($"can't convert:  {xmlFileName}, {elemName}");
+        DateTime dt = root.ToDateTimeNullable(elemName) ?? throw new DalInvalidDateException($"can't convert:  {xmlFileName}, {elemName}");
         return dt;
     }
     public static string GetConfigStringVal(string xmlFileName, string elemName)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
-        string val = (string?)root.Element(elemName) ?? throw new FormatException($"can't convert: {xmlFileName}, {elemName}");
+        string val = (string?)root.Element(elemName) ?? throw new DalInvalidStringException($"can't convert: {xmlFileName}, {elemName}");
         return val;
     }
     public static string? GetConfigStringNullableVal(string xmlFileName, string elemName)
@@ -129,7 +128,7 @@ static class XMLTools
         if (TimeSpan.TryParse((string?)root.Element(elemName), out TimeSpan result))
             return result;
 
-        throw new FormatException($"can't convert: {xmlFileName}, {elemName}");
+        throw new DalInvalidTimeSpanException($"can't convert: {xmlFileName}, {elemName}");
     }
 
 
@@ -148,7 +147,16 @@ static class XMLTools
     public static void SetConfigDoubleNullableVal(string xmlFileName, string elemName, double? elemVal)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
-        root.Element(elemName)?.SetValue(elemVal?.ToString());
+
+        var el = root.Element(elemName);
+        if (el == null)
+        {
+            el = new XElement(elemName);
+            root.Add(el);
+        }
+
+        el.SetValue(elemVal.HasValue ? elemVal.Value.ToString() : "");
+
         XMLTools.SaveListToXMLElement(root, xmlFileName);
     }
     public static void SetConfigDateVal(string xmlFileName, string elemName, DateTime elemVal)

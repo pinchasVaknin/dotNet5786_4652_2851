@@ -19,6 +19,24 @@ public class DalInvalidIntegerException : Exception
 }
 
 [Serializable]
+public class DalInvalidDoubleException : Exception
+{
+    public DalInvalidDoubleException(string? message) : base(message) { }
+}
+
+[Serializable]
+public class DalInvalidStringException : Exception
+{
+    public DalInvalidStringException(string? message) : base(message) { }
+}
+
+[Serializable]
+public class DalInvalidTimeSpanException : Exception
+{
+    public DalInvalidTimeSpanException(string? message) : base(message) { }
+}
+
+[Serializable]
 public class DalInvalidDateException : Exception
 {
     public DalInvalidDateException(string? message) : base(message) { }
