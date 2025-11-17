@@ -42,3 +42,8 @@ public class DalInvalidDeliveryStatusException : Exception
     public DalInvalidDeliveryStatusException(string? message) : base(message) { }
 }
 
+[Serializable]
+public class DalXMLFileLoadCreateException : Exception
+{
+    public DalXMLFileLoadCreateException(string? message) : base(message) { }
+}
