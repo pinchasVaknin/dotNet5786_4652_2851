@@ -101,6 +101,11 @@ static class XMLTools
         DateTime dt = root.ToDateTimeNullable(elemName) ?? throw new FormatException($"can't convert:  {xmlFileName}, {elemName}");
         return dt;
     }
+    public static string? GetConfigStringVal(string xmlFileName, string elemName)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
+        return root.Element(elemName)?.Value;
+    }
     public static void SetConfigIntVal(string xmlFileName, string elemName, int elemVal)
     {
         XElement root = XMLTools.LoadListFromXMLElement(xmlFileName);
