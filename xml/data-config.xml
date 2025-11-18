@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <NextOrderId>50</NextOrderId>
+  <NextDeliveryId>30</NextDeliveryId>
+  <Clock>18/11/2025 17:16:45</Clock>
+  <adminId>1001</adminId>
+  <adminPassword>ChangeMe!1234</adminPassword>
+  <companyAdress>Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem</companyAdress>
+  <latitude>31.7479</latitude>
+  <longitude>35.188</longitude>
+  <maxAirDistance>25</maxAirDistance>
+  <avgCarSpeed>35</avgCarSpeed>
+  <avgMotorcycleSpeed>40</avgMotorcycleSpeed>
+  <avgBicyleSpeed>15</avgBicyleSpeed>
+  <avgWalkSpeed>5</avgWalkSpeed>
+  <maxDelTimeRnge>03:00:00</maxDelTimeRnge>
+  <riskTimeRnge>00:30:00</riskTimeRnge>
+  <UnactiveTimeRnge>45.00:00:00</UnactiveTimeRnge>
+</config>
