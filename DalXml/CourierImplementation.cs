@@ -5,8 +5,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// Provides methods to manage courier data, including creating, reading, updating, and deleting couriers.
+/// </summary>
+/// <remarks>This class interacts with an XML data store to perform CRUD operations on courier records. It ensures
+/// that each courier has a unique identifier and handles exceptions when operations cannot be completed due to existing
+/// or non-existing records.</remarks>
 internal class CourierImplementation : ICourier
 {
+    /// <summary>
+    /// Creates a new courier record in the XML store.
+    /// Throws <see cref="DalAlreadyExistsException"/> if a courier with the same ID already exists.
+    /// </summary>
     public void Create(Courier item)
     {
         List<Courier> Couriers =
@@ -20,6 +30,10 @@ internal class CourierImplementation : ICourier
         XMLTools.SaveListToXMLSerializer(Couriers, Config.s_couriers_xml);
     }
 
+    /// <summary>
+    /// Reads a courier by its identifier.
+    /// Returns the courier or null if not found.
+    /// </summary>
     public Courier? Read(int id)
     {
         List<Courier> Couriers =
@@ -28,6 +42,10 @@ internal class CourierImplementation : ICourier
         return Couriers.FirstOrDefault(c => c.courierId == id);
     }
 
+    /// <summary>
+    /// Reads the first courier that matches the provided predicate.
+    /// Returns the courier or null if no match is found.
+    /// </summary>
     public Courier? Read(Func<Courier, bool> filter)
     {
         List<Courier> Couriers =
@@ -36,6 +54,10 @@ internal class CourierImplementation : ICourier
         return Couriers.FirstOrDefault(filter);
     }
 
+    /// <summary>
+    /// Reads all couriers, optionally filtered by the provided predicate.
+    /// Returns an enumerable of couriers.
+    /// </summary>
     public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null)
     {
         List<Courier> Couriers =
@@ -44,6 +66,10 @@ internal class CourierImplementation : ICourier
         return filter is null ? Couriers : Couriers.Where(filter);
     }
 
+    /// <summary>
+    /// Updates an existing courier record.
+    /// Throws <see cref="DalDoesNotExistException"/> if the courier does not exist.
+    /// </summary>
     public void Update(Courier item)
     {
         List<Courier> Couriers =
@@ -57,6 +83,10 @@ internal class CourierImplementation : ICourier
         XMLTools.SaveListToXMLSerializer(Couriers, Config.s_couriers_xml);
     }
 
+    /// <summary>
+    /// Deletes a courier by its identifier.
+    /// Throws <see cref="DalDoesNotExistException"/> if the courier does not exist.
+    /// </summary>
     public void Delete(int id)
     {
         List<Courier> Couriers =
@@ -69,6 +99,9 @@ internal class CourierImplementation : ICourier
         XMLTools.SaveListToXMLSerializer(Couriers, Config.s_couriers_xml);
     }
 
+    /// <summary>
+    /// Deletes all courier records from the XML store.
+    /// </summary>
     public void DeleteAll()
     {
         XMLTools.SaveListToXMLSerializer(new List<Courier>(), Config.s_couriers_xml);
