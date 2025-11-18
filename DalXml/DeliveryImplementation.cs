@@ -136,7 +136,6 @@ internal class DeliveryImplementation : IDelivery
     }
     public void DeleteAll()
     {
-        // איפוס גמור של קובץ ה-Delivery
         XElement root = new XElement("Deliveries");
         XMLTools.SaveListToXMLElement(root, filePath);
     }
