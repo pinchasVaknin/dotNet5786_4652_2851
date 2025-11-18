@@ -4,9 +4,10 @@ using DalApi;
 /// <summary>
 /// get, set and default
 /// </summary>
-
 internal class ConfigImplementation : IConfig
 {
+
+    //------------------ set/get Config static functions ------------------\\
     /// <summary>
     /// Gets or sets the shared application clock value from the underlying Config.
     /// </summary>
@@ -24,6 +25,7 @@ internal class ConfigImplementation : IConfig
         get => Config.adminId;
         set => Config.adminId = value;
     }
+
     /// <summary>
     /// Gets or sets the administrator password stored in the underlying Config.
     /// </summary>
@@ -41,6 +43,7 @@ internal class ConfigImplementation : IConfig
         get => Config.companyAdress;
         set => Config.companyAdress = value;
     }
+
     /// <summary>
     /// Gets or sets the company latitude (nullable) from the underlying Config.
     /// </summary>
@@ -49,6 +52,7 @@ internal class ConfigImplementation : IConfig
         get => Config.latitude;
         set => Config.latitude = value;
     }
+
     /// <summary>
     /// Gets or sets the company longitude (nullable) from the underlying Config.
     /// </summary>
@@ -66,6 +70,7 @@ internal class ConfigImplementation : IConfig
         get => Config.maxAirDistance;
         set => Config.maxAirDistance = value;
     }
+
     /// <summary>
     /// Gets or sets the average car speed used for time and delivery calculations.
     /// </summary>
@@ -74,6 +79,7 @@ internal class ConfigImplementation : IConfig
         get => Config.avgCarSpeed;
         set => Config.avgCarSpeed = value;
     }
+
     /// <summary>
     /// Gets or sets the average motorcycle speed used for time and delivery calculations.
     /// </summary>
@@ -82,6 +88,7 @@ internal class ConfigImplementation : IConfig
         get => Config.avgMotorcycleSpeed;
         set => Config.avgMotorcycleSpeed = value;
     }
+
     /// <summary>
     /// Gets or sets the average bicycle speed used for time and delivery calculations.
     /// </summary>
@@ -90,6 +97,7 @@ internal class ConfigImplementation : IConfig
         get => Config.avgBicyleSpeed;
         set => Config.avgBicyleSpeed = value;
     }
+
     /// <summary>
     /// Gets or sets the average walking speed used for time and delivery calculations.
     /// </summary>
@@ -107,6 +115,7 @@ internal class ConfigImplementation : IConfig
         get => Config.maxDelTimeRnge;
         set => Config.maxDelTimeRnge = value;
     }
+
     /// <summary>
     /// Gets or sets the risk time range used to identify high-risk deliveries.
     /// </summary>
@@ -115,6 +124,7 @@ internal class ConfigImplementation : IConfig
         get => Config.riskTimeRnge;
         set => Config.riskTimeRnge = value;
     }
+
     /// <summary>
     /// Gets or sets the time range after which a courier is considered unactive.
     /// </summary>
@@ -124,6 +134,8 @@ internal class ConfigImplementation : IConfig
         set => Config.UnactiveTimeRnge = value;
     }
 
+
+    //------------------------ Reset Config ------------------------\\
     /// <summary>
     /// Resets all configuration values to defaults by delegating to <see cref="Config.Reset"/>.
     /// </summary>

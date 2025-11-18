@@ -26,6 +26,7 @@ sealed public class DalXml : IDal
     /// </summary>
     public IConfig Config { get; } = new ConfigImplementation();
 
+    //--------------- Reset function => Courier/Order/Delivery/Config ---------------\\
     /// <summary>
     /// Removes all stored couriers, orders and deliveries, and resets configuration values to defaults.
     /// </summary>
