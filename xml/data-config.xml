@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <NextOrderId>0</NextOrderId>
+  <NextDeliveryId>0</NextDeliveryId>
+  <Clock>18/11/2025 0:04:48</Clock>
+  <adminId>0</adminId>
+  <adminPassword></adminPassword>
+  <companyAdress></companyAdress>
+  <latitude></latitude>
+  <longitude></longitude>
+  <maxAirDistance></maxAirDistance>
+  <avgCarSpeed>0</avgCarSpeed>
+  <avgMotorcycleSpeed>0</avgMotorcycleSpeed>
+  <avgBicyleSpeed>0</avgBicyleSpeed>
+  <avgWalkSpeed>0</avgWalkSpeed>
+  <maxDelTimeRnge>00:00:00</maxDelTimeRnge>
+  <riskTimeRnge>00:00:00</riskTimeRnge>
+  <UnactiveTimeRnge>00:00:00</UnactiveTimeRnge>
+</config>
