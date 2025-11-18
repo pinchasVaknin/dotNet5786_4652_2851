@@ -21,7 +21,7 @@ static class XMLTools
 
         try
         {
-            using FileStream file = new(xmlFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+            using FileStream file = new(xmlFilePath, FileMode.Create, FileAccess.Write, FileShare.Read);
             new XmlSerializer(typeof(List<T>)).Serialize(file, list);
         }
         catch (Exception ex)
