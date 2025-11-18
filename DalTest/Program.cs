@@ -12,8 +12,9 @@ internal class Program
     //private static IOrder? s_dalOrder = new OrderImplementation(); //stage 1
     //private static IConfig? s_dalConfig = new ConfigImplementation(); //stage 1
 
-    static readonly IDal s_dal = new DalList(); //stage 2
+    //static readonly IDal s_dal = new DalList(); //stage 2
 
+    static readonly IDal s_dal = new DalXml(); //stage 3
 
     // -------------------- Main -------------------- \\
     static void Main(string[] args)

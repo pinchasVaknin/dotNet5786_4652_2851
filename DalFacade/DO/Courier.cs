@@ -11,6 +11,21 @@ public record Courier
     double? maxCourierDistance,
     DateTime? seniorityOfCourier,
     courierVehicleType courierVehicleType
-);
+)
+{
+    public Courier() : this(
+        0,
+        "",
+        "",
+        "",
+        "",
+        "",
+        false,
+        null,
+        null,
+        courierVehicleType.Car   // default
+    )
+    { }
+}
 
 

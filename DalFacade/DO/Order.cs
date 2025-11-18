@@ -15,4 +15,22 @@ public record Order
     double orderSize,
     DateTime orderDate,
     typeOfOrder typeOfOrder
-);
+)
+{
+    public Order() : this(
+       0,
+       "",
+       null,
+       "",
+       0,
+       0,
+       "",
+       "",
+       0,
+       false,
+       0,
+       DateTime.MinValue,
+       typeOfOrder.Smartphone   // default
+   )
+    { }
+}
