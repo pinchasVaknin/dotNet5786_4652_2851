@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
-  <NextOrderId>0</NextOrderId>
-  <NextDeliveryId>0</NextDeliveryId>
-  <Clock>18/11/2025 0:04:48</Clock>
-  <adminId>0</adminId>
-  <adminPassword></adminPassword>
-  <companyAdress></companyAdress>
-  <latitude></latitude>
-  <longitude></longitude>
-  <maxAirDistance></maxAirDistance>
-  <avgCarSpeed>0</avgCarSpeed>
-  <avgMotorcycleSpeed>0</avgMotorcycleSpeed>
-  <avgBicyleSpeed>0</avgBicyleSpeed>
-  <avgWalkSpeed>0</avgWalkSpeed>
-  <maxDelTimeRnge>00:00:00</maxDelTimeRnge>
-  <riskTimeRnge>00:00:00</riskTimeRnge>
-  <UnactiveTimeRnge>00:00:00</UnactiveTimeRnge>
+  <NextOrderId>50</NextOrderId>
+  <NextDeliveryId>30</NextDeliveryId>
+  <Clock>18/11/2025 11:39:03</Clock>
+  <adminId>1001</adminId>
+  <adminPassword>ChangeMe!1234</adminPassword>
+  <companyAdress>Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem</companyAdress>
+  <latitude>31.7479</latitude>
+  <longitude>35.188</longitude>
+  <maxAirDistance>25</maxAirDistance>
+  <avgCarSpeed>35</avgCarSpeed>
+  <avgMotorcycleSpeed>40</avgMotorcycleSpeed>
+  <avgBicyleSpeed>15</avgBicyleSpeed>
+  <avgWalkSpeed>5</avgWalkSpeed>
+  <maxDelTimeRnge>03:00:00</maxDelTimeRnge>
+  <riskTimeRnge>00:30:00</riskTimeRnge>
+  <UnactiveTimeRnge>45.00:00:00</UnactiveTimeRnge>
 </config>
