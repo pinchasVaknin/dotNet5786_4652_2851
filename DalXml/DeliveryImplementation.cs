@@ -104,8 +104,7 @@ internal class DeliveryImplementation : IDelivery
         // Ensure the ID is not already taken
         if (root.Elements("Delivery")
                 .Any(d => (int?)d.Element("DeliveryId") == newDelivery.deliveryId))
-            throw new DalAlreadyExistsException(
-                $"Delivery with ID={newDelivery.deliveryId} already exists");
+            throw new DalAlreadyExistsException($"Delivery with ID={newDelivery.deliveryId} already exists");
 
         // Add new record to the XML tree
         root.Add(ToXElement(newDelivery));
