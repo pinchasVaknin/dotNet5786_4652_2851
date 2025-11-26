@@ -1,11 +1,17 @@
 ﻿namespace Dal;
 using DalApi;
+using System.Diagnostics;
 
 /// <summary>
 /// Provides access to data operations for couriers, orders, deliveries, and configuration settings using XML storage.
 /// </summary>
-sealed public class DalXml : IDal
+sealed internal class DalXml : IDal
 {
+    /// <summary>
+    /// Gets the singleton instance of the data access layer.
+    /// </summary>
+    public static IDal Intance { get; } = new DalXml();
+    private DalXml() { }
     /// <summary>
     /// Provides CRUD operations for couriers backed by the XML store.
     /// </summary>
