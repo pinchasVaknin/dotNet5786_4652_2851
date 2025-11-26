@@ -28,9 +28,9 @@ internal class CourierImplementation : ICourier
             XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
 
         // Check if a courier with the same ID already exists
-        if (Couriers.Any(c => c.courierId == item.courierId))
+        if (Couriers.Any(c => c.CourierId == item.CourierId))
             throw new DalAlreadyExistsException(
-                $"Courier with ID={item.courierId} already exists");
+                $"Courier with ID={item.CourierId} already exists");
 
         // Add new courier to the list
         Couriers.Add(item);
@@ -50,7 +50,7 @@ internal class CourierImplementation : ICourier
             XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
 
         // Find courier with matching ID (or null)
-        return Couriers.FirstOrDefault(c => c.courierId == id);
+        return Couriers.FirstOrDefault(c => c.CourierId == id);
     }
 
     /// <summary>
@@ -94,9 +94,9 @@ internal class CourierImplementation : ICourier
 
         // Remove the old courier entry (must exist)
         // RemoveAll returns how many items were removed
-        if (Couriers.RemoveAll(c => c.courierId == item.courierId) == 0)
+        if (Couriers.RemoveAll(c => c.CourierId == item.CourierId) == 0)
             throw new DalDoesNotExistException(
-                $"Courier with ID={item.courierId} does not exist");
+                $"Courier with ID={item.CourierId} does not exist");
 
         // Add the updated courier version
         Couriers.Add(item);
@@ -116,7 +116,7 @@ internal class CourierImplementation : ICourier
             XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
 
         // Attempt to remove matching courier
-        if (Couriers.RemoveAll(c => c.courierId == id) == 0)
+        if (Couriers.RemoveAll(c => c.CourierId == id) == 0)
             throw new DalDoesNotExistException(
                 $"Courier with ID={id} does not exist");
 

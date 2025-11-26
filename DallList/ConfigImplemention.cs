@@ -14,68 +14,68 @@ internal class ConfigImplementation : IConfig
         set => Config.Clock = value;
     }
 
-    public int adminId
+    public int AdminId
     {
-        get => Config.adminId;
-        set => Config.adminId = value;
+        get => Config.AdminId;
+        set => Config.AdminId = value;
     }
-    public string adminPassword
+    public string AdminPassword
     {
-        get => Config.adminPassword;
-        set => Config.adminPassword = value;
-    }
-
-    public string? companyAdress
-    {
-        get => Config.companyAdress;
-        set => Config.companyAdress = value;
-    }
-    public double? latitude
-    {
-        get => Config.latitude;
-        set => Config.latitude = value;
-    }
-    public double? longitude
-    {
-        get => Config.longitude;
-        set => Config.longitude = value;
+        get => Config.AdminPassword;
+        set => Config.AdminPassword = value;
     }
 
-    public double? maxAirDistance
+    public string? CompanyAdress
     {
-        get => Config.maxAirDistance;
-        set => Config.maxAirDistance = value;
+        get => Config.CompanyAdress;
+        set => Config.CompanyAdress = value;
     }
-    public double avgCarSpeed
+    public double? Latitude
     {
-        get => Config.avgCarSpeed;
-        set => Config.avgCarSpeed = value;
+        get => Config.Latitude;
+        set => Config.Latitude = value;
     }
-    public double avgMotorcycleSpeed
+    public double? Longitude
     {
-        get => Config.avgMotorcycleSpeed;
-        set => Config.avgMotorcycleSpeed = value;
-    }
-    public double avgBicyleSpeed
-    {
-        get => Config.avgBicyleSpeed;
-        set => Config.avgBicyleSpeed = value;
-    }
-    public double avgWalkSpeed
-    {
-        get => Config.avgWalkSpeed;
-        set => Config.avgWalkSpeed = value;
+        get => Config.Longitude;
+        set => Config.Longitude = value;
     }
 
-    public TimeSpan maxDelTimeRnge
+    public double? MaxAirDistance
     {
-        get => Config.maxDelTimeRnge;
-        set => Config.maxDelTimeRnge = value;
+        get => Config.MaxAirDistance;
+        set => Config.MaxAirDistance = value;
     }
-    public TimeSpan riskTimeRnge
+    public double AvgCarSpeed
     {
-        get => Config.riskTimeRnge;
-        set => Config.riskTimeRnge = value;
+        get => Config.AvgCarSpeed;
+        set => Config.AvgCarSpeed = value;
+    }
+    public double AvgMotorcycleSpeed
+    {
+        get => Config.AvgMotorcycleSpeed;
+        set => Config.AvgMotorcycleSpeed = value;
+    }
+    public double AvgBicyleSpeed
+    {
+        get => Config.AvgBicyleSpeed;
+        set => Config.AvgBicyleSpeed = value;
+    }
+    public double AvgWalkSpeed
+    {
+        get => Config.AvgWalkSpeed;
+        set => Config.AvgWalkSpeed = value;
+    }
+
+    public TimeSpan MaxDelTimeRnge
+    {
+        get => Config.MaxDelTimeRnge;
+        set => Config.MaxDelTimeRnge = value;
+    }
+    public TimeSpan RiskTimeRnge
+    {
+        get => Config.RiskTimeRnge;
+        set => Config.RiskTimeRnge = value;
     }
     public TimeSpan UnactiveTimeRnge
     {

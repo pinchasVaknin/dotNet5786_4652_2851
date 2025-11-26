@@ -3,23 +3,23 @@
 public interface IConfig
 {
     DateTime Clock { get; set; }
-    int adminId { get; set; }
-    string adminPassword { get; set; }
+    int AdminId { get; set; }
+    string AdminPassword { get; set; }
 
 
-    string? companyAdress { get; set; }
-    double? latitude { get; set; }
-    double? longitude { get; set; }
+    string? CompanyAdress { get; set; }
+    double? Latitude { get; set; }
+    double? Longitude { get; set; }
 
 
-    double? maxAirDistance { get; set; }
-    double avgCarSpeed { get; set; }
-    double avgMotorcycleSpeed { get; set; }
-    double avgBicyleSpeed { get; set; }
-    double avgWalkSpeed { get; set; }
+    double? MaxAirDistance { get; set; }
+    double AvgCarSpeed { get; set; }
+    double AvgMotorcycleSpeed { get; set; }
+    double AvgBicyleSpeed { get; set; }
+    double AvgWalkSpeed { get; set; }
 
-    TimeSpan maxDelTimeRnge { get; set; }
-    TimeSpan riskTimeRnge { get; set; }
+    TimeSpan MaxDelTimeRnge { get; set; }
+    TimeSpan RiskTimeRnge { get; set; }
     TimeSpan UnactiveTimeRnge { get; set; }
 
     void Reset();

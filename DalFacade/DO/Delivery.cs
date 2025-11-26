@@ -1,14 +1,14 @@
 ﻿namespace DO;
 public record Delivery
 (
-    int deliveryId, //need to be run number
-    int orderId,
-    int courierId,
-    double? deliveryMaxDistance,
-    DateTime deliveryDate,
-    DateTime deliveryFinishDate,
-    ShipmentType shipmentType,
-    DeliveryFinishType deliveryFinishType
+    int DeliveryId, //need to be run number
+    int OrderId,
+    int CourierId,
+    double? DeliveryMaxDistance,
+    DateTime DeliveryDate,
+    DateTime DeliveryFinishDate,
+    ShipmentType ShipmentType,
+    DeliveryFinishType DeliveryFinishType
 )
 {
     public Delivery() : this(

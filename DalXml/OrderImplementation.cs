@@ -26,11 +26,11 @@ internal class OrderImplementation : IOrder
         List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
 
         // Generate a new unique order ID and create a new record using 'with' expression
-        Order newOrder = item with { orderId = Config.NextOrderId };
+        Order newOrder = item with { OrderId = Config.NextOrderId };
 
         // Check for duplicate order ID
-        if (orders.Any(o => o.orderId == newOrder.orderId))
-            throw new DalAlreadyExistsException($"Order with ID={newOrder.orderId} already exists");
+        if (orders.Any(o => o.OrderId == newOrder.OrderId))
+            throw new DalAlreadyExistsException($"Order with ID={newOrder.OrderId} already exists");
 
         // Add new order to the list
         orders.Add(newOrder);
@@ -49,7 +49,7 @@ internal class OrderImplementation : IOrder
         List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
 
         // Return the first match or null if not found
-        return orders.FirstOrDefault(o => o.orderId == id);
+        return orders.FirstOrDefault(o => o.OrderId == id);
     }
 
     /// <summary>
@@ -88,8 +88,8 @@ internal class OrderImplementation : IOrder
         List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
 
         // Remove old order entry; if nothing was removed, order does not exist
-        if (orders.RemoveAll(o => o.orderId == item.orderId) == 0)
-            throw new DalDoesNotExistException($"Order with ID={item.orderId} does not exist");
+        if (orders.RemoveAll(o => o.OrderId == item.OrderId) == 0)
+            throw new DalDoesNotExistException($"Order with ID={item.OrderId} does not exist");
 
         // Insert updated order object
         orders.Add(item);
@@ -108,7 +108,7 @@ internal class OrderImplementation : IOrder
         List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
 
         // Remove the order; if none removed, the order does not exist
-        if (orders.RemoveAll(o => o.orderId == id) == 0)
+        if (orders.RemoveAll(o => o.OrderId == id) == 0)
             throw new DalDoesNotExistException($"Order with ID={id} does not exist");
 
         // Save updated list

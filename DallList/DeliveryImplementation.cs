@@ -14,7 +14,7 @@ internal class DeliveryImplementation : IDelivery
         int newId = Config.NextDeliveryId;
 
         // Create a copy of the object with the new ID
-        Delivery copy = item with { deliveryId = newId };
+        Delivery copy = item with { DeliveryId = newId };
 
         // Add the copy to the data source
         DataSource.Deliverys.Add(copy);
@@ -40,7 +40,7 @@ internal class DeliveryImplementation : IDelivery
     {
         // if Exists deliveryId return.
         //return DataSource.Deliverys.Find(same => same.deliveryId == id); //stage 1
-        return DataSource.Deliverys.FirstOrDefault(item => item.deliveryId == id); //stage 2
+        return DataSource.Deliverys.FirstOrDefault(item => item.DeliveryId == id); //stage 2
     }
     public Delivery? Read(Func<Delivery, bool> filter)
     {
@@ -52,13 +52,13 @@ internal class DeliveryImplementation : IDelivery
             : DataSource.Deliverys.Where(filter);
     public void Update(Delivery item)
     {
-        int newId = item.deliveryId;
+        int newId = item.DeliveryId;
         // Remove the existing Delivery with the same ID (throws if it does not exist)
-        Delete(item.deliveryId);
+        Delete(item.DeliveryId);
 
         // Add the updated Delivery back to the collection (throws if the ID already exists)
         // Create a copy of the object with the new ID
-        Delivery copy = item with { deliveryId = newId };
+        Delivery copy = item with { DeliveryId = newId };
 
         // Add the copy to the data source
         DataSource.Deliverys.Add(copy);

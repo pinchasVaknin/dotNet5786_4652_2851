@@ -7,11 +7,16 @@ using System.Diagnostics;
 /// </summary>
 sealed internal class DalXml : IDal
 {
-    /// <summary>
-    /// Gets the singleton instance of the data access layer.
-    /// </summary>
-    public static IDal Intance { get; } = new DalXml();
+    // private constructor to prevent external instantiation
     private DalXml() { }
+
+    //------ Lazy intialization + Thread safe ------\\
+    private static readonly Lazy<DalXml> s_intance =
+        new Lazy<DalXml>(() => new DalXml(), true);
+
+    // publc access to the instance
+    public static IDal Instance => s_intance.Value;
+
     /// <summary>
     /// Provides CRUD operations for couriers backed by the XML store.
     /// </summary>

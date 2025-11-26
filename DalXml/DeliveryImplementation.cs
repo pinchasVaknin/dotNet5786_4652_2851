@@ -60,14 +60,14 @@ internal class DeliveryImplementation : IDelivery
 
         // Construct the Delivery object with all validated fields
         return new Delivery(
-            deliveryId: deliveryId,
-            orderId: orderId,
-            courierId: courierId,
-            deliveryMaxDistance: maxDistance,
-            deliveryDate: deliveryDate,
-            deliveryFinishDate: deliveryFinishDate,
-            shipmentType: shipmentType,
-            deliveryFinishType: finishType
+            DeliveryId: deliveryId,
+            OrderId: orderId,
+            CourierId: courierId,
+            DeliveryMaxDistance: maxDistance,
+            DeliveryDate: deliveryDate,
+            DeliveryFinishDate: deliveryFinishDate,
+            ShipmentType: shipmentType,
+            DeliveryFinishType: finishType
         );
     }
 
@@ -76,14 +76,14 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     private static XElement ToXElement(Delivery d) =>
         new XElement("Delivery",
-            new XElement("DeliveryId", d.deliveryId),
-            new XElement("OrderId", d.orderId),
-            new XElement("CourierId", d.courierId),
-            new XElement("DeliveryMaxDistance", d.deliveryMaxDistance),
-            new XElement("DeliveryDate", d.deliveryDate),
-            new XElement("DeliveryFinishDate", d.deliveryFinishDate),
-            new XElement("ShipmentType", d.shipmentType),
-            new XElement("DeliveryFinishType", d.deliveryFinishType)
+            new XElement("DeliveryId", d.DeliveryId),
+            new XElement("OrderId", d.OrderId),
+            new XElement("CourierId", d.CourierId),
+            new XElement("DeliveryMaxDistance", d.DeliveryMaxDistance),
+            new XElement("DeliveryDate", d.DeliveryDate),
+            new XElement("DeliveryFinishDate", d.DeliveryFinishDate),
+            new XElement("ShipmentType", d.ShipmentType),
+            new XElement("DeliveryFinishType", d.DeliveryFinishType)
         );
 
 
@@ -99,12 +99,12 @@ internal class DeliveryImplementation : IDelivery
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
 
         // Assign a generated unique ID (record with-expression)
-        Delivery newDelivery = item with { deliveryId = Config.NextDeliveryId };
+        Delivery newDelivery = item with { DeliveryId = Config.NextDeliveryId };
 
         // Ensure the ID is not already taken
         if (root.Elements("Delivery")
-                .Any(d => (int?)d.Element("DeliveryId") == newDelivery.deliveryId))
-            throw new DalAlreadyExistsException($"Delivery with ID={newDelivery.deliveryId} already exists");
+                .Any(d => (int?)d.Element("DeliveryId") == newDelivery.DeliveryId))
+            throw new DalAlreadyExistsException($"Delivery with ID={newDelivery.DeliveryId} already exists");
 
         // Add new record to the XML tree
         root.Add(ToXElement(newDelivery));
@@ -171,11 +171,11 @@ internal class DeliveryImplementation : IDelivery
         // Find the delivery to update
         XElement? elem =
             root.Elements("Delivery")
-                .FirstOrDefault(d => (int?)d.Element("DeliveryId") == item.deliveryId);
+                .FirstOrDefault(d => (int?)d.Element("DeliveryId") == item.DeliveryId);
 
         if (elem is null)
             throw new DalDoesNotExistException(
-                $"Delivery with ID={item.deliveryId} does not exist");
+                $"Delivery with ID={item.DeliveryId} does not exist");
 
         // Replace the old element with a new one
         elem.ReplaceWith(ToXElement(item));

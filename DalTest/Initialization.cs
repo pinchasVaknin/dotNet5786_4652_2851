@@ -13,6 +13,7 @@ public static class Initialization
 
     private static IDal? s_dal; // stage 2
 
+
     const int MIN_COURIER_ID = 200000000; // Minimum value for courier ID
     const int MAX_COURIER_ID = 400000000; // Maximum value for courier ID
 
@@ -20,14 +21,17 @@ public static class Initialization
 
 
     //--- Main boot function ---\\
-    public static void Do(IDal dal)
+    public static void Do() //stage 4
     {
         // Guard: DAL order, Delivery, Courier, config must be initialized before seeding
         //s_dalCourier = dalCourier ?? throw new NullReferenceException("DAL courier cannot be null!");   // stage 1
         //s_dalDelivery = dalDelivery ?? throw new NullReferenceException("DAL delivery cannot be null!");// stage 1
         //s_dalOrder = dalOrder ?? throw new NullReferenceException("DAL order cannot be null!");         // stage 1
         //s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL config cannot be null!");      // stage 1
-        s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!"); // stage 2
+
+        //s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!"); // stage 2
+
+        s_dal = DalApi.Factory.Get; //stage 4
 
         Console.WriteLine("Reset configuration and lists...");
         //s_dalConfig.Reset();      // stage 1 Restart
@@ -95,16 +99,16 @@ public static class Initialization
             DateTime employmentStartTime = startBase.AddDays(s_rand.Next(range));
 
             // Randomly pick a vehicle type from enum values
-            var VehicleTypes = Enum.GetValues<courierVehicleType>();
+            var VehicleTypes = Enum.GetValues<CourierVehicleType>();
             var VehicleType = VehicleTypes[s_rand.Next(VehicleTypes.Length)];
 
             // Random max travel distance depending on vehicle type (or null sometimes)
             double? MaxDistance = (s_rand.NextDouble() < 0.6) ? VehicleType switch
             {
-                courierVehicleType.Car        =>  10 + s_rand.NextDouble() * (35 - 10),
-                courierVehicleType.Motorcycle =>   8 + s_rand.NextDouble() * (25 - 8),
-                courierVehicleType.Bicycle    =>   3 + s_rand.NextDouble() * (12 - 3),
-                courierVehicleType.Foot       =>   1 + s_rand.NextDouble() * (4 - 1),
+                CourierVehicleType.Car        =>  10 + s_rand.NextDouble() * (35 - 10),
+                CourierVehicleType.Motorcycle =>   8 + s_rand.NextDouble() * (25 - 8),
+                CourierVehicleType.Bicycle    =>   3 + s_rand.NextDouble() * (12 - 3),
+                CourierVehicleType.Foot       =>   1 + s_rand.NextDouble() * (4 - 1),
                 _ => null
             } : null;
             // round the MaxDistance
@@ -120,16 +124,16 @@ public static class Initialization
 
             // Create and save courier in DAL
             s_dal!.Courier.Create(new Courier(
-             courierId: id,
-             courierFullName: name,
-             courierCellPhone: phone,
-             courierEmail: email,
-             courierPassword: password,
-             courierAddress: address, // Address from which the courier starts work
-             courierEnabled: isActive,
-             maxCourierDistance: MaxDistance,
-             seniorityOfCourier: employmentStartTime,
-             courierVehicleType: VehicleType
+             CourierId: id,
+             CourierFullName: name,
+             CourierCellPhone: phone,
+             CourierEmail: email,
+             CourierPassword: password,
+             CourierAddress: address, // Address from which the courier starts work
+             CourierEnabled: isActive,
+             MaxCourierDistance: MaxDistance,
+             SeniorityOfCourier: employmentStartTime,
+             CourierVehicleType: VehicleType
           ));
         }
     }
@@ -216,11 +220,11 @@ public static class Initialization
         openCount += Math.Max(0, extra); // allocate any remainder to OPEN
 
         // Company coordinates (seeded manually in Config at stage 1). Defaults are fallbacks.
-        double companyLat = s_dal.Config.latitude ?? 31.7886;
-        double companyLon = s_dal.Config.longitude ?? 35.2034;
+        double companyLat = s_dal.Config.Latitude ?? 31.7886;
+        double companyLon = s_dal.Config.Longitude ?? 35.2034;
 
         // All order categories (enum values) + the project simulation clock
-        var allKinds = Enum.GetValues<typeOfOrder>();
+        var allKinds = Enum.GetValues<TypeOfOrder>();
         var clock = s_dal.Config.Clock;
 
         // Build a flat sequence of status tags, then iterate once to create all orders
@@ -238,15 +242,15 @@ public static class Initialization
             // Compact electronics catalog: (category enum, array of product names)
             string[] items = kind switch
             {
-                typeOfOrder.Smartphone => Enum.GetNames<Catalog.SmartphoneDetails>(),
-                typeOfOrder.Laptop => Enum.GetNames<Catalog.LaptopDetails>(),
-                typeOfOrder.Tablet => Enum.GetNames<Catalog.TabletDetails>(),
-                typeOfOrder.TV => Enum.GetNames<Catalog.TVDetails>(),
-                typeOfOrder.Camera => Enum.GetNames<Catalog.CameraDetails>(),
-                typeOfOrder.Audio => Enum.GetNames<Catalog.AudioDetails>(),
-                typeOfOrder.SmartHome => Enum.GetNames<Catalog.SmartHomeDetails>(),
-                typeOfOrder.GamingConsole => Enum.GetNames<Catalog.GamingConsoleDetails>(),
-                typeOfOrder.Accessory => Enum.GetNames<Catalog.AccessoryDetails>(),
+                TypeOfOrder.Smartphone => Enum.GetNames<Catalog.SmartphoneDetails>(),
+                TypeOfOrder.Laptop => Enum.GetNames<Catalog.LaptopDetails>(),
+                TypeOfOrder.Tablet => Enum.GetNames<Catalog.TabletDetails>(),
+                TypeOfOrder.TV => Enum.GetNames<Catalog.TVDetails>(),
+                TypeOfOrder.Camera => Enum.GetNames<Catalog.CameraDetails>(),
+                TypeOfOrder.Audio => Enum.GetNames<Catalog.AudioDetails>(),
+                TypeOfOrder.SmartHome => Enum.GetNames<Catalog.SmartHomeDetails>(),
+                TypeOfOrder.GamingConsole => Enum.GetNames<Catalog.GamingConsoleDetails>(),
+                TypeOfOrder.Accessory => Enum.GetNames<Catalog.AccessoryDetails>(),
                 _ => Array.Empty<string>()
             };
 
@@ -278,15 +282,15 @@ public static class Initialization
             // Size/weight profile per category (min/max + fragility probability)
             (double weightMin, double weightMax, double sizeMin, double sizeMax, bool fragP) pack = kind switch
             {
-                typeOfOrder.Smartphone => (0.2, 0.8, 0.1, 0.3, false),
-                typeOfOrder.Tablet => (0.3, 1.0, 0.15, 0.35, true),
-                typeOfOrder.Laptop => (1.0, 3.0, 0.3, 0.8, true),
-                typeOfOrder.TV => (8.0, 25.0, 0.9, 2.0, true),
-                typeOfOrder.Camera => (0.4, 2.0, 0.2, 0.6, true),
-                typeOfOrder.Audio => (0.2, 1.5, 0.15, 0.6, false),
-                typeOfOrder.SmartHome => (0.3, 2.5, 0.2, 0.7, false),
-                typeOfOrder.GamingConsole => (2.0, 6.0, 0.5, 1.0, false),
-                typeOfOrder.Accessory => (0.05, 0.5, 0.05, 0.2, false),
+                TypeOfOrder.Smartphone => (0.2, 0.8, 0.1, 0.3, false),
+                TypeOfOrder.Tablet => (0.3, 1.0, 0.15, 0.35, true),
+                TypeOfOrder.Laptop => (1.0, 3.0, 0.3, 0.8, true),
+                TypeOfOrder.TV => (8.0, 25.0, 0.9, 2.0, true),
+                TypeOfOrder.Camera => (0.4, 2.0, 0.2, 0.6, true),
+                TypeOfOrder.Audio => (0.2, 1.5, 0.15, 0.6, false),
+                TypeOfOrder.SmartHome => (0.3, 2.5, 0.2, 0.7, false),
+                TypeOfOrder.GamingConsole => (2.0, 6.0, 0.5, 1.0, false),
+                TypeOfOrder.Accessory => (0.05, 0.5, 0.05, 0.2, false),
                 _ => (0.5, 5.0, 0.2, 1.0, true)
             };
 
@@ -308,19 +312,19 @@ public static class Initialization
 
             // Persist via DAL: orderId = 0 so DAL assigns the next running ID
             s_dal!.Order.Create(new Order(
-                orderId: 0,
-                orderStatus: orderStatusTag,
-                orderDetail: detail,
-                orderAddress: addr.orderAddress,
-                orderLatitude: addr.lat,
-                orderLongitude: addr.lon,
-                orderCostumerFullName: customer,
-                orderCostumerPhone: phone,
-                orderWeight: weight,
-                fragile: fragile,
-                orderSize: size,
-                orderDate: orderDate,
-                typeOfOrder: kind
+                OrderId: 0,
+                OrderStatus: orderStatusTag,
+                OrderDetail: detail,
+                OrderAddress: addr.orderAddress,
+                OrderLatitude: addr.lat,
+                OrderLongitude: addr.lon,
+                OrderCostumerFullName: customer,
+                OrderCostumerPhone: phone,
+                OrderWeight: weight,
+                IsFragile: fragile,
+                OrderSize: size,
+                OrderDate: orderDate,
+                TypeOfOrder: kind
             ));
         }
     }
@@ -360,7 +364,7 @@ public static class Initialization
             var courier = couriers.ElementAt(s_rand.Next(couriers.Count()));
 
             // Base timestamps
-            DateTime deliveryDate = order.orderDate.AddHours(s_rand.Next(0, 24)).AddMinutes(s_rand.Next(0, 60));
+            DateTime deliveryDate = order.OrderDate.AddHours(s_rand.Next(0, 24)).AddMinutes(s_rand.Next(0, 60));
             DateTime deliveryFinishDate = deliveryDate.AddMinutes(s_rand.Next(30, 240));
 
             // sample randomly from enum (later you can derive from order.typeOfOrder if desired)
@@ -375,18 +379,18 @@ public static class Initialization
             else finishType = DeliveryFinishType.Returned;                // ~5%
 
             // Max distance policy used for later checks.
-            double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dal.Config.maxAirDistance : null;
+            double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dal.Config.MaxAirDistance : null;
 
             // Persist via DAL (DeliveryImplementation will assign the running deliveryId).
             s_dal.Delivery.Create(new Delivery(
-                deliveryId: 0,                    // Next Delivery Id
-                orderId: order.orderId,           // link order
-                courierId: courier.courierId,     // link courier
-                deliveryMaxDistance: maxDistance, // per delivery
-                deliveryDate: deliveryDate,
-                deliveryFinishDate: deliveryFinishDate,
-                shipmentType: shipmentType,
-                deliveryFinishType: finishType
+                DeliveryId: 0,                    // Next Delivery Id
+                OrderId: order.OrderId,           // link order
+                CourierId: courier.CourierId,     // link courier
+                DeliveryMaxDistance: maxDistance, // per delivery
+                DeliveryDate: deliveryDate,
+                DeliveryFinishDate: deliveryFinishDate,
+                ShipmentType: shipmentType,
+                DeliveryFinishType: finishType
             ));
         }
     }
@@ -396,26 +400,26 @@ public static class Initialization
         s_dal.Config.Clock = DateTime.Now;
 
         // Admin credentials
-        s_dal.Config.adminId = 1001;                     // admin id
-        s_dal.Config.adminPassword = "ChangeMe!1234";    // password
+        s_dal.Config.AdminId = 1001;                     // admin id
+        s_dal.Config.AdminPassword = "ChangeMe!1234";    // password
 
         // Company address and its geo-coordinates
-        s_dal.Config.companyAdress = "Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem"; // textual address
-        s_dal.Config.latitude = 31.7479;
-        s_dal.Config.longitude = 35.1880;
+        s_dal.Config.CompanyAdress = "Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem"; // textual address
+        s_dal.Config.Latitude = 31.7479;
+        s_dal.Config.Longitude = 35.1880;
 
         // Global acceptance constraint: maximum straight-line (air) distance for orders (km)
-        s_dal.Config.maxAirDistance = 25.0;
+        s_dal.Config.MaxAirDistance = 25.0;
 
         // Average speeds (km/h)
-        s_dal.Config.avgCarSpeed = 35.0;         // Car average
-        s_dal.Config.avgMotorcycleSpeed = 40.0;  // Motorcycle average
-        s_dal.Config.avgBicyleSpeed = 15.0;      // Bicyle average
-        s_dal.Config.avgWalkSpeed = 5.0;         // Walk average
+        s_dal.Config.AvgCarSpeed = 35.0;         // Car average
+        s_dal.Config.AvgMotorcycleSpeed = 40.0;  // Motorcycle average
+        s_dal.Config.AvgBicyleSpeed = 15.0;      // Bicyle average
+        s_dal.Config.AvgWalkSpeed = 5.0;         // Walk average
 
         // Time policy ranges
-        s_dal.Config.maxDelTimeRnge = TimeSpan.FromHours(3);     // deliveries should usually complete within ~3h
-        s_dal.Config.riskTimeRnge = TimeSpan.FromMinutes(30);    // if ETA exceeds by 30m → mark as "at risk"
+        s_dal.Config.MaxDelTimeRnge = TimeSpan.FromHours(3);     // deliveries should usually complete within ~3h
+        s_dal.Config.RiskTimeRnge = TimeSpan.FromMinutes(30);    // if ETA exceeds by 30m → mark as "at risk"
         s_dal.Config.UnactiveTimeRnge = TimeSpan.FromDays(45);   // 45 days of inactivity is considered stale
     }
 

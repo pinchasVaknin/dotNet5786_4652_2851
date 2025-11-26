@@ -2,19 +2,19 @@
 
 public record Order
 (
-    int orderId, //need to be run number
-    string orderStatus,
-    string? orderDetail,
-    string orderAddress,
-    double orderLatitude,
-    double orderLongitude,
-    string orderCostumerFullName,
-    string orderCostumerPhone,
-    double orderWeight,
-    bool fragile,
-    double orderSize,
-    DateTime orderDate,
-    typeOfOrder typeOfOrder
+    int OrderId, //need to be run number
+    string OrderStatus,
+    string? OrderDetail,
+    string OrderAddress,
+    double OrderLatitude,
+    double OrderLongitude,
+    string OrderCostumerFullName,
+    string OrderCostumerPhone,
+    double OrderWeight,
+    bool IsFragile,
+    double OrderSize,
+    DateTime OrderDate,
+    TypeOfOrder TypeOfOrder
 )
 {
     public Order() : this(
@@ -30,7 +30,7 @@ public record Order
        false,
        0,
        DateTime.MinValue,
-       typeOfOrder.Smartphone   // default
+       TypeOfOrder.Smartphone   // default
    )
     { }
 }

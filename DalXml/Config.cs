@@ -44,7 +44,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the administrator user identifier stored in the config.
     /// </summary>
-    internal static int adminId
+    internal static int AdminId
     {
         get => XMLTools.GetConfigIntVal(s_data_config_xml, "adminId");
         set => XMLTools.SetConfigIntVal(s_data_config_xml, "adminId", value);
@@ -53,7 +53,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the administrator password stored in the config.
     /// </summary>
-    internal static string adminPassword
+    internal static string AdminPassword
     {
         get => XMLTools.GetConfigStringVal(s_data_config_xml, "adminPassword");
         set => XMLTools.SetConfigStringVal(s_data_config_xml, "adminPassword", value);
@@ -62,7 +62,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the company address (nullable) stored in the config.
     /// </summary>
-    internal static string? companyAdress
+    internal static string? CompanyAdress
     {
         get => XMLTools.GetConfigStringNullableVal(s_data_config_xml, "companyAdress");
         set => XMLTools.SetConfigStringNullableVal(s_data_config_xml, "companyAdress", value);
@@ -71,7 +71,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the company latitude (nullable) stored in the config.
     /// </summary>
-    internal static double? latitude
+    internal static double? Latitude
     {
         get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "latitude");
         set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "latitude", value);
@@ -80,7 +80,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the company longitude (nullable) stored in the config.
     /// </summary>
-    internal static double? longitude
+    internal static double? Longitude
     {
         get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "longitude");
         set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "longitude", value);
@@ -89,7 +89,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the maximum allowed air distance (nullable) for deliveries.
     /// </summary>
-    internal static double? maxAirDistance
+    internal static double? MaxAirDistance
     {
         get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "maxAirDistance");
         set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "maxAirDistance", value);
@@ -98,7 +98,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the average car speed used for time/delivery calculations.
     /// </summary>
-    internal static double avgCarSpeed
+    internal static double AvgCarSpeed
     {
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "avgCarSpeed");
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "avgCarSpeed", value);
@@ -107,7 +107,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the average motorcycle speed used for time/delivery calculations.
     /// </summary>
-    internal static double avgMotorcycleSpeed
+    internal static double AvgMotorcycleSpeed
     {
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "avgMotorcycleSpeed");
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "avgMotorcycleSpeed", value);
@@ -116,7 +116,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the average bicycle speed used for time/delivery calculations.
     /// </summary>
-    internal static double avgBicyleSpeed
+    internal static double AvgBicyleSpeed
     {
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "avgBicyleSpeed");
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "avgBicyleSpeed", value);
@@ -125,7 +125,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the average walking speed used for time/delivery calculations.
     /// </summary>
-    internal static double avgWalkSpeed
+    internal static double AvgWalkSpeed
     {
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "avgWalkSpeed");
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "avgWalkSpeed", value);
@@ -134,7 +134,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the maximum delivery time range used for scheduling.
     /// </summary>
-    internal static TimeSpan maxDelTimeRnge
+    internal static TimeSpan MaxDelTimeRnge
     {
         get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "maxDelTimeRnge");
         set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "maxDelTimeRnge", value);
@@ -143,7 +143,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the risk time range used to identify high-risk deliveries.
     /// </summary>
-    internal static TimeSpan riskTimeRnge
+    internal static TimeSpan RiskTimeRnge
     {
         get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "riskTimeRnge");
         set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "riskTimeRnge", value);
@@ -170,21 +170,21 @@ internal static class Config
 
         Clock = DateTime.Now;
 
-        adminId = 0;
-        adminPassword = string.Empty;
+        AdminId = 0;
+        AdminPassword = string.Empty;
 
-        companyAdress = null;
-        latitude = null;
-        longitude = null;
-        maxAirDistance = null;
+        CompanyAdress = null;
+        Latitude = null;
+        Longitude = null;
+        MaxAirDistance = null;
 
-        avgCarSpeed = 0;
-        avgMotorcycleSpeed = 0;
-        avgBicyleSpeed = 0;
-        avgWalkSpeed = 0;
+        AvgCarSpeed = 0;
+        AvgMotorcycleSpeed = 0;
+        AvgBicyleSpeed = 0;
+        AvgWalkSpeed = 0;
 
-        maxDelTimeRnge = TimeSpan.Zero;
-        riskTimeRnge = TimeSpan.Zero;
+        MaxDelTimeRnge = TimeSpan.Zero;
+        RiskTimeRnge = TimeSpan.Zero;
         UnactiveTimeRnge = TimeSpan.Zero;
     }
 }

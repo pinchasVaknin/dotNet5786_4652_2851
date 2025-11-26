@@ -20,109 +20,109 @@ internal class ConfigImplementation : IConfig
     /// <summary>
     /// Gets or sets the administrator identifier stored in the underlying Config.
     /// </summary>
-    public int adminId
+    public int AdminId
     {
-        get => Config.adminId;
-        set => Config.adminId = value;
+        get => Config.AdminId;
+        set => Config.AdminId = value;
     }
 
     /// <summary>
     /// Gets or sets the administrator password stored in the underlying Config.
     /// </summary>
-    public string adminPassword
+    public string AdminPassword
     {
-        get => Config.adminPassword;
-        set => Config.adminPassword = value;
+        get => Config.AdminPassword;
+        set => Config.AdminPassword = value;
     }
 
     /// <summary>
     /// Gets or sets the company address (nullable) from the underlying Config.
     /// </summary>
-    public string? companyAdress
+    public string? CompanyAdress
     {
-        get => Config.companyAdress;
-        set => Config.companyAdress = value;
+        get => Config.CompanyAdress;
+        set => Config.CompanyAdress = value;
     }
 
     /// <summary>
     /// Gets or sets the company latitude (nullable) from the underlying Config.
     /// </summary>
-    public double? latitude
+    public double? Latitude
     {
-        get => Config.latitude;
-        set => Config.latitude = value;
+        get => Config.Latitude;
+        set => Config.Latitude = value;
     }
 
     /// <summary>
     /// Gets or sets the company longitude (nullable) from the underlying Config.
     /// </summary>
-    public double? longitude
+    public double? Longitude
     {
-        get => Config.longitude;
-        set => Config.longitude = value;
+        get => Config.Longitude;
+        set => Config.Longitude = value;
     }
 
     /// <summary>
     /// Gets or sets the maximum allowed air distance (nullable) from the underlying Config.
     /// </summary>
-    public double? maxAirDistance
+    public double? MaxAirDistance
     {
-        get => Config.maxAirDistance;
-        set => Config.maxAirDistance = value;
+        get => Config.MaxAirDistance;
+        set => Config.MaxAirDistance = value;
     }
 
     /// <summary>
     /// Gets or sets the average car speed used for time and delivery calculations.
     /// </summary>
-    public double avgCarSpeed
+    public double AvgCarSpeed
     {
-        get => Config.avgCarSpeed;
-        set => Config.avgCarSpeed = value;
+        get => Config.AvgCarSpeed;
+        set => Config.AvgCarSpeed = value;
     }
 
     /// <summary>
     /// Gets or sets the average motorcycle speed used for time and delivery calculations.
     /// </summary>
-    public double avgMotorcycleSpeed
+    public double AvgMotorcycleSpeed
     {
-        get => Config.avgMotorcycleSpeed;
-        set => Config.avgMotorcycleSpeed = value;
+        get => Config.AvgMotorcycleSpeed;
+        set => Config.AvgMotorcycleSpeed = value;
     }
 
     /// <summary>
     /// Gets or sets the average bicycle speed used for time and delivery calculations.
     /// </summary>
-    public double avgBicyleSpeed
+    public double AvgBicyleSpeed
     {
-        get => Config.avgBicyleSpeed;
-        set => Config.avgBicyleSpeed = value;
+        get => Config.AvgBicyleSpeed;
+        set => Config.AvgBicyleSpeed = value;
     }
 
     /// <summary>
     /// Gets or sets the average walking speed used for time and delivery calculations.
     /// </summary>
-    public double avgWalkSpeed
+    public double AvgWalkSpeed
     {
-        get => Config.avgWalkSpeed;
-        set => Config.avgWalkSpeed = value;
+        get => Config.AvgWalkSpeed;
+        set => Config.AvgWalkSpeed = value;
     }
 
     /// <summary>
     /// Gets or sets the maximum delivery time range from the underlying Config.
     /// </summary>
-    public TimeSpan maxDelTimeRnge
+    public TimeSpan MaxDelTimeRnge
     {
-        get => Config.maxDelTimeRnge;
-        set => Config.maxDelTimeRnge = value;
+        get => Config.MaxDelTimeRnge;
+        set => Config.MaxDelTimeRnge = value;
     }
 
     /// <summary>
     /// Gets or sets the risk time range used to identify high-risk deliveries.
     /// </summary>
-    public TimeSpan riskTimeRnge
+    public TimeSpan RiskTimeRnge
     {
-        get => Config.riskTimeRnge;
-        set => Config.riskTimeRnge = value;
+        get => Config.RiskTimeRnge;
+        set => Config.RiskTimeRnge = value;
     }
 
     /// <summary>

@@ -14,7 +14,9 @@ internal class Program
 
     //static readonly IDal s_dal = new DalList(); //stage 2
 
-    static readonly IDal s_dal = new DalXml(); //stage 3
+    //static readonly IDal s_dal = new DalXml(); //stage 3
+
+    static readonly IDal s_dal = Factory.Get; //stage 4
 
     // -------------------- Main -------------------- \\
     static void Main(string[] args)
@@ -192,7 +194,10 @@ internal class Program
     private static void DoInitialization()
     {
         // Seed base data calls Initialization.Do using current DAL
-        Initialization.Do(s_dal); // stage 2
+        /*
+        Initialization.Do(s_dal); //stage 2
+        */
+        Initialization.Do(); // stage 4
         Console.WriteLine("Initialization.Do completed.");
     }
 
@@ -257,20 +262,20 @@ internal class Program
             experience = dateVal;
 
         // choose vehicle type from enum
-        courierVehicleType VehicleType = ReadEnum<courierVehicleType>("Vehicle type");
+        CourierVehicleType VehicleType = ReadEnum<CourierVehicleType>("Vehicle type");
 
         // create new courier object
         var newCourier = new Courier(
-            courierId: id,
-            courierFullName: fullName,
-            courierAddress: companyAddress,
-            courierCellPhone: phone,
-            courierEmail: email,
-            courierPassword: password,
-            courierEnabled: isActive,
-            maxCourierDistance: distance,
-            seniorityOfCourier: experience,
-            courierVehicleType: VehicleType
+            CourierId: id,
+            CourierFullName: fullName,
+            CourierAddress: companyAddress,
+            CourierCellPhone: phone,
+            CourierEmail: email,
+            CourierPassword: password,
+            CourierEnabled: isActive,
+            MaxCourierDistance: distance,
+            SeniorityOfCourier: experience,
+            CourierVehicleType: VehicleType
         );
 
         s_dal.Courier.Create(newCourier); // save to data layer
@@ -313,22 +318,22 @@ internal class Program
 
         Console.WriteLine($"Current: {c}");
         // read new values (optional)
-        string fullName = ReadOptional($"Full name [{c.courierFullName}]: ", c.courierFullName);
-        string address = ReadOptional($"Courier address [{c.courierAddress}]: ", c.courierAddress);
-        string phone = ReadOptional($"Phone [{c.courierCellPhone}]: ", c.courierCellPhone);
-        string email = ReadOptional($"Email [{c.courierEmail}]: ", c.courierEmail);
-        string password = ReadOptional($"Password [{c.courierPassword}]: ", c.courierPassword);
+        string fullName = ReadOptional($"Full name [{c.CourierFullName}]: ", c.CourierFullName);
+        string address = ReadOptional($"Courier address [{c.CourierAddress}]: ", c.CourierAddress);
+        string phone = ReadOptional($"Phone [{c.CourierCellPhone}]: ", c.CourierCellPhone);
+        string email = ReadOptional($"Email [{c.CourierEmail}]: ", c.CourierEmail);
+        string password = ReadOptional($"Password [{c.CourierPassword}]: ", c.CourierPassword);
 
         // update active status
-        bool isActive = c.courierEnabled;
-        Console.Write($"Active? (y/n, Enter=keep [{(c.courierEnabled ? "y" : "n")}]): ");
+        bool isActive = c.CourierEnabled;
+        Console.Write($"Active? (y/n, Enter=keep [{(c.CourierEnabled ? "y" : "n")}]): ");
         var activeIn = (Console.ReadLine() ?? "").Trim().ToLowerInvariant();
         if (activeIn is "y" or "yes" or "true") isActive = true;
         else if (activeIn is "n" or "no" or "false") isActive = false;
 
         // update distance
-        double? distance = c.maxCourierDistance;
-        Console.Write($"Max distance km [current={(c.maxCourierDistance?.ToString() ?? "null")}]. Enter=keep, '-'=null, or number: ");
+        double? distance = c.MaxCourierDistance;
+        Console.Write($"Max distance km [current={(c.MaxCourierDistance?.ToString() ?? "null")}]. Enter=keep, '-'=null, or number: ");
         var distIn = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(distIn))
         {
@@ -338,8 +343,8 @@ internal class Program
         }
 
         // update experience date
-        DateTime? experience = c.seniorityOfCourier;
-        Console.Write($"Employment start date dd/MM/yyyy [current={(c.seniorityOfCourier?.ToString("dd/MM/yyyy") ?? "null")}]. Enter=keep, '-'=null: ");
+        DateTime? experience = c.SeniorityOfCourier;
+        Console.Write($"Employment start date dd/MM/yyyy [current={(c.SeniorityOfCourier?.ToString("dd/MM/yyyy") ?? "null")}]. Enter=keep, '-'=null: ");
         var dateIn = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(dateIn))
         {
@@ -349,28 +354,28 @@ internal class Program
         }
 
         // update vehicle type
-        var vehicleType = c.courierVehicleType;
-        Console.WriteLine($"Vehicle type (Enter=keep [{c.courierVehicleType}]): {string.Join(", ", Enum.GetNames<courierVehicleType>())}");
+        var vehicleType = c.CourierVehicleType;
+        Console.WriteLine($"Vehicle type (Enter=keep [{c.CourierVehicleType}]): {string.Join(", ", Enum.GetNames<CourierVehicleType>())}");
         Console.Write("> ");
         var enumIn = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(enumIn))
         {
-            if (!Enum.TryParse<courierVehicleType>(enumIn, ignoreCase: true, out vehicleType))
+            if (!Enum.TryParse<CourierVehicleType>(enumIn, ignoreCase: true, out vehicleType))
                 throw new DalInvalidVehicleTypeException("Invalid vehicle type.");
         }
 
         // create updated copy and save
         var updated = c with
         {
-            courierFullName = fullName,
-            courierAddress = address,
-            courierCellPhone = phone,
-            courierEmail = email,
-            courierPassword = password,
-            courierEnabled = isActive,
-            maxCourierDistance = distance,
-            seniorityOfCourier = experience,
-            courierVehicleType = vehicleType
+            CourierFullName = fullName,
+            CourierAddress = address,
+            CourierCellPhone = phone,
+            CourierEmail = email,
+            CourierPassword = password,
+            CourierEnabled = isActive,
+            MaxCourierDistance = distance,
+            SeniorityOfCourier = experience,
+            CourierVehicleType = vehicleType
         };
 
         s_dal.Courier.Update(updated);
@@ -407,23 +412,23 @@ internal class Program
         bool fragile = ReadBool("Fragile (y/n): "); // is fragile
         double size = ReadDouble("Size (arbitrary units): "); // order size
         DateTime date = ReadDateTime("Order date (dd/MM/yy HH:mm:ss): "); // order date/time
-        var kind = ReadEnum<typeOfOrder>("Order kind (enum): "); // select order type
+        var kind = ReadEnum<TypeOfOrder>("Order kind (enum): "); // select order type
 
         // create new Order object
         var o = new Order(
-            orderId: 0, // DAL assigns running Id
-            orderStatus: status,
-            orderDetail: detail,
-            orderAddress: address,
-            orderLatitude: lat,
-            orderLongitude: lon,
-            orderCostumerFullName: customer,
-            orderCostumerPhone: phone,
-            orderWeight: weight,
-            fragile: fragile,
-            orderSize: size,
-            orderDate: date,
-            typeOfOrder: kind
+            OrderId: 0, // DAL assigns running Id
+            OrderStatus: status,
+            OrderDetail: detail,
+            OrderAddress: address,
+            OrderLatitude: lat,
+            OrderLongitude: lon,
+            OrderCostumerFullName: customer,
+            OrderCostumerPhone: phone,
+            OrderWeight: weight,
+            IsFragile: fragile,
+            OrderSize: size,
+            OrderDate: date,
+            TypeOfOrder: kind
         );
 
         s_dal.Order.Create(o); // save to data layer
@@ -463,20 +468,20 @@ internal class Program
         if (o == null) throw new DalDoesNotExistException($"Order with ID={id} does not exist");
 
         // read updated (optional) fields
-        string detail = ReadOptional($"Detail [{o.orderDetail}]: ", o.orderDetail);
-        string address = ReadOptional($"Address [{o.orderAddress}]: ", o.orderAddress);
-        double lat = ReadDoubleOptional($"Latitude [{o.orderLatitude}]: ", o.orderLatitude);
-        double lon = ReadDoubleOptional($"Longitude [{o.orderLongitude}]: ", o.orderLongitude);
-        string phone = ReadOptional($"Phone [{o.orderCostumerPhone}]: ", o.orderCostumerPhone);
+        string detail = ReadOptional($"Detail [{o.OrderDetail}]: ", o.OrderDetail);
+        string address = ReadOptional($"Address [{o.OrderAddress}]: ", o.OrderAddress);
+        double lat = ReadDoubleOptional($"Latitude [{o.OrderLatitude}]: ", o.OrderLatitude);
+        double lon = ReadDoubleOptional($"Longitude [{o.OrderLongitude}]: ", o.OrderLongitude);
+        string phone = ReadOptional($"Phone [{o.OrderCostumerPhone}]: ", o.OrderCostumerPhone);
 
         // create updated copy
         var updated = o with
         {
-            orderDetail = detail,
-            orderAddress = address,
-            orderLatitude = lat,
-            orderLongitude = lon,
-            orderCostumerPhone = phone
+            OrderDetail = detail,
+            OrderAddress = address,
+            OrderLatitude = lat,
+            OrderLongitude = lon,
+            OrderCostumerPhone = phone
         };
 
         s_dal.Order.Update(updated); // update in DAL
@@ -523,14 +528,14 @@ internal class Program
 
         // create new Delivery object
         var d = new Delivery(
-            deliveryId: 0, // running Id assigned by DAL
-            orderId: orderId,
-            courierId: courierId,
-            deliveryMaxDistance: deliveryMaxDistance,
-            deliveryDate: deliveryDate,
-            deliveryFinishDate: deliveryFinishDate,
-            shipmentType: shipType,
-            deliveryFinishType: finishType
+            DeliveryId: 0, // running Id assigned by DAL
+            OrderId: orderId,
+            CourierId: courierId,
+            DeliveryMaxDistance: deliveryMaxDistance,
+            DeliveryDate: deliveryDate,
+            DeliveryFinishDate: deliveryFinishDate,
+            ShipmentType: shipType,
+            DeliveryFinishType: finishType
         );
 
         s_dal.Delivery.Create(d); // save to DAL
@@ -576,12 +581,12 @@ internal class Program
         Console.WriteLine($"Current: {d}");
 
         // update basic IDs
-        int orderId = ReadIntOptional($"Order Id [{d.orderId}]: ", d.orderId);
-        int courierId = ReadIntOptional($"Courier Id [{d.courierId}]: ", d.courierId);
+        int orderId = ReadIntOptional($"Order Id [{d.OrderId}]: ", d.OrderId);
+        int courierId = ReadIntOptional($"Courier Id [{d.CourierId}]: ", d.CourierId);
 
         // update optional double
-        double? maxDist = d.deliveryMaxDistance;
-        Console.Write($"Max air distance [current={(d.deliveryMaxDistance?.ToString() ?? "null")}]. Enter=keep, '-'=null, or number: ");
+        double? maxDist = d.DeliveryMaxDistance;
+        Console.Write($"Max air distance [current={(d.DeliveryMaxDistance?.ToString() ?? "null")}]. Enter=keep, '-'=null, or number: ");
         var distIn = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(distIn))
         {
@@ -591,18 +596,18 @@ internal class Program
         }
 
         // update dates
-        Console.Write($"Pickup/Start date (dd/MM/yy HH:mm:ss) [current={d.deliveryDate:dd/MM/yy HH:mm:ss}] (Enter=keep): ");
+        Console.Write($"Pickup/Start date (dd/MM/yy HH:mm:ss) [current={d.DeliveryDate:dd/MM/yy HH:mm:ss}] (Enter=keep): ");
         var startIn = Console.ReadLine();
-        DateTime deliveryDate = d.deliveryDate;
+        DateTime deliveryDate = d.DeliveryDate;
         if (!string.IsNullOrWhiteSpace(startIn))
         {
             if (!DateTime.TryParse(startIn, out deliveryDate))
                 throw new DalInvalidDateException("Invalid start date/time.");
         }
 
-        Console.Write($"Finish date (dd/MM/yy HH:mm:ss) [current={d.deliveryFinishDate:dd/MM/yy HH:mm:ss}] (Enter=keep): ");
+        Console.Write($"Finish date (dd/MM/yy HH:mm:ss) [current={d.DeliveryFinishDate:dd/MM/yy HH:mm:ss}] (Enter=keep): ");
         var finIn = Console.ReadLine();
-        DateTime deliveryFinishDate = d.deliveryFinishDate;
+        DateTime deliveryFinishDate = d.DeliveryFinishDate;
         if (!string.IsNullOrWhiteSpace(finIn))
         {
             if (!DateTime.TryParse(finIn, out deliveryFinishDate))
@@ -610,8 +615,8 @@ internal class Program
         }
 
         // update enums
-        var shipType = d.shipmentType;
-        Console.WriteLine($"Shipment type (Enter=keep [{d.shipmentType}]): {string.Join(", ", Enum.GetNames<ShipmentType>())}");
+        var shipType = d.ShipmentType;
+        Console.WriteLine($"Shipment type (Enter=keep [{d.ShipmentType}]): {string.Join(", ", Enum.GetNames<ShipmentType>())}");
         Console.Write("> ");
         var shipIn = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(shipIn))
@@ -620,8 +625,8 @@ internal class Program
                 throw new DalInvalidShipmentTypeException("Invalid shipment type.");
         }
 
-        var finishType = d.deliveryFinishType;
-        Console.WriteLine($"Delivery finish type (Enter=keep [{d.deliveryFinishType}]): {string.Join(", ", Enum.GetNames<DeliveryFinishType>())}");
+        var finishType = d.DeliveryFinishType;
+        Console.WriteLine($"Delivery finish type (Enter=keep [{d.DeliveryFinishType}]): {string.Join(", ", Enum.GetNames<DeliveryFinishType>())}");
         Console.Write("> ");
         var finTypeIn = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(finTypeIn))
@@ -633,13 +638,13 @@ internal class Program
         // apply changes and save
         var updated = d with
         {
-            orderId = orderId,
-            courierId = courierId,
-            deliveryMaxDistance = maxDist,
-            deliveryDate = deliveryDate,
-            deliveryFinishDate = deliveryFinishDate,
-            shipmentType = shipType,
-            deliveryFinishType = finishType
+            OrderId = orderId,
+            CourierId = courierId,
+            DeliveryMaxDistance = maxDist,
+            DeliveryDate = deliveryDate,
+            DeliveryFinishDate = deliveryFinishDate,
+            ShipmentType = shipType,
+            DeliveryFinishType = finishType
         };
 
         s_dal.Delivery.Update(updated); // update in DAL

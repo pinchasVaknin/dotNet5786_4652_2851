@@ -11,8 +11,8 @@ internal class CourierImplementation : ICourier
     public void Create(Courier item)
     {
         // if already Exists.
-        if (Read(item.courierId) != null)
-            throw new DalAlreadyExistsException($"Courier with ID={item.courierId} already exists");
+        if (Read(item.CourierId) != null)
+            throw new DalAlreadyExistsException($"Courier with ID={item.CourierId} already exists");
 
         // else add this Courier.
         DataSource.Couriers.Add(item);
@@ -38,7 +38,7 @@ internal class CourierImplementation : ICourier
     {
         // if Exists courierId return.
         //return DataSource.Couriers.Find(same => same.courierId == id); //stage 1
-        return DataSource.Couriers.FirstOrDefault(item => item.courierId == id); //stage 2
+        return DataSource.Couriers.FirstOrDefault(item => item.CourierId == id); //stage 2
     }
     public Courier? Read(Func<Courier, bool> filter)
     {
@@ -51,7 +51,7 @@ internal class CourierImplementation : ICourier
     public void Update(Courier item)
     {
         // Remove the existing courier with the same ID (throws if it does not exist)
-        Delete(item.courierId);
+        Delete(item.CourierId);
 
         // Add the updated courier back to the collection (throws if the ID already exists)
         Create(item);

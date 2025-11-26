@@ -1,16 +1,16 @@
 ﻿namespace DO;
 public record Courier
 (
-    int courierId,
-    string courierFullName,
-    string courierCellPhone,
-    string courierEmail,
-    string courierPassword,
-    string courierAddress, // Address from which the courier starts work
-    bool courierEnabled,
-    double? maxCourierDistance,
-    DateTime? seniorityOfCourier,
-    courierVehicleType courierVehicleType
+    int CourierId,
+    string CourierFullName,
+    string CourierCellPhone,
+    string CourierEmail,
+    string CourierPassword,
+    string CourierAddress, // Address from which the courier starts work
+    bool CourierEnabled,
+    double? MaxCourierDistance,
+    DateTime? SeniorityOfCourier,
+    CourierVehicleType CourierVehicleType
 )
 {
     public Courier() : this(
@@ -23,7 +23,7 @@ public record Courier
         false,
         null,
         null,
-        courierVehicleType.Car   // default
+        CourierVehicleType.Car   // default
     )
     { }
 }

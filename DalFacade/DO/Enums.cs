@@ -1,6 +1,6 @@
 ﻿namespace DO;
 
-public enum courierVehicleType
+public enum CourierVehicleType
 {
     Car,
     Motorcycle, 
@@ -21,7 +21,7 @@ public enum DeliveryFinishType
     Failed,
     Returned
 }
-public enum typeOfOrder
+public enum TypeOfOrder
 {
     Smartphone,
     Laptop,

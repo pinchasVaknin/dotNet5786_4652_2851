@@ -13,7 +13,7 @@ internal class OrderImplementation : IOrder
         int newId = Config.NextOrderId;
 
         // Create a copy of the object with the new ID
-        Order copy = item with { orderId = newId };
+        Order copy = item with { OrderId = newId };
 
         // Add the copy to the data source
         DataSource.Orders.Add(copy);
@@ -39,7 +39,7 @@ internal class OrderImplementation : IOrder
     {
         // Return the first order with the given ID (or null if not found)
         //return DataSource.Orders.Find(same => same.orderId == id); //stage 1
-        return DataSource.Orders.FirstOrDefault(item => item.orderId == id); //stage 2
+        return DataSource.Orders.FirstOrDefault(item => item.OrderId == id); //stage 2
     }
     public Order? Read(Func<Order, bool> filter)
     {
@@ -51,13 +51,13 @@ internal class OrderImplementation : IOrder
             : DataSource.Orders.Where(filter);
     public void Update(Order item)
     {
-        int newId = item.orderId;
+        int newId = item.OrderId;
         // Remove the existing Order with the same ID (throws if it does not exist)
-        Delete(item.orderId);
+        Delete(item.OrderId);
 
         // Add the updated Order back to the collection (throws if the ID already exists)
         // Create a copy of the object with the new ID
-        Order copy = item with { orderId = newId };
+        Order copy = item with { OrderId = newId };
 
         // Add the copy to the data source
         DataSource.Orders.Add(copy);
