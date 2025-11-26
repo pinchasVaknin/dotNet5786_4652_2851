@@ -29,6 +29,6 @@ public class Order
     public ScheduleStatus ScheduleStatus { get; init; }
     public TimeSpan TimeRemaining { get; init; }
 
-    public List<DeliveryPerOrderInList>? deliveryPerOrderInList { get; set; }
+    public List<DeliveryPerOrderInList>? deliveryPerOrderInList { get; init; }
 
 }
