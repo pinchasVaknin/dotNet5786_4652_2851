@@ -34,4 +34,12 @@ public enum CourierVehicleType
     Foot
 }
 
+public enum ShipmentType
+{
+    Express,
+    SameDay,
+    Standard,
+    Economy
+}
+
 
