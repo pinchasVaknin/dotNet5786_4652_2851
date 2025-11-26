@@ -17,8 +17,8 @@ public class Order
     public double OrderLatitude { get; set; }
     public double OrderLongitude { get; set; }
     public double AirDistance { get; set; }
-    public string OrderCostumerFullName { get; set; }
-    public string OrderCostumerPhone { get; set; }
+    public string CostumerFullName { get; set; }
+    public string CostumerPhone { get; set; }
     public double OrderWeight { get; set; }
     public bool IsFragile { get; set; }
     public double OrderSize { get; set; }
