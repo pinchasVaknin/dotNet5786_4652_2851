@@ -26,14 +26,13 @@ public enum TypeOfOrder
     GamingConsole,
     Accessory
 }
-public enum CourierVehicleType
+public enum VehicleType
 {
     Car,
     Motorcycle,
     Bicycle,
     Foot
 }
-
 public enum ShipmentType
 {
     Express,
@@ -41,5 +40,11 @@ public enum ShipmentType
     Standard,
     Economy
 }
-
+public enum DeliveryFinishType
+{
+    Completed,
+    Cancelled,
+    Failed,
+    Returned
+}
 

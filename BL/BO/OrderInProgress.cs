@@ -1,6 +1,14 @@
 ﻿namespace BO;
 
-internal class OrderInProgress
+/// <summary>
+/// Represents an order that is currently in progress, including details about delivery, customer, and timing.
+/// </summary>
+/// <remarks>
+/// This class provides information about an ongoing order, such as delivery identifiers, customer
+/// details,  and timing metrics. It is used to track the status and progress of an order from the time it is opened 
+/// until it is delivered.
+/// </remarks>
+public class OrderInProgress
 {
     public int DeliveryId { get; init; }
     public int OrderId { get; init; }

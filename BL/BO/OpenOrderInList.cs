@@ -8,7 +8,7 @@
 /// processed. It includes information necessary for scheduling and delivery, such as courier assignment, order
 /// dimensions, and delivery time constraints.
 /// </remarks>
-internal class OpenOrderInList
+public class OpenOrderInList
 {
     public int? CourierId { get; init; }
     public int OrderId { get; init; }

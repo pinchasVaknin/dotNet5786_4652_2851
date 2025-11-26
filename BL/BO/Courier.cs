@@ -1,6 +1,14 @@
 ﻿namespace BO;
 
-internal class Courier
+/// <summary>
+/// Represents a courier responsible for delivering orders.
+/// </summary>
+/// <remarks>
+/// The <see cref="Courier"/> class contains information about a courier, including their contact
+/// details, status, and delivery performance metrics. It is used to manage and track couriers within the delivery
+/// system.
+/// </remarks>
+public class Courier
 {
     public int CourierId { get; init; }
     public string CourierFullName { get; set; }
@@ -12,7 +20,7 @@ internal class Courier
     public bool CourierIsActive { get; set; }
 
     public double? MaxCourierDistance { get; set; }
-    public CourierVehicleType CourierVehicleType { get; set; }
+    public VehicleType VehicleType { get; set; }
 
     public DateTime? StartWorkDate { get; init; }
 
