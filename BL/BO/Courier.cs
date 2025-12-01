@@ -18,6 +18,7 @@ public class Courier
     public string CourierPassword { get; set; }
 
     public bool CourierIsActive { get; set; }
+    public string CourierLocation { get; set; }
 
     public double? MaxCourierDistance { get; set; }
     public VehicleType VehicleType { get; set; }

@@ -19,7 +19,8 @@ public enum DeliveryFinishType
     Completed,
     Cancelled,
     Failed,
-    Returned
+    Returned,
+    None
 }
 public enum TypeOfOrder
 {
