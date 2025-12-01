@@ -1,13 +1,52 @@
 ﻿namespace Helpers;
 
+using DalApi;
+using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DalApi;
 
 internal static class CourierManager
 {
     private static IDal s_dal = Factory.Get;
+
+    /// <summary>
+    /// Saves the specified courier to the data store.
+    /// </summary>
+    /// <remarks>If the <paramref name="courier"/> has an ID of 0, a new courier record is created. Otherwise,
+    /// the existing courier record is updated.</remarks>
+    /// <param name="courier">The courier object to be saved. Must not be null.</param>
+    /// <exception cref="Exception">Thrown if the operation fails to save the courier.</exception>
+    internal static void SaveCourier(BO.Courier courier) // create or update courier
+    {
+        try
+        {
+            // Map the business object courier to a data object courier
+            DO.Courier doCourier = ConvertBoToDoCourier(courier);
+
+            // Create or update the courier in the data access layer
+            if (courier.CourierId == 0)
+                s_dal.Courier.Create(doCourier);
+            else
+                s_dal.Courier.Update(doCourier);
+        }
+        catch (DalAlreadyExistsException ex)
+        {
+            // Wrap and rethrow any exceptions that occur during the save operation
+            throw new Exception("Failed to save courier", ex);
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            // Wrap and rethrow any exceptions that occur during the save operation
+            throw new Exception("Failed to save courier", ex);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            // Wrap and rethrow any exceptions that occur during the save operation
+            throw new Exception("Failed to save courier", ex);
+        }
+
+    }
 
     /// <summary>
     /// Retrieves a courier by its unique identifier.
@@ -24,7 +63,7 @@ internal static class CourierManager
                 ?? throw new Exception($"Courier with ID={id} does not exist");
 
             // Build and return the business object representation of the courier
-            return BuildCourier(doCourier);
+            return ConvertDoToBoCourier(doCourier);
         }
         catch (Exception ex)
         {
@@ -93,38 +132,52 @@ internal static class CourierManager
 
             return query.ToList();
         }
-        catch (Exception ex)
+        catch (DalXMLFileLoadCreateException ex)
         {
             throw new Exception("Failed to load couriers list (query syntax)", ex);
         }
     }
 
     /// <summary>
-    /// Saves the specified courier to the data store.
+    /// Deletes a courier by its ID.
     /// </summary>
-    /// <remarks>If the <paramref name="courier"/> has an ID of 0, a new courier record is created. Otherwise,
-    /// the existing courier record is updated.</remarks>
-    /// <param name="courier">The courier object to be saved. Must not be null.</param>
-    /// <exception cref="Exception">Thrown if the operation fails to save the courier.</exception>
-    internal static void SaveCourier(BO.Courier courier)
+    /// <param name="id">The ID of the courier to delete.</param>
+    /// <exception cref="Exception">
+    /// Thrown if the courier does not exist, has an active delivery,
+    /// or if a data-access error occurs.
+    /// </exception>
+    internal static void DeleteCourier(int id)
     {
         try
         {
-            // Map the business object courier to a data object courier
-            DO.Courier doCourier = BoToDoCourier(courier);
+            // Check that courier exists
+            DO.Courier? doCourier = s_dal.Courier.Read(id)
+                ?? throw new Exception($"Courier with ID={id} does not exist");
 
-            // Create or update the courier in the data access layer
-            if (courier.CourierId == 0)
-                s_dal.Courier.Create(doCourier);
-            else
-                s_dal.Courier.Update(doCourier);
+            // Check if courier has an active delivery
+            bool hasActiveDelivery = s_dal.Delivery
+                .ReadAll(d => d.CourierId == id)
+                .Any(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
+
+            if (hasActiveDelivery)
+                throw new Exception($"Cannot delete courier {id}: courier has an active delivery.");
+
+            // Perform deletion
+            s_dal.Courier.Delete(id);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new Exception("Failed to delete courier", ex);
         }
         catch (Exception ex)
         {
-            // Wrap and rethrow any exceptions that occur during the save operation
-            throw new Exception("Failed to save courier", ex);
+            throw new Exception("Failed to delete courier", ex);
         }
+        
     }
+
+
+    //-------------- Private Convert Methods ----------------\\
 
     /// <summary>
     /// Constructs a business object representation of a courier from the data object representation.
@@ -136,7 +189,7 @@ internal static class CourierManager
     /// <returns>A business object <see cref="BO.Courier"/> that includes the courier's details, delivery statistics, and any
     /// active order in progress.</returns>
     /// <exception cref="Exception">Thrown if an active order associated with the courier cannot be found.</exception>
-    private static BO.Courier BuildCourier(DO.Courier doCourier)
+    private static BO.Courier ConvertDoToBoCourier(DO.Courier doCourier) // build BO.Courier from DO.Courier
     {
         // Retrieve all deliveries associated with the courier
         var deliveries = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.CourierId);
@@ -150,15 +203,13 @@ internal static class CourierManager
         var maxRange = s_dal.Config.MaxDelTimeRnge;
 
         // Calculate on-time and late deliveries
-        int onTime = completedDeliveries
-            .Count(d => d.DeliveryFinishDate - d.DeliveryDate <= maxRange);
+        int onTime = completedDeliveries.Count(d => d.DeliveryFinishDate - d.DeliveryDate <= maxRange);
 
         // Calculate late deliveries
         int late = completedDeliveries.Count - onTime;
 
         // Find the active delivery (if any)
-        var activeDelivery = deliveries
-            .FirstOrDefault(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
+        var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
 
         // Build the order in progress if there is an active delivery
         BO.OrderInProgress? orderInProgress = null;
@@ -195,55 +246,11 @@ internal static class CourierManager
     }
 
     /// <summary>
-    /// Constructs a <see cref="BO.CourierInList"/> object from a given <see cref="DO.Courier"/> instance.
-    /// </summary>
-    /// <remarks>The method calculates the number of deliveries completed within the allowed time range and
-    /// those completed over time. It also determines the current order being handled by the courier, if any.</remarks>
-    /// <param name="doCourier">The data object representing the courier from which to build the list entry.</param>
-    /// <returns>A <see cref="BO.CourierInList"/> object containing the courier's details and delivery statistics.</returns>
-    private static BO.CourierInList BuildCourierInList(DO.Courier doCourier)
-    {
-        // Retrieve all deliveries associated with the courier
-        var deliveries = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.CourierId);
-
-        // Maximum allowed delivery time range from configuration
-        var maxDelRange = s_dal.Config.MaxDelTimeRnge;
-
-        // Filter completed deliveries
-        var completed = deliveries.Where(d => d.DeliveryFinishType == DO.DeliveryFinishType.Completed);
-
-        // Calculate on-time deliveries
-        int inTime = completed.Count(d => d.DeliveryFinishDate - d.DeliveryDate <= maxDelRange);
-
-        // Calculate late deliveries
-        int overTime = completed.Count() - inTime;
-
-        // Find the current order being handled (if any)
-        int orderInHandle = deliveries
-            .Where(d => d.DeliveryFinishType == DO.DeliveryFinishType.None)
-            .Select(d => d.OrderId)
-            .FirstOrDefault();
-
-        // Build and return the CourierInList object
-        return new BO.CourierInList
-        {
-            CourierId = doCourier.CourierId,
-            CourierFullName = doCourier.CourierFullName,
-            CourierIsActive = doCourier.CourierEnabled,
-            VehicleType = (BO.VehicleType)doCourier.CourierVehicleType,
-            StartWorkDate = doCourier.SeniorityOfCourier,
-            DeliveriesInTime = inTime,
-            DeliveriesOverTime = overTime,
-            OrderIdInHandle = orderInHandle
-        };
-    }
-
-    /// <summary>
     /// Maps a business object courier to a data object courier.
     /// </summary>
     /// <param name="boCourier">The business object courier.</param>
     /// <returns>The corresponding data object courier.</returns>
-    private static DO.Courier BoToDoCourier(BO.Courier boCourier) =>
+    private static DO.Courier ConvertBoToDoCourier(BO.Courier boCourier) =>
         new DO.Courier(
             CourierId: boCourier.CourierId, // 0 for new courier
             CourierFullName: boCourier.CourierFullName,
