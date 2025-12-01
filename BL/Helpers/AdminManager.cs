@@ -75,24 +75,98 @@ internal static class AdminManager //stage 4
     /// Method for setting current configuration variables values for any BL class that may need it
     /// </summary>
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
-    internal static void SetConfig(BO.Config configuration) //stage 4
+    internal static void SetConfig(Config configuration) //stage 4
     {
         bool configChanged = false; // stage 5
 
-        if (s_dal.Config.MaxRange != configuration.MaxRange) //stage 4
+        if (s_dal.Config.Clock != configuration.Clock) //stage 4
         {
-            s_dal.Config.MaxRange = configuration.MaxRange;
+            s_dal.Config.Clock = configuration.Clock;
             configChanged = true;
         }
-        //TO_DO: //stage 4
-        //add a condition+assignment for each configuration property
-        //...
+
+        if (s_dal.Config.AdminId != configuration.AdminId) //stage 4
+        {
+            s_dal.Config.AdminId = configuration.AdminId;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.AdminPassword != configuration.AdminPassword) //stage 4
+        {
+            s_dal.Config.AdminPassword = configuration.AdminPassword;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.CompanyAdress != configuration.CompanyAdress) //stage 4
+        {
+            s_dal.Config.CompanyAdress = configuration.CompanyAdress;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.Latitude != configuration.Latitude) //stage 4
+        {
+            s_dal.Config.Latitude = configuration.Latitude;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.Longitude != configuration.Longitude) //stage 4
+        {
+            s_dal.Config.Longitude = configuration.Longitude;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.MaxAirDistance != configuration.MaxAirDistance) //stage 4
+        {
+            s_dal.Config.MaxAirDistance = configuration.MaxAirDistance;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.AvgCarSpeed != configuration.AvgCarSpeed) //stage 4
+        {
+            s_dal.Config.AvgCarSpeed = configuration.AvgCarSpeed;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.AvgMotorcycleSpeed != configuration.AvgMotorcycleSpeed) //stage 4
+        {
+            s_dal.Config.AvgMotorcycleSpeed = configuration.AvgMotorcycleSpeed;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.AvgBicyleSpeed != configuration.AvgBicyleSpeed) //stage 4
+        {
+            s_dal.Config.AvgBicyleSpeed = configuration.AvgBicyleSpeed;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.AvgWalkSpeed != configuration.AvgWalkSpeed) //stage 4
+        {
+            s_dal.Config.AvgWalkSpeed = configuration.AvgWalkSpeed;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.MaxDelTimeRnge != configuration.MaxDelTimeRnge) //stage 4
+        {
+            s_dal.Config.MaxDelTimeRnge = configuration.MaxDelTimeRnge;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.RiskTimeRnge != configuration.RiskTimeRnge) //stage 4
+        {
+            s_dal.Config.RiskTimeRnge = configuration.RiskTimeRnge;
+            configChanged = true;
+        }
+
+        if (s_dal.Config.UnactiveTimeRnge != configuration.UnactiveTimeRnge) //stage 4
+        {
+            s_dal.Config.UnactiveTimeRnge = configuration.UnactiveTimeRnge;
+            configChanged = true;
+        }
 
         //Calling all the observers of configuration update
         if (configChanged) // stage 5
             ConfigUpdatedObservers?.Invoke(); // stage 5
     }
-
     internal static void ResetDB() //stage 4-7
     {
         lock (BlMutex) //stage 7
