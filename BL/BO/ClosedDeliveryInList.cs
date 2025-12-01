@@ -17,8 +17,8 @@ public class ClosedDeliveryInList
     public string OrderAddress { get; init; }
 
     public ShipmentType ShipmentType { get; init; }
-    public double? AcctualDistance { get; init; }
-    public DateTime TotalHandleTime { get; init; }
+    public double? ActualDistance { get; init; }
+    public TimeSpan TotalHandleTime { get; init; }
     public DeliveryFinishType? DeliveryFinishType { get; init; }
 
 }
