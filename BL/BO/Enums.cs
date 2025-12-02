@@ -15,17 +15,6 @@ public enum OrderStatus
 }
 
 /// <summary>
-/// Represents the timing status of an order or delivery
-/// relative to its required time window.
-/// </summary>
-public enum ScheduleStatus
-{
-    OnTime,
-    InRisk,
-    Late
-}
-
-/// <summary>
 /// Represents the type/category of the ordered product.
 /// </summary>
 public enum TypeOfOrder
@@ -122,6 +111,17 @@ public enum TimeUnit
 
 
 //------------ For BL IOrder ------------\\
+
+/// <summary>
+/// Represents the timing status of an order or delivery
+/// relative to its required time window.
+/// </summary>
+public enum ScheduleStatus
+{
+    OnTime,
+    InRisk,
+    Late
+}
 
 /// <summary>
 /// Fields that can be used to filter the order list (BO.OrderInList).

@@ -12,7 +12,7 @@ internal static class OrderManager
 {
     private static IDal s_dal = Factory.Get;
 
-    internal static void SaveOrder(BO.Order Order)
+    internal static void SaveOrder(BO.Order Order) // create or update Order
     {
         try
         {
@@ -68,6 +68,7 @@ internal static class OrderManager
         {
             // Maximum allowed delivery time range from configuration
             var maxRange = s_dal.Config.MaxDelTimeRnge;
+            var maxRangeWithoutRisk = maxRange - s_dal.Config.RiskTimeRnge;
 
             var allOrders = s_dal.Order.ReadAll();
             var allDeliveries = s_dal.Delivery.ReadAll();
@@ -84,7 +85,7 @@ internal static class OrderManager
                     Tools.DistanceKm(o.OrderLatitude, o.OrderLongitude, 31.7479, 35.188)
 
                 let OrderStatus =
-                    o.OrderDate < lastDelivery.DeliveryDate ? BO.OrderStatus.Open :
+                    lastDelivery is null ? BO.OrderStatus.Open :
                     lastDelivery.DeliveryDate < lastDelivery.DeliveryFinishDate ?
                         BO.OrderStatus.InProgress :
                     lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Completed ?
@@ -92,17 +93,29 @@ internal static class OrderManager
                     lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Cancelled ?
                         BO.OrderStatus.Canceled :
                     BO.OrderStatus.Refused
+                    
+                let handleTime =
+                    (lastDelivery is null) ?
+                    s_dal.Config.Clock - o.OrderDate :
+                    lastDelivery.DeliveryFinishDate - o.OrderDate
+
+                let ScheduleStatus =
+                    handleTime <= maxRangeWithoutRisk ?
+                        BO.ScheduleStatus.OnTime :
+                    handleTime <= maxRange ?
+                        BO.ScheduleStatus.InRisk :
+                    BO.ScheduleStatus.Late
 
                 let TimeLeftToFinish = 
                         lastDelivery is null || (lastDelivery.DeliveryDate + maxRange) < s_dal.Config.Clock ?
                             TimeSpan.Zero :
                         (lastDelivery.DeliveryDate + maxRange) - s_dal.Config.Clock
 
-
-                let TotalHandleTime = 
+                let TotalHandleTime =
                     (from del in deliveriesGroup
                      where del.DeliveryFinishType == DO.DeliveryFinishType.Completed
-                     select (del.DeliveryFinishDate - o.OrderDate).TotalMinutes).Sum()
+                     select del.DeliveryFinishDate - o.OrderDate)
+                        .Aggregate(TimeSpan.Zero, (acc, span) => acc + span)
 
                 let TotalDeliveries =
                     deliveriesGroup.Count()
@@ -114,12 +127,12 @@ internal static class OrderManager
                     TypeOfOrder = (BO.TypeOfOrder)o.TypeOfOrder,
                     AirDistance = AirDistance,
                     OrderStatus = OrderStatus,
-                    ScheduleStatus = (BO.ScheduleStatus)o.ScheduleStatus,
+                    ScheduleStatus = ScheduleStatus,
                     TimeLeftToFinish = TimeLeftToFinish,
                     TotalHandleTime = TotalHandleTime,
                     TotalDeliveries = TotalDeliveries
                 };
-
+            return query.ToList();
         }
         catch (DalXMLFileLoadCreateException ex)
         {
@@ -127,9 +140,67 @@ internal static class OrderManager
         }
     }
 
+    internal static void DeleteOrders(int id)
+    {
+        try
+        {
+            // Check that order exists
+            DO.Order? doOrder = s_dal.Order.Read(id)
+                ?? throw new Exception($"Order with ID={id} does not exist");
 
+            // Check if order has an active delivery
+            bool hasActiveDelivery = s_dal.Delivery
+                .ReadAll(d => d.OrderId == id)
+                .Any(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
 
+            if (hasActiveDelivery)
+                throw new Exception($"Cannot delete order {id}: courier is on way with delivery.");
 
+            // Perform deletion
+            s_dal.Order.Delete(id);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new Exception("Failed to delete order", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to delete order", ex);
+        }
+
+    }
+
+    //-------------- Private Convert Methods ----------------\\
+
+    private static BO.Order ConvertDoToBoOrder(DO.Order doOrder) // build BO.Order from DO.Order
+    {
+        
+
+        return new BO.Order
+        {
+            OrderId = doOrder.OrderId,
+            OrderFullName = doOrder.OrderFullName,
+            OrderCellPhone = doOrder.OrderCellPhone,
+            OrderEmail = doOrder.OrderEmail,
+            OrderPassword = doOrder.OrderPassword,
+
+            OrderIsActive = doOrder.OrderEnabled,
+            MaxOrderDistance = doOrder.MaxOrderDistance,
+            VehicleType = (BO.VehicleType)doOrder.OrderVehicleType,
+
+            StartWorkDate = doOrder.SeniorityOfOrder,
+
+            TotalOnTimeDeliveries = onTime,
+            TotalLateDeliveries = late,
+
+            OrderInProgress = orderInProgress
+        };
+    }
+
+    private static DO.Order ConvertBoToDoOrder(BO.Order boOrder) =>
+        new DO.Order(
+            OrderId: boOrder.OrderId // 0 for new Order
+        );
 
 
 }

@@ -1,4 +1,6 @@
-﻿namespace Helpers;
+﻿using DalApi;
+
+namespace Helpers;
 
 internal static class Tools
 {
@@ -33,5 +35,7 @@ internal static class Tools
     // Converts degrees to radians
     private static double DegreesToRadians(double degrees) =>
         degrees * Math.PI / 180.0;
+
+    
 }
 
