@@ -19,7 +19,9 @@ internal static class OrderManager
             DO.Order doOrder = ConvertBoToDoOrder(Order);
 
             // Create or update the Order in the data access layer
-            if (Order.OrderId == 0)
+            var existing = s_dal.Order.Read(c => c.OrderId == Order.OrderId);
+
+            if (existing is null)
                 s_dal.Order.Create(doOrder);
             else
                 s_dal.Order.Update(doOrder);
@@ -69,10 +71,15 @@ internal static class OrderManager
             var query =
                 from o in allOrders
                 join d in allDeliveries 
-                    on o.OrderId equals d.OrderId into ordersdGroup
-
-                let ExpectedDeliveryTime // מיקום שליח מיקום הזמנה 
-
+                    on o.OrderId equals d.OrderId into delivery
+ 
+                let AirDistance = DistanceKm(DO.Order.OrderLatitude, DO.Order.OrderLongitude, DO.Courier.)
+                //double ,
+    double 
+                from d
+                //TimeLeftToFinish
+                //TotalHandleTime
+                //TotalDeliveries
 
 
 
