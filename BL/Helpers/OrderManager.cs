@@ -66,65 +66,59 @@ internal static class OrderManager
     {
         try
         {
+            // Maximum allowed delivery time range from configuration
+            var maxRange = s_dal.Config.MaxDelTimeRnge;
+
             var allOrders = s_dal.Order.ReadAll();
             var allDeliveries = s_dal.Delivery.ReadAll();
 
             var query =
                 from o in allOrders
                 join d in allDeliveries
-                    on o.OrderId equals d.OrderId into delivery
+                    on o.OrderId equals d.OrderId into deliveriesGroup
 
-                let AirDistance = DistanceKm(o.OrderLatitude, o.OrderLongitude, 31.7479, 35.188)
+                let lastDelivery =
+                    deliveriesGroup.OrderByDescending(del => del.DeliveryDate).FirstOrDefault()
 
-                let OrderStatus = o.OrderDate < d.DeliveryDate ?
-                                    BO.OrderStatus.Open :
-                                    d.DeliveryDate < d.DeliveryFinishDate ?
-                                        BO.OrderStatus.InProgress :
-                                        d.DeliveryFinishType == DO.DeliveryFinishType.Completed ?
-                                            BO.OrderStatus.Supplied :
-                                            d.DeliveryFinishType == DO.DeliveryFinishType.Cancelled ?
-                                                BO.OrderStatus.Canceled :
-                                                BO.OrderStatus.Refused
+                let AirDistance =
+                    Tools.DistanceKm(o.OrderLatitude, o.OrderLongitude, 31.7479, 35.188)
 
+                let OrderStatus =
+                    o.OrderDate < lastDelivery.DeliveryDate ? BO.OrderStatus.Open :
+                    lastDelivery.DeliveryDate < lastDelivery.DeliveryFinishDate ?
+                        BO.OrderStatus.InProgress :
+                    lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Completed ?
+                        BO.OrderStatus.Supplied :
+                    lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Cancelled ?
+                        BO.OrderStatus.Canceled :
+                    BO.OrderStatus.Refused
 
-
-
-
-
-                // Open,
-                //InProgress,
-                //Supplied,
-                //Refused,
-                //Canceled
-
-                let TimeLeftToFinish =
+                let TimeLeftToFinish = 
+                        lastDelivery is null || (lastDelivery.DeliveryDate + maxRange) < s_dal.Config.Clock ?
+                            TimeSpan.Zero :
+                        (lastDelivery.DeliveryDate + maxRange) - s_dal.Config.Clock
 
 
-                let TotalHandleTime =
+                let TotalHandleTime = 
+                    (from del in deliveriesGroup
+                     where del.DeliveryFinishType == DO.DeliveryFinishType.Completed
+                     select (del.DeliveryFinishDate - o.OrderDate).TotalMinutes).Sum()
 
                 let TotalDeliveries =
-
-
-
-
-
-
-
+                    deliveriesGroup.Count()
 
                 select new BO.OrderInList
                 {
-                    DeliveryId = ordersdGroup.FirstOrDefault()?.DeliveryId,
+                    DeliveryId = lastDelivery?.DeliveryId,
                     OrderId = o.OrderId,
                     TypeOfOrder = (BO.TypeOfOrder)o.TypeOfOrder,
-                    AirDistance = o.AirDistance,
-                    OrderStatus = (BO.OrderStatus)o.OrderStatus,
+                    AirDistance = AirDistance,
+                    OrderStatus = OrderStatus,
                     ScheduleStatus = (BO.ScheduleStatus)o.ScheduleStatus,
-                    TimeLeftToFinish = o.EstimatedTimeToFinish.HasValue ? TimeSpan.FromMinutes(o.EstimatedTimeToFinish.Value) : TimeSpan.Zero,
-                    TotalHandleTime = TimeSpan.FromMinutes(o.TotalHandleTime),
-                    TotalDeliveries = o.TotalDeliveries
+                    TimeLeftToFinish = TimeLeftToFinish,
+                    TotalHandleTime = TotalHandleTime,
+                    TotalDeliveries = TotalDeliveries
                 };
-
-
 
         }
         catch (DalXMLFileLoadCreateException ex)
