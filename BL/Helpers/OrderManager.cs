@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 internal static class OrderManager
 {
     private static IDal s_dal = Factory.Get;
@@ -70,16 +71,38 @@ internal static class OrderManager
 
             var query =
                 from o in allOrders
-                join d in allDeliveries 
+                join d in allDeliveries
                     on o.OrderId equals d.OrderId into delivery
- 
-                let AirDistance = DistanceKm(DO.Order.OrderLatitude, DO.Order.OrderLongitude, DO.Courier.)
-                //double ,
-    double 
-                from d
-                //TimeLeftToFinish
-                //TotalHandleTime
-                //TotalDeliveries
+
+                let AirDistance = DistanceKm(o.OrderLatitude, o.OrderLongitude, 31.7479, 35.188)
+
+                let OrderStatus = o.OrderDate < d.DeliveryDate ?
+                                    BO.OrderStatus.Open :
+                                    d.DeliveryDate < d.DeliveryFinishDate ?
+                                        BO.OrderStatus.InProgress :
+                                        d.DeliveryFinishType == DO.DeliveryFinishType.Completed ?
+                                            BO.OrderStatus.Supplied :
+                                            d.DeliveryFinishType == DO.DeliveryFinishType.Cancelled ?
+                                                BO.OrderStatus.Canceled :
+                                                BO.OrderStatus.Refused
+
+
+
+
+
+
+                // Open,
+                //InProgress,
+                //Supplied,
+                //Refused,
+                //Canceled
+
+                let TimeLeftToFinish =
+
+
+                let TotalHandleTime =
+
+                let TotalDeliveries =
 
 
 
