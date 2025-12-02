@@ -5,6 +5,7 @@ using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 
 internal static class CourierManager
 {
@@ -25,7 +26,9 @@ internal static class CourierManager
             DO.Courier doCourier = ConvertBoToDoCourier(courier);
 
             // Create or update the courier in the data access layer
-            if (courier.CourierId == 0)
+            var existing = s_dal.Courier.Read(c => c.CourierId == courier.CourierId);
+
+            if (existing is null)
                 s_dal.Courier.Create(doCourier);
             else
                 s_dal.Courier.Update(doCourier);
