@@ -166,8 +166,21 @@ internal static class OrderManager
 
     internal static IEnumerable<BO.Order>? OrderInProgress()
     {
+        try
+        {
+            return s_dal.Order
+                .ReadAll(o => o.OrderStatus == BO.OrderStatus.InProgress.ToString())
+                .Select(ConvertDoToBoOrder)
+                .ToList();
+
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new Exception("Failed to delete order", ex);
+        }
 
     }
+
     internal static IEnumerable<BO.Order>? OpenOrderInlist()
     {
 
