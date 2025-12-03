@@ -168,9 +168,19 @@ internal static class OrderManager
     {
 
     }
-    internal static IEnumerable<BO.Order>? OpenOrderInlist()
+    internal static IEnumerable<BO.Order> BuildOpenOrderInlist()
     {
-
+        try
+        {
+            return s_dal.Order
+                .ReadAll(o => o.OrderStatus == BO.OrderStatus.Open.ToString())
+                .Select(ConvertDoToBoOrder)
+                .ToList();
+        }
+        catch (DalXMLFileLoadCreateException ex)
+        {
+            throw new Exception("Failed to load open orders list", ex);
+        }
     }
 
 
