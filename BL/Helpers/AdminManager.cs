@@ -64,7 +64,7 @@ internal static class AdminManager //stage 4
         MaxAirDistance = s_dal.Config.MaxAirDistance,
         AvgCarSpeed = s_dal.Config.AvgCarSpeed,
         AvgMotorcycleSpeed = s_dal.Config.AvgMotorcycleSpeed,
-        AvgBicycleSpeed = s_dal.Config.AvgBicylceSpeed,
+        AvgBicycleSpeed = s_dal.Config.AvgBicycleSpeed,
         AvgWalkSpeed = s_dal.Config.AvgWalkSpeed,
         MaxDelTimeRnge = s_dal.Config.MaxDelTimeRnge,
         RiskTimeRnge = s_dal.Config.RiskTimeRnge,
@@ -133,9 +133,9 @@ internal static class AdminManager //stage 4
             configChanged = true;
         }
 
-        if (s_dal.Config.AvgBicylceSpeed != configuration.AvgBicycleSpeed) //stage 4
+        if (s_dal.Config.AvgBicycleSpeed != configuration.AvgBicycleSpeed) //stage 4
         {
-            s_dal.Config.AvgBicylceSpeed = configuration.AvgBicycleSpeed;
+            s_dal.Config.AvgBicycleSpeed = configuration.AvgBicycleSpeed;
             configChanged = true;
         }
 

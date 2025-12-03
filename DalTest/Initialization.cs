@@ -414,7 +414,7 @@ public static class Initialization
         // Average speeds (km/h)
         s_dal.Config.AvgCarSpeed = 35.0;         // Car average
         s_dal.Config.AvgMotorcycleSpeed = 40.0;  // Motorcycle average
-        s_dal.Config.AvgBicylceSpeed = 15.0;      // Bicyle average
+        s_dal.Config.AvgBicycleSpeed = 15.0;      // Bicyle average
         s_dal.Config.AvgWalkSpeed = 5.0;         // Walk average
 
         // Time policy ranges

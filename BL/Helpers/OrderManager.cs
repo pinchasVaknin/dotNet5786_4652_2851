@@ -249,7 +249,7 @@ internal static class OrderManager
                     courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Motorcycle ?
                         TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgMotorcycleSpeed) :
                     courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Bicycle ?
-                        TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgBicylceSpeed) :
+                        TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgBicycleSpeed) :
                     TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgWalkSpeed)
 
 
@@ -326,7 +326,7 @@ internal static class OrderManager
             {
                 DO.CourierVehicleType.Car => s_dal.Config.AvgCarSpeed,
                 DO.CourierVehicleType.Motorcycle => s_dal.Config.AvgMotorcycleSpeed,
-                DO.CourierVehicleType.Bicycle => s_dal.Config.AvgBicylceSpeed,
+                DO.CourierVehicleType.Bicycle => s_dal.Config.AvgBicycleSpeed,
                 DO.CourierVehicleType.Foot => s_dal.Config.AvgWalkSpeed,
                 _ => s_dal.Config.AvgWalkSpeed
             };

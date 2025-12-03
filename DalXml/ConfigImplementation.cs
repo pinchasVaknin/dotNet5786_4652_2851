@@ -92,7 +92,7 @@ internal class ConfigImplementation : IConfig
     /// <summary>
     /// Gets or sets the average bicycle speed used for time and delivery calculations.
     /// </summary>
-    public double AvgBicylceSpeed
+    public double AvgBicycleSpeed
     {
         get => Config.AvgBicycleSpeed;
         set => Config.AvgBicycleSpeed = value;
