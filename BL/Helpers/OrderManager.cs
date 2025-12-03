@@ -85,8 +85,9 @@ internal static class OrderManager
                     Tools.DistanceKm(o.OrderLatitude, o.OrderLongitude, 31.7479, 35.188)
 
                 let OrderStatus =
-                    lastDelivery is null ? BO.OrderStatus.Open :
-                    lastDelivery.DeliveryDate < lastDelivery.DeliveryFinishDate ?
+                    lastDelivery is null ?
+                        BO.OrderStatus.Open :
+                    lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.None ?
                         BO.OrderStatus.InProgress :
                     lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Completed ?
                         BO.OrderStatus.Supplied :
@@ -179,7 +180,7 @@ internal static class OrderManager
             var maxRange = s_dal.Config.MaxDelTimeRnge;
             var maxRangeWithoutRisk = maxRange - s_dal.Config.RiskTimeRnge;
 
-            var scheduleStatus = Tools.CalcScheduleStatus(doOrder.OrderDate, s_dal.Config.Clock, activeDelivery.DeliveryFinishDate,
+            var scheduleStatus = Tools.CalcScheduleStatus(doOrder.OrderDate, s_dal.Config.Clock, null,
                                                             maxRangeWithoutRisk, maxRange);
 
             TimeSpan timeLeftToFinish =

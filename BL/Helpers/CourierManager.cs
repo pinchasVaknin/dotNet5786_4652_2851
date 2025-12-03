@@ -118,7 +118,7 @@ internal static class CourierManager
                 let orderInHandle =
                     (from d in deliveriesGroup
                      where d.DeliveryFinishType == DO.DeliveryFinishType.None
-                     select d.OrderId).FirstOrDefault()
+                     select (int?)d.OrderId).FirstOrDefault()
                 orderby c.CourierFullName
                 // Projecting the results into BO.CourierInList objects
                 select new BO.CourierInList
