@@ -164,22 +164,64 @@ internal static class OrderManager
 
     //-------------------- BO Public Methods --------------------\\
 
-    internal static IEnumerable<BO.Order>? OrderInProgress()
-    {
-
-    }
-    internal static IEnumerable<BO.Order> BuildOpenOrderInlist()
+    internal static IEnumerable<BO.OrderInProgress> BuildOrderInProgress()
     {
         try
         {
-            return s_dal.Order
-                .ReadAll(o => o.OrderStatus == BO.OrderStatus.Open.ToString())
-                .Select(ConvertDoToBoOrder)
-                .ToList();
+            var allDeliveries = s_dal.Delivery.ReadAll();
+            var orderinlist = GetOrders();
+
+            var query =
+                from o in orderinlist
+                where o.OrderStatus == BO.OrderStatus.InProgress
+                join d in allDeliveries
+                    on o.OrderId equals d.OrderId into deliveriesGroup
+
+                let lastDelivery = deliveriesGroup.OrderByDescending(del => del.DeliveryDate).FirstOrDefault()
+
+                let thisOrder = GetOrder(o.OrderId)
+
+                let ExpectedDeliveryTime = thisOrder.ExpectedDeliveryTime ?? thisOrder.MaxDeliveryTime
+
+                select new BO.OrderInProgress
+                {
+                    DeliveryId = o.DeliveryId!.Value,
+                    OrderId = o.OrderId,
+                    TypeOfOrder = o.TypeOfOrder,
+                    OrderDetail = thisOrder.OrderDetail,
+                    CustomerAddress = thisOrder.OrderAddress,
+                    AirDistance = o.AirDistance,
+                    ActualDistance = lastDelivery.DeliveryMaxDistance,
+                    CostumerFullName = thisOrder.CostumerFullName,
+                    CostumerPhone = thisOrder.CostumerPhone,
+                    OrderOpenTime = thisOrder.OrderOpenTime,
+                    DeliveryStartTime = lastDelivery.DeliveryDate, 
+                    ExpectedDeliveryTime = ExpectedDeliveryTime, 
+                    MaxDeliveryTime = thisOrder.MaxDeliveryTime,
+                    OrderStatus = o.OrderStatus,
+                    ScheduleStatus = o.ScheduleStatus,
+                    TimeLeftToFinish = o.TimeLeftToFinish
+                };
+            return query.ToList();
+
         }
-        catch (DalXMLFileLoadCreateException ex)
+        catch (DalDoesNotExistException ex)
         {
-            throw new Exception("Failed to load open orders list", ex);
+            throw new Exception("Failed to build orders in progress list", ex);
+        }
+
+    }
+
+    internal static BO.OpenOrderInList BuildOpenOrderInlist()
+    {
+        try
+        {
+            
+
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new Exception("Failed to delete order", ex);
         }
     }
 
