@@ -25,10 +25,10 @@ internal class ConfigImplementation : IConfig
         set => Config.AdminPassword = value;
     }
 
-    public string? CompanyAdress
+    public string? CompanyAddress
     {
-        get => Config.CompanyAdress;
-        set => Config.CompanyAdress = value;
+        get => Config.CompanyAddress;
+        set => Config.CompanyAddress = value;
     }
     public double? Latitude
     {
@@ -56,10 +56,10 @@ internal class ConfigImplementation : IConfig
         get => Config.AvgMotorcycleSpeed;
         set => Config.AvgMotorcycleSpeed = value;
     }
-    public double AvgBicyleSpeed
+    public double AvgBicylceSpeed
     {
-        get => Config.AvgBicyleSpeed;
-        set => Config.AvgBicyleSpeed = value;
+        get => Config.AvgBicycleSpeed;
+        set => Config.AvgBicycleSpeed = value;
     }
     public double AvgWalkSpeed
     {

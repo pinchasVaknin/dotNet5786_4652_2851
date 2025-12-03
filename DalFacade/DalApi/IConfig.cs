@@ -7,7 +7,7 @@ public interface IConfig
     string AdminPassword { get; set; }
 
 
-    string? CompanyAdress { get; set; }
+    string? CompanyAddress { get; set; }
     double? Latitude { get; set; }
     double? Longitude { get; set; }
 
@@ -15,7 +15,7 @@ public interface IConfig
     double? MaxAirDistance { get; set; }
     double AvgCarSpeed { get; set; }
     double AvgMotorcycleSpeed { get; set; }
-    double AvgBicyleSpeed { get; set; }
+    double AvgBicylceSpeed { get; set; }
     double AvgWalkSpeed { get; set; }
 
     TimeSpan MaxDelTimeRnge { get; set; }

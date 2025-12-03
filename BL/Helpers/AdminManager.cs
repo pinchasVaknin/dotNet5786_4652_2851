@@ -58,13 +58,13 @@ internal static class AdminManager //stage 4
         Clock = s_dal.Config.Clock,
         AdminId = s_dal.Config.AdminId,
         AdminPassword = s_dal.Config.AdminPassword,
-        CompanyAdress = s_dal.Config.CompanyAdress,
+        CompanyAddress = s_dal.Config.CompanyAddress,
         Latitude = s_dal.Config.Latitude,
         Longitude = s_dal.Config.Longitude,
         MaxAirDistance = s_dal.Config.MaxAirDistance,
         AvgCarSpeed = s_dal.Config.AvgCarSpeed,
         AvgMotorcycleSpeed = s_dal.Config.AvgMotorcycleSpeed,
-        AvgBicyleSpeed = s_dal.Config.AvgBicyleSpeed,
+        AvgBicycleSpeed = s_dal.Config.AvgBicylceSpeed,
         AvgWalkSpeed = s_dal.Config.AvgWalkSpeed,
         MaxDelTimeRnge = s_dal.Config.MaxDelTimeRnge,
         RiskTimeRnge = s_dal.Config.RiskTimeRnge,
@@ -97,9 +97,9 @@ internal static class AdminManager //stage 4
             configChanged = true;
         }
 
-        if (s_dal.Config.CompanyAdress != configuration.CompanyAdress) //stage 4
+        if (s_dal.Config.CompanyAddress != configuration.CompanyAddress) //stage 4
         {
-            s_dal.Config.CompanyAdress = configuration.CompanyAdress;
+            s_dal.Config.CompanyAddress = configuration.CompanyAddress;
             configChanged = true;
         }
 
@@ -133,9 +133,9 @@ internal static class AdminManager //stage 4
             configChanged = true;
         }
 
-        if (s_dal.Config.AvgBicyleSpeed != configuration.AvgBicyleSpeed) //stage 4
+        if (s_dal.Config.AvgBicylceSpeed != configuration.AvgBicycleSpeed) //stage 4
         {
-            s_dal.Config.AvgBicyleSpeed = configuration.AvgBicyleSpeed;
+            s_dal.Config.AvgBicylceSpeed = configuration.AvgBicycleSpeed;
             configChanged = true;
         }
 

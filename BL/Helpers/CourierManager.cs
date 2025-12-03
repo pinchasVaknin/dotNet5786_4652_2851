@@ -230,6 +230,7 @@ internal static class CourierManager
             CourierPassword = doCourier.CourierPassword,
 
             CourierIsActive = doCourier.CourierEnabled,
+            CourierLocation = doCourier.CourierAddress,
             MaxCourierDistance = doCourier.MaxCourierDistance,
             VehicleType = (BO.VehicleType)doCourier.CourierVehicleType,
 

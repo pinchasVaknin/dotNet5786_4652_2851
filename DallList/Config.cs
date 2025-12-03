@@ -22,7 +22,7 @@ internal static class Config
     internal static string AdminPassword { get; set; } = "ChangeMe!1234";
 
 
-    internal static string? CompanyAdress { get; set; } = null;
+    internal static string? CompanyAddress { get; set; } = null;
     internal static double? Latitude { get; set; } = null;
     internal static double? Longitude { get; set; } = null;
 
@@ -30,7 +30,7 @@ internal static class Config
     internal static double? MaxAirDistance { get; set; } = null;
     internal static double AvgCarSpeed { get; set; } = 0;
     internal static double AvgMotorcycleSpeed { get; set; } = 0;
-    internal static double AvgBicyleSpeed { get; set; } = 0;
+    internal static double AvgBicycleSpeed { get; set; } = 0;
     internal static double AvgWalkSpeed { get; set; } = 0;
 
     internal static TimeSpan MaxDelTimeRnge { get; set; } = TimeSpan.Zero;
@@ -47,14 +47,14 @@ internal static class Config
         AdminId = 0;
         AdminPassword = string.Empty;
 
-        CompanyAdress = null;
+        CompanyAddress = null;
         Latitude = null;
         Longitude = null;
         MaxAirDistance = null;
 
         AvgCarSpeed = 0;
         AvgMotorcycleSpeed = 0;
-        AvgBicyleSpeed = 0;
+        AvgBicycleSpeed = 0;
         AvgWalkSpeed = 0;
 
         MaxDelTimeRnge = TimeSpan.Zero;

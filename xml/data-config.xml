@@ -5,13 +5,13 @@
   <Clock>26/11/2025 23:02:20</Clock>
   <AdminId>1001</AdminId>
   <AdminPassword>ChangeMe!1234</AdminPassword>
-  <CompanyAdress>Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem</CompanyAdress>
+  <CompanyAddress>Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem</CompanyAddress>
   <Latitude>31.7479</Latitude>
   <Longitude>35.188</Longitude>
   <MaxAirDistance>25</MaxAirDistance>
   <AvgCarSpeed>35</AvgCarSpeed>
   <AvgMotorcycleSpeed>40</AvgMotorcycleSpeed>
-  <AvgBicyleSpeed>15</AvgBicyleSpeed>
+  <AvgBicycleSpeed>15</AvgBicycleSpeed>
   <AvgWalkSpeed>5</AvgWalkSpeed>
   <MaxDelTimeRnge>2.00:00:00</MaxDelTimeRnge>
   <RiskTimeRnge>03:00:00</RiskTimeRnge>

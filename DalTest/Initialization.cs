@@ -404,7 +404,7 @@ public static class Initialization
         s_dal.Config.AdminPassword = "ChangeMe!1234";    // password
 
         // Company address and its geo-coordinates
-        s_dal.Config.CompanyAdress = "Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem"; // textual address
+        s_dal.Config.CompanyAddress = "Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem"; // textual address
         s_dal.Config.Latitude = 31.7479;
         s_dal.Config.Longitude = 35.1880;
 
@@ -414,7 +414,7 @@ public static class Initialization
         // Average speeds (km/h)
         s_dal.Config.AvgCarSpeed = 35.0;         // Car average
         s_dal.Config.AvgMotorcycleSpeed = 40.0;  // Motorcycle average
-        s_dal.Config.AvgBicyleSpeed = 15.0;      // Bicyle average
+        s_dal.Config.AvgBicylceSpeed = 15.0;      // Bicyle average
         s_dal.Config.AvgWalkSpeed = 5.0;         // Walk average
 
         // Time policy ranges

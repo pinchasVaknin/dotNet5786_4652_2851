@@ -38,10 +38,10 @@ internal class ConfigImplementation : IConfig
     /// <summary>
     /// Gets or sets the company address (nullable) from the underlying Config.
     /// </summary>
-    public string? CompanyAdress
+    public string? CompanyAddress
     {
-        get => Config.CompanyAdress;
-        set => Config.CompanyAdress = value;
+        get => Config.CompanyAddress;
+        set => Config.CompanyAddress = value;
     }
 
     /// <summary>
@@ -92,10 +92,10 @@ internal class ConfigImplementation : IConfig
     /// <summary>
     /// Gets or sets the average bicycle speed used for time and delivery calculations.
     /// </summary>
-    public double AvgBicyleSpeed
+    public double AvgBicylceSpeed
     {
-        get => Config.AvgBicyleSpeed;
-        set => Config.AvgBicyleSpeed = value;
+        get => Config.AvgBicycleSpeed;
+        set => Config.AvgBicycleSpeed = value;
     }
 
     /// <summary>

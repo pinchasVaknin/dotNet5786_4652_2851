@@ -62,7 +62,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the company address (nullable) stored in the config.
     /// </summary>
-    internal static string? CompanyAdress
+    internal static string? CompanyAddress
     {
         get => XMLTools.GetConfigStringNullableVal(s_data_config_xml, "companyAdress");
         set => XMLTools.SetConfigStringNullableVal(s_data_config_xml, "companyAdress", value);
@@ -116,7 +116,7 @@ internal static class Config
     /// <summary>
     /// Gets or sets the average bicycle speed used for time/delivery calculations.
     /// </summary>
-    internal static double AvgBicyleSpeed
+    internal static double AvgBicycleSpeed
     {
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "avgBicyleSpeed");
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "avgBicyleSpeed", value);
@@ -173,14 +173,14 @@ internal static class Config
         AdminId = 0;
         AdminPassword = string.Empty;
 
-        CompanyAdress = null;
+        CompanyAddress = null;
         Latitude = null;
         Longitude = null;
         MaxAirDistance = null;
 
         AvgCarSpeed = 0;
         AvgMotorcycleSpeed = 0;
-        AvgBicyleSpeed = 0;
+        AvgBicycleSpeed = 0;
         AvgWalkSpeed = 0;
 
         MaxDelTimeRnge = TimeSpan.Zero;
