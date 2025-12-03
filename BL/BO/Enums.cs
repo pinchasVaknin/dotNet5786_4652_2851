@@ -235,7 +235,7 @@ public enum OpenOrderSortBy
     AirDistance,
 
     /// <summary>Sort by order date.</summary>
-    OrderDate
+    OrderOpenTime
 }
 
 /// <summary>

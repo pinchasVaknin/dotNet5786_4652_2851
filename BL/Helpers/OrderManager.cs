@@ -164,46 +164,50 @@ internal static class OrderManager
 
     //-------------------- BO Public Methods --------------------\\
 
-    internal static IEnumerable<BO.OrderInProgress> BuildOrderInProgress()
+    internal static BO.OrderInProgress? BuildOrderInProgress(DO.Order doOrder, DO.Delivery activeDelivery)
     {
         try
         {
-            var allDeliveries = s_dal.Delivery.ReadAll();
-            var orderinlist = GetOrders();
+            if (activeDelivery is null) return null;
 
-            var query =
-                from o in orderinlist
-                where o.OrderStatus == BO.OrderStatus.InProgress
-                join d in allDeliveries
-                    on o.OrderId equals d.OrderId into deliveriesGroup
+            var thisOrder = GetOrder(doOrder.OrderId);
 
-                let lastDelivery = deliveriesGroup.OrderByDescending(del => del.DeliveryDate).FirstOrDefault()
+            var expectedDeliveryTime = thisOrder.ExpectedDeliveryTime ?? thisOrder.MaxDeliveryTime;
 
-                let thisOrder = GetOrder(o.OrderId)
+            double airDistance = Tools.DistanceKm(doOrder.OrderLatitude, doOrder.OrderLongitude, 31.7479, 35.188);
 
-                let ExpectedDeliveryTime = thisOrder.ExpectedDeliveryTime ?? thisOrder.MaxDeliveryTime
+            var maxRange = s_dal.Config.MaxDelTimeRnge;
+            var maxRangeWithoutRisk = maxRange - s_dal.Config.RiskTimeRnge;
 
-                select new BO.OrderInProgress
-                {
-                    DeliveryId = o.DeliveryId!.Value,
-                    OrderId = o.OrderId,
-                    TypeOfOrder = o.TypeOfOrder,
-                    OrderDetail = thisOrder.OrderDetail,
-                    CustomerAddress = thisOrder.OrderAddress,
-                    AirDistance = o.AirDistance,
-                    ActualDistance = lastDelivery.DeliveryMaxDistance,
-                    CostumerFullName = thisOrder.CostumerFullName,
-                    CostumerPhone = thisOrder.CostumerPhone,
-                    OrderOpenTime = thisOrder.OrderOpenTime,
-                    DeliveryStartTime = lastDelivery.DeliveryDate,
-                    ExpectedDeliveryTime = ExpectedDeliveryTime,
-                    MaxDeliveryTime = thisOrder.MaxDeliveryTime,
-                    OrderStatus = o.OrderStatus,
-                    ScheduleStatus = o.ScheduleStatus,
-                    TimeLeftToFinish = o.TimeLeftToFinish
-                };
-            return query.ToList();
+            var scheduleStatus = Tools.CalcScheduleStatus(doOrder.OrderDate, s_dal.Config.Clock, activeDelivery.DeliveryFinishDate,
+                                                            maxRangeWithoutRisk, maxRange);
 
+            TimeSpan timeLeftToFinish =
+                (activeDelivery.DeliveryDate + maxRange) < s_dal.Config.Clock ?
+                    TimeSpan.Zero :
+                (activeDelivery.DeliveryDate + maxRange) - s_dal.Config.Clock;
+
+            double? actualDistance = activeDelivery.DeliveryMaxDistance;
+
+            return new BO.OrderInProgress
+            {
+                DeliveryId = activeDelivery.DeliveryId,
+                OrderId = doOrder.OrderId,
+                TypeOfOrder = (BO.TypeOfOrder)doOrder.TypeOfOrder,
+                OrderDetail = thisOrder.OrderDetail,
+                CustomerAddress = thisOrder.OrderAddress,
+                AirDistance = airDistance,
+                ActualDistance = actualDistance,
+                CostumerFullName = thisOrder.CustomerFullName,
+                CostumerPhone = thisOrder.CustomerPhone,
+                OrderOpenTime = thisOrder.OrderOpenTime,
+                DeliveryStartTime = activeDelivery.DeliveryDate,
+                ExpectedDeliveryTime = expectedDeliveryTime,
+                MaxDeliveryTime = thisOrder.MaxDeliveryTime,
+                OrderStatus = BO.OrderStatus.InProgress,
+                ScheduleStatus = scheduleStatus,
+                TimeLeftToFinish = timeLeftToFinish
+            };
         }
         catch (DalDoesNotExistException ex)
         {
@@ -212,7 +216,7 @@ internal static class OrderManager
 
     }
 
-    internal static IEnumerable<BO.OpenOrderInList> BuildOpenOrderInlist()
+    internal static List<BO.OpenOrderInList> BuildOpenOrderInlist()
     {
         try
         {
@@ -237,8 +241,8 @@ internal static class OrderManager
                     s_dal.Courier.Read(c => c.CourierId == lastDelivery.CourierId)
 
                 let EstimatedActualTime =
-                    lastDelivery is null ?
-                        null :
+                lastDelivery is null || courierOfLastDelivery is null ?
+                        (TimeSpan?)null :
                     courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Car ?
                         TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgCarSpeed) :
                     courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Motorcycle ?
@@ -246,6 +250,7 @@ internal static class OrderManager
                     courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Bicycle ?
                         TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgBicyleSpeed) :
                     TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgWalkSpeed)
+
 
                 select new BO.OpenOrderInList
                 {
@@ -258,7 +263,7 @@ internal static class OrderManager
                     CustomerAddress = thisOrder.OrderAddress,
                     AirDistance = o.AirDistance,
                     ActualDistance = lastDelivery.DeliveryMaxDistance,
-                    EstimatedActualTime = 
+                    EstimatedActualTime = EstimatedActualTime,
                     ScheduleStatus = o.ScheduleStatus,
                     TimeLeftToFinish = o.TimeLeftToFinish,
                     MaxDeliveryTime = thisOrder.MaxDeliveryTime
@@ -268,7 +273,7 @@ internal static class OrderManager
         }
         catch (DalDoesNotExistException ex)
         {
-            throw new Exception("Failed to build orders in progress list", ex);
+            throw new Exception("Failed to build open orders in list", ex);
         }
     }
 
@@ -281,79 +286,79 @@ internal static class OrderManager
         var maxRange = s_dal.Config.MaxDelTimeRnge;
         var maxRangeWithoutRisk = maxRange - s_dal.Config.RiskTimeRnge;
 
-        var allOrders = s_dal.Order.ReadAll();
-        var allDeliveries = s_dal.Delivery.ReadAll();
+        // All deliveries for THIS order only 
+        var deliveriesForOrder =
+            from d in s_dal.Delivery.ReadAll()
+            where d.OrderId == doOrder.OrderId
+            select d;
 
-        var query =
-                from o in allOrders
-                where o.OrderId == doOrder.OrderId
-                join d in allDeliveries
-                    on o.OrderId equals d.OrderId into deliveriesGroup
+        // Last delivery by DeliveryDate 
+        var lastDelivery = deliveriesForOrder
+            .OrderByDescending(del => del.DeliveryDate)
+            .FirstOrDefault();
 
-                let lastDelivery =
-                    deliveriesGroup.OrderByDescending(del => del.DeliveryDate).FirstOrDefault()
+        // Courier of last delivery 
+        var courierOfLastDelivery =
+            lastDelivery == null ?
+                null :
+            s_dal.Courier.Read(c => c.CourierId == lastDelivery.CourierId);
 
-                let courierOfLastDelivery =
-                    lastDelivery == null ?
-                        null :
-                    s_dal.Courier.Read(c => c.CourierId == lastDelivery.CourierId)
+        var enumOrderStatus = (BO.OrderStatus)Enum.Parse(typeof(BO.OrderStatus), doOrder.OrderStatus.ToString());
 
-                let enumOrderStatus =
-                    (BO.OrderStatus)Enum.Parse(typeof(BO.OrderStatus), doOrder.OrderStatus.ToString())
+        var calculateAirDistance = Tools.DistanceKm(doOrder.OrderLatitude, doOrder.OrderLongitude, 31.7479, 35.188);
 
-                let calculateAirDistance =
-                    Tools.DistanceKm(doOrder.OrderLatitude, doOrder.OrderLongitude, 31.7479, 35.188)
+        var maxDelTime = doOrder.OrderDate + s_dal.Config.MaxDelTimeRnge;
 
-                let maxDelTime =
-                    doOrder.OrderDate + s_dal.Config.MaxDelTimeRnge
+        var ScheduleStatus = Tools.CalcScheduleStatus(doOrder.OrderDate, s_dal.Config.Clock, lastDelivery?.DeliveryFinishDate,
+                                                        maxRangeWithoutRisk, maxRange);
 
-                let ScheduleStatus =
-                    Tools.CalcScheduleStatus(doOrder.OrderDate, s_dal.Config.Clock, lastDelivery?.DeliveryFinishDate,
-                                             maxRangeWithoutRisk, maxRange)
+        var TimeLeftToFinish =
+                lastDelivery is null || (lastDelivery.DeliveryDate + maxRange) < s_dal.Config.Clock ?
+                    TimeSpan.Zero :
+                (lastDelivery.DeliveryDate + maxRange) - s_dal.Config.Clock;
 
-                let TimeLeftToFinish =
-                        lastDelivery is null || (lastDelivery.DeliveryDate + maxRange) < s_dal.Config.Clock ?
-                            TimeSpan.Zero :
-                        (lastDelivery.DeliveryDate + maxRange) - s_dal.Config.Clock
+        DateTime? expectedDeliveryTime = null;
 
-                let ExpectedDeliveryTime =
-                    lastDelivery is null ?
-                    (DateTime?)null :
-                    courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Car ?
-                        lastDelivery.DeliveryDate + TimeSpan.FromHours(calculateAirDistance / s_dal.Config.AvgCarSpeed) :
-                    courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Motorcycle ?
-                        lastDelivery.DeliveryDate + TimeSpan.FromHours(calculateAirDistance / s_dal.Config.AvgMotorcycleSpeed) :
-                    courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Bicycle ?
-                        lastDelivery.DeliveryDate + TimeSpan.FromHours(calculateAirDistance / s_dal.Config.AvgBicyleSpeed) :
-                    lastDelivery.DeliveryDate + TimeSpan.FromHours(calculateAirDistance / s_dal.Config.AvgWalkSpeed)
+        if (lastDelivery != null && courierOfLastDelivery != null)
+        {
+            double speed = courierOfLastDelivery.CourierVehicleType switch
+            {
+                DO.CourierVehicleType.Car => s_dal.Config.AvgCarSpeed,
+                DO.CourierVehicleType.Motorcycle => s_dal.Config.AvgMotorcycleSpeed,
+                DO.CourierVehicleType.Bicycle => s_dal.Config.AvgBicyleSpeed,
+                DO.CourierVehicleType.Foot => s_dal.Config.AvgWalkSpeed,
+                _ => s_dal.Config.AvgWalkSpeed
+            };
 
+            expectedDeliveryTime =
+                lastDelivery.DeliveryDate + TimeSpan.FromHours(calculateAirDistance / speed);
+        }
 
-                // Build the order in progress using the DeliveryManager
-                let delPerOrderInList = DeliveryManager.BuildDeliveryPerOrderInList(doOrder)
+        // Build the order in progress using the DeliveryManager
+        var delPerOrderInList = DeliveryManager.BuildDeliveryPerOrderInList(doOrder);
 
-                select new BO.Order
-                {
-                    OrderId = o.OrderId,
-                    OrderStatus = enumOrderStatus,
-                    OrderDetail = o.OrderDetail,
-                    OrderAddress = o.OrderAddress,
-                    OrderLatitude = o.OrderLatitude,
-                    OrderLongitude = o.OrderLongitude,
-                    CostumerFullName = o.OrderCostumerFullName,
-                    CostumerPhone = o.OrderCostumerPhone,
-                    OrderWeight = o.OrderWeight,
-                    IsFragile = o.IsFragile,
-                    OrderSize = o.OrderSize,
-                    OrderOpenTime = o.OrderDate,
-                    TypeOfOrder = (BO.TypeOfOrder)o.TypeOfOrder,
-                    AirDistance = calculateAirDistance,
-                    MaxDeliveryTime = maxDelTime,
-                    ExpectedDeliveryTime = ExpectedDeliveryTime,
-                    ScheduleStatus = ScheduleStatus,
-                    TimeRemaining = TimeLeftToFinish,
-                    deliveryPerOrderInList = delPerOrderInList
-                };
-        return query.Single();
+        return new BO.Order
+        {
+            OrderId = doOrder.OrderId,
+            OrderStatus = enumOrderStatus,
+            OrderDetail = doOrder.OrderDetail,
+            OrderAddress = doOrder.OrderAddress,
+            OrderLatitude = doOrder.OrderLatitude,
+            OrderLongitude = doOrder.OrderLongitude,
+            CustomerFullName = doOrder.OrderCostumerFullName,
+            CustomerPhone = doOrder.OrderCostumerPhone,
+            OrderWeight = doOrder.OrderWeight,
+            IsFragile = doOrder.IsFragile,
+            OrderSize = doOrder.OrderSize,
+            OrderOpenTime = doOrder.OrderDate,
+            TypeOfOrder = (BO.TypeOfOrder)doOrder.TypeOfOrder,
+            AirDistance = calculateAirDistance,
+            MaxDeliveryTime = maxDelTime,
+            ExpectedDeliveryTime = expectedDeliveryTime,
+            ScheduleStatus = ScheduleStatus,
+            TimeRemaining = TimeLeftToFinish,
+            DeliveryPerOrderInList = delPerOrderInList
+        };
     }
 
     private static DO.Order ConvertBoToDoOrder(BO.Order boOrder) =>
@@ -364,8 +369,8 @@ internal static class OrderManager
         OrderAddress: boOrder.OrderAddress,
         OrderLatitude: boOrder.OrderLatitude,
         OrderLongitude: boOrder.OrderLongitude,
-        OrderCostumerFullName: boOrder.CostumerFullName,
-        OrderCostumerPhone: boOrder.CostumerPhone,
+        OrderCostumerFullName: boOrder.CustomerFullName,
+        OrderCostumerPhone: boOrder.CustomerPhone,
         OrderWeight: boOrder.OrderWeight,
         IsFragile: boOrder.IsFragile,
         OrderSize: boOrder.OrderSize,

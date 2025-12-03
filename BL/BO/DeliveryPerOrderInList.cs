@@ -9,12 +9,12 @@
 /// </remarks>
 public class DeliveryPerOrderInList
 {
-    public int OrderId { get; init; }
+    public int DeliveryId { get; init; }
     public int? CourierId { get; init; }
     public string CourierFullName { get; init; }
     public ShipmentType ShipmentType { get; init; }
     public DateTime StartDeliveryDate { get; init; }
-    public DeliveryFinishType DeliveryFinishType { get; init; }
-    public DateTime FinishDeliveryTime { get; init; }
+    public DeliveryFinishType? DeliveryFinishType { get; init; }
+    public DateTime? FinishDeliveryTime { get; init; }
 
 }

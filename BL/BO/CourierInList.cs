@@ -14,7 +14,7 @@ public class CourierInList
     public bool CourierIsActive { get; set; }
     public VehicleType VehicleType { get; init; }
     public DateTime? StartWorkDate { get; init; }
-    public int DeliveriesInTime { get; init; }//סך המשלוחים הקיימים עבור אותו שליח עם סוג סיום סופק וזמן סיום משלוח קטן/שווה מהזמן המחושב כזמן אספקה מירבי
-    public int DeliveriesOverTime { get; init; }//סך המשלוחים הקיימים עבור אותו שליח עם סוג סיום סופק וזמן סיום משלוח גדול מהזמן המחושב כזמן אספקה מירבי
-    public int OrderIdInHandle { get; init; }//האם קיימת ברשימת ישויות המשלוח ישות עבור השליח שזמן סיום המשלוח הוא עדיין null
+    public int DeliveriesInTime { get; init; }
+    public int DeliveriesOverTime { get; init; }
+    public int? OrderIdInHandle { get; init; }
 }

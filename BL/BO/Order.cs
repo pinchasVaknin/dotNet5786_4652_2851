@@ -16,8 +16,8 @@ public class Order
     public double OrderLatitude { get; set; }
     public double OrderLongitude { get; set; }
     public double AirDistance { get; set; }
-    public string CostumerFullName { get; set; }
-    public string CostumerPhone { get; set; }
+    public string CustomerFullName { get; set; }
+    public string CustomerPhone { get; set; }
     public double OrderWeight { get; set; }
     public bool IsFragile { get; set; }
     public double OrderSize { get; set; }
@@ -29,6 +29,6 @@ public class Order
     public ScheduleStatus ScheduleStatus { get; init; }
     public TimeSpan TimeRemaining { get; init; }
 
-    public List<DeliveryPerOrderInList>? deliveryPerOrderInList { get; init; }
+    public List<DeliveryPerOrderInList>? DeliveryPerOrderInList { get; init; }
 
 }

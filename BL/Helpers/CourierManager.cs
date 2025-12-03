@@ -215,17 +215,11 @@ internal static class CourierManager
         var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
 
         // Build the order in progress if there is an active delivery
-        BO.OrderInProgress? orderInProgress = null;
-
-        // If there is an active delivery, retrieve the associated order and build the order in progress
-        if (activeDelivery is not null)
-        {
-            var doOrder = s_dal.Order.Read(activeDelivery.OrderId)
-                ?? throw new Exception($"Order {activeDelivery.OrderId} for courier {doCourier.CourierId} not found");
-
-            // Build the order in progress using the OrderManager
-            orderInProgress = OrderManager.BuildOrderInProgress(doOrder, activeDelivery);
-        }
+        var orderInProgress = activeDelivery is null ?
+                                null : 
+                                OrderManager.BuildOrderInProgress(s_dal.Order.Read(activeDelivery.OrderId) ?? 
+                                throw new Exception($"Order {activeDelivery.OrderId} for courier {doCourier.CourierId} not found"),
+                                activeDelivery);
 
         return new BO.Courier
         {
