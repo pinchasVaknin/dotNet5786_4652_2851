@@ -1,6 +1,6 @@
-﻿using DalApi;
-
-namespace Helpers;
+﻿namespace Helpers;
+using DalApi;
+using DO;
 
 internal static class Tools
 {
@@ -36,6 +36,25 @@ internal static class Tools
     private static double DegreesToRadians(double degrees) =>
         degrees * Math.PI / 180.0;
 
-    
+    /// <summary>
+    /// Calculates schedule status (OnTime / InRisk / Late)
+    /// based on order date, last delivery finish time and allowed ranges.
+    /// </summary>
+    public static BO.ScheduleStatus CalcScheduleStatus(DateTime orderDate, DateTime clock, DateTime? lastDeliveryFinishDate,
+                                                       TimeSpan maxRangeWithoutRisk, TimeSpan maxRange)
+    {
+        TimeSpan handleTime =
+            (lastDeliveryFinishDate is null)
+                ? clock - orderDate
+                : lastDeliveryFinishDate.Value - orderDate;
+
+        if (handleTime <= maxRangeWithoutRisk)
+            return BO.ScheduleStatus.OnTime;
+
+        if (handleTime <= maxRange)
+            return BO.ScheduleStatus.InRisk;
+
+        return BO.ScheduleStatus.Late;
+    }
 }
 

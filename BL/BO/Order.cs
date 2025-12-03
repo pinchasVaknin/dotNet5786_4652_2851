@@ -10,8 +10,7 @@
 /// </remarks>
 public class Order
 {
-    public int OrderId { get; init; } //need to be run number
-    public TypeOfOrder TypeOfOrder { get; set; }
+    public int OrderId { get; init; } //need to be run number 
     public string? OrderDetail { get; set; }
     public string OrderAddress { get; set; }
     public double OrderLatitude { get; set; }
@@ -25,6 +24,7 @@ public class Order
     public DateTime OrderOpenTime { get; init; }
     public DateTime? ExpectedDeliveryTime { get; init; }
     public DateTime MaxDeliveryTime { get; init; }
+    public TypeOfOrder TypeOfOrder { get; set; }
     public OrderStatus OrderStatus { get; init; }
     public ScheduleStatus ScheduleStatus { get; init; }
     public TimeSpan TimeRemaining { get; init; }
