@@ -195,8 +195,8 @@ internal static class OrderManager
                     CostumerFullName = thisOrder.CostumerFullName,
                     CostumerPhone = thisOrder.CostumerPhone,
                     OrderOpenTime = thisOrder.OrderOpenTime,
-                    DeliveryStartTime = lastDelivery.DeliveryDate, 
-                    ExpectedDeliveryTime = ExpectedDeliveryTime, 
+                    DeliveryStartTime = lastDelivery.DeliveryDate,
+                    ExpectedDeliveryTime = ExpectedDeliveryTime,
                     MaxDeliveryTime = thisOrder.MaxDeliveryTime,
                     OrderStatus = o.OrderStatus,
                     ScheduleStatus = o.ScheduleStatus,
@@ -212,16 +212,63 @@ internal static class OrderManager
 
     }
 
-    internal static BO.OpenOrderInList BuildOpenOrderInlist()
+    internal static IEnumerable<BO.OpenOrderInList> BuildOpenOrderInlist()
     {
         try
         {
-            
+            var allDeliveries = s_dal.Delivery.ReadAll();
+            var orderinlist = GetOrders();
+
+            var query =
+                from o in orderinlist
+                where o.OrderStatus == BO.OrderStatus.InProgress
+                join d in allDeliveries
+                    on o.OrderId equals d.OrderId into deliveriesGroup
+
+                let lastDelivery = deliveriesGroup.OrderByDescending(del => del.DeliveryDate).FirstOrDefault()
+
+                let thisOrder = GetOrder(o.OrderId)
+
+                let ExpectedDeliveryTime = thisOrder.ExpectedDeliveryTime ?? thisOrder.MaxDeliveryTime
+
+                let courierOfLastDelivery =
+                    lastDelivery == null ?
+                        null :
+                    s_dal.Courier.Read(c => c.CourierId == lastDelivery.CourierId)
+
+                let EstimatedActualTime =
+                    lastDelivery is null ?
+                        null :
+                    courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Car ?
+                        TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgCarSpeed) :
+                    courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Motorcycle ?
+                        TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgMotorcycleSpeed) :
+                    courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Bicycle ?
+                        TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgBicyleSpeed) :
+                    TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgWalkSpeed)
+
+                select new BO.OpenOrderInList
+                {
+                    CourierId = lastDelivery.CourierId,
+                    OrderId = o.OrderId,
+                    TypeOfOrder = o.TypeOfOrder,
+                    OrderWeight = thisOrder.OrderWeight,
+                    IsFragile = thisOrder.IsFragile,
+                    OrderSize = thisOrder.OrderSize,
+                    CustomerAddress = thisOrder.OrderAddress,
+                    AirDistance = o.AirDistance,
+                    ActualDistance = lastDelivery.DeliveryMaxDistance,
+                    EstimatedActualTime = 
+                    ScheduleStatus = o.ScheduleStatus,
+                    TimeLeftToFinish = o.TimeLeftToFinish,
+                    MaxDeliveryTime = thisOrder.MaxDeliveryTime
+                };
+            return query.ToList();
 
         }
         catch (DalDoesNotExistException ex)
         {
-            throw new Exception("Failed to delete order", ex);
+            throw new Exception("Failed to build orders in progress list", ex);
         }
     }
 
