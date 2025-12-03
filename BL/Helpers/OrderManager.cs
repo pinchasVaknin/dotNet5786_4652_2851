@@ -162,6 +162,18 @@ internal static class OrderManager
 
     }
 
+    //-------------------- BO Public Methods --------------------\\
+
+    internal static IEnumerable<BO.Order>? OrderInProgress()
+    {
+
+    }
+    internal static IEnumerable<BO.Order>? OpenOrderInlist()
+    {
+
+    }
+
+
     //-------------- Private Convert Methods ----------------\\
 
     private static BO.Order ConvertDoToBoOrder(DO.Order doOrder) // build BO.Order from DO.Order
@@ -216,6 +228,10 @@ internal static class OrderManager
                         lastDelivery.DeliveryDate + TimeSpan.FromHours(calculateAirDistance / s_dal.Config.AvgBicyleSpeed) :
                     lastDelivery.DeliveryDate + TimeSpan.FromHours(calculateAirDistance / s_dal.Config.AvgWalkSpeed)
 
+
+                // Build the order in progress using the DeliveryManager
+                let delPerOrderInList = DeliveryManager.BuildDeliveryPerOrderInList(doOrder)
+
                 select new BO.Order
                 {
                     OrderId = o.OrderId,
@@ -235,7 +251,8 @@ internal static class OrderManager
                     MaxDeliveryTime = maxDelTime,
                     ExpectedDeliveryTime = ExpectedDeliveryTime,
                     ScheduleStatus = ScheduleStatus,
-                    TimeRemaining = TimeLeftToFinish
+                    TimeRemaining = TimeLeftToFinish,
+                    deliveryPerOrderInList = delPerOrderInList
                 };
         return query.Single();
     }
@@ -254,8 +271,7 @@ internal static class OrderManager
         IsFragile: boOrder.IsFragile,
         OrderSize: boOrder.OrderSize,
         OrderDate: boOrder.OrderOpenTime,
-        TypeOfOrder: (DO.TypeOfOrder)boOrder.TypeOfOrder  
+        TypeOfOrder: (DO.TypeOfOrder)boOrder.TypeOfOrder
     );
 
 }
-
