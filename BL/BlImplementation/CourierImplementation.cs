@@ -20,6 +20,7 @@ internal class CourierImplementation : ICourier
         bool? isActiveFilter = null,
         BO.CourierListSortBy? sortBy = null)
     {
+        Tools.EnsureAdmin(requesterId, nameof(GetCouriers));
         return CourierManager.GetListOfCouriers(requesterId, isActiveFilter, sortBy);
     }
 
@@ -31,21 +32,25 @@ internal class CourierImplementation : ICourier
 
     public void AddCourier(int requesterId, BO.Courier courier)
     {
+        Tools.EnsureAdmin(requesterId, nameof(AddCourier));
         CourierManager.AddCourier(courier);
     }
 
     public BO.Courier GetCourier(int requesterId, int courierId)
     {
+        Tools.EnsureAdmin(requesterId, nameof(GetCourier));
         return CourierManager.GetCourier(courierId);
     }
 
     public void UpdateCourier(int requesterId, BO.Courier courier)
     {
+        Tools.EnsureAdmin(requesterId, nameof(UpdateCourier));
         CourierManager.UpdateCourier(courier);
     }
 
     public void DeleteCourier(int requesterId, int courierId)
     {
+        Tools.EnsureAdmin(requesterId, nameof(DeleteCourier));
         CourierManager.DeleteCourier(courierId);
     }
 

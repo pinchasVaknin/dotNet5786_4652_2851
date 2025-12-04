@@ -56,5 +56,20 @@ internal static class Tools
 
         return BO.ScheduleStatus.Late;
     }
+
+
+    /// <summary>
+    /// Ensures that the requester is the admin. 
+    /// Throws an exception if not authorized.
+    /// </summary>
+    /// <param name="requesterId">The user ID performing the action.</param>
+    /// <param name="actionName">The name of the attempted action.</param>
+    internal static void EnsureAdmin(int requesterId, string actionName)
+    {
+        var config = AdminManager.GetConfig();
+
+        if (requesterId != config.AdminId)
+            throw new Exception($"User {requesterId} is not authorized to perform action '{actionName}'.");
+    }
 }
 
