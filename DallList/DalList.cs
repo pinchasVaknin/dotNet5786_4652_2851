@@ -11,11 +11,11 @@ sealed internal class DalList : IDal
     private DalList() { }
 
     //------ Lazy intialization + Thread safe ------\\
-    private static readonly Lazy<DalList> s_intance = 
+    private static readonly Lazy<DalList> s_instance = 
         new Lazy<DalList>(()=> new DalList() , true);
 
     // publc access to the instance
-    public static IDal Instance  => s_intance.Value;
+    public static IDal Instance  => s_instance.Value;
 
     /// <summary>
     /// Gets the courier service implementation used for handling delivery operations.

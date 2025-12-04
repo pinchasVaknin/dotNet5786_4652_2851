@@ -422,8 +422,8 @@ internal class Program
             OrderAddress: address,
             OrderLatitude: lat,
             OrderLongitude: lon,
-            OrderCostumerFullName: customer,
-            OrderCostumerPhone: phone,
+            OrderCustomerFullName: customer,
+            OrderCustomerPhone: phone,
             OrderWeight: weight,
             IsFragile: fragile,
             OrderSize: size,
@@ -472,7 +472,7 @@ internal class Program
         string address = ReadOptional($"Address [{o.OrderAddress}]: ", o.OrderAddress);
         double lat = ReadDoubleOptional($"Latitude [{o.OrderLatitude}]: ", o.OrderLatitude);
         double lon = ReadDoubleOptional($"Longitude [{o.OrderLongitude}]: ", o.OrderLongitude);
-        string phone = ReadOptional($"Phone [{o.OrderCostumerPhone}]: ", o.OrderCostumerPhone);
+        string phone = ReadOptional($"Phone [{o.OrderCustomerPhone}]: ", o.OrderCustomerPhone);
 
         // create updated copy
         var updated = o with
@@ -481,7 +481,7 @@ internal class Program
             OrderAddress = address,
             OrderLatitude = lat,
             OrderLongitude = lon,
-            OrderCostumerPhone = phone
+            OrderCustomerPhone = phone
         };
 
         s_dal.Order.Update(updated); // update in DAL

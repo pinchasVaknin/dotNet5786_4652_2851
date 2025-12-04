@@ -11,11 +11,11 @@ sealed internal class DalXml : IDal
     private DalXml() { }
 
     //------ Lazy intialization + Thread safe ------\\
-    private static readonly Lazy<DalXml> s_intance =
+    private static readonly Lazy<DalXml> s_instance =
         new Lazy<DalXml>(() => new DalXml(), true);
 
     // publc access to the instance
-    public static IDal Instance => s_intance.Value;
+    public static IDal Instance => s_instance.Value;
 
     /// <summary>
     /// Provides CRUD operations for couriers backed by the XML store.
