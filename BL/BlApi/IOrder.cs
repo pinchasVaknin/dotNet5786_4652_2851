@@ -119,7 +119,7 @@ public interface IOrder
     /// <returns>
     /// A filtered and sorted collection of <see cref="BO.ClosedDeliveryInList"/> objects.
     /// </returns>
-    IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesForCourier(
+    IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesByCourier(
         int requesterId,
         int courierId,
         BO.TypeOfOrder? typeFilter = null,

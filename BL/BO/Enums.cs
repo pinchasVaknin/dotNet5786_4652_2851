@@ -196,20 +196,20 @@ public enum OrderInListSortBy
 /// </summary>
 public enum ClosedDeliverySortBy
 {
-    /// <summary>Sort by delivery finish type.</summary>
-    DeliveryFinishType,
-
-    /// <summary>Sort by total handling time.</summary>
-    TotalHandleTime,
+    /// <summary>Sort by order id.</summary>
+    OrderId,
 
     /// <summary>Sort by order type.</summary>
     TypeOfOrder,
 
-    /// <summary>Sort by order id.</summary>
-    OrderId,
+    /// <summary>Sort by total handling time.</summary>
+    TotalHandleTime,
 
     /// <summary>Sort by actual distance.</summary>
-    ActualDistance
+    ActualDistance,
+
+    /// <summary>Sort by delivery finish type.</summary>
+    DeliveryFinishType
 }
 
 /// <summary>
@@ -218,6 +218,7 @@ public enum ClosedDeliverySortBy
 /// </summary>
 public enum OpenOrderFilterBy
 {
+   
     /// <summary>Filter by order type (BO.TypeOfOrder).</summary>
     TypeOfOrder
 }
@@ -228,14 +229,27 @@ public enum OpenOrderFilterBy
 /// </summary>
 public enum OpenOrderSortBy
 {
-    /// <summary>Sort by schedule status (on time / in risk / late).</summary>
-    ScheduleStatus,
+    /// <summary>
+    /// Sort by order ID.
+    /// </summary>
+
+    TypeOfOrder,
+
+    OrderWeight,
+
+    IsFragile,
+
+    OrderSize,
 
     /// <summary>Sort by air distance between courier and order destination.</summary>
     AirDistance,
 
-    /// <summary>Sort by order date.</summary>
-    OrderOpenTime
+    /// <summary>Sort by schedule status (on time / in risk / late).</summary>
+    ScheduleStatus,
+
+    TimeLeftToFinish,
+
+    MaxDeliveryTime
 }
 
 /// <summary>
