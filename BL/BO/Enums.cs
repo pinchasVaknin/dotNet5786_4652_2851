@@ -84,7 +84,7 @@ public enum UserRole
 /// </summary>
 public enum CourierListSortBy
 {
-    OrderId,
+    CourierId,
     CourierFullName,
     CourierIsActive,
     VehicleType,
