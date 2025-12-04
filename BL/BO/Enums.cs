@@ -109,6 +109,23 @@ public enum TimeUnit
     Year
 }
 
+public enum ConfigFields
+{
+    Clock,
+    AdminId,
+    AdminPassword,
+    CompanyAddress,
+    Latitude,
+    Longitude,
+    MaxAirDistance,
+    AvgCarSpeed,
+    AvgMotorcycleSpeed,
+    AvgBicycleSpeed,
+    AvgWalkSpeed,
+    MaxDelTimeRnge,
+    RiskTimeRnge,
+    UnactiveTimeRnge
+}
 
 //------------ For BL IOrder ------------\\
 
