@@ -84,14 +84,14 @@ public enum UserRole
 /// </summary>
 public enum CourierListSortBy
 {
-    Id,
-    FullName,
-    IsActive,
+    OrderId,
+    CourierFullName,
+    CourierIsActive,
     VehicleType,
     StartWorkDate,
     DeliveriesInTime,
-    DeliveriesOverTime
-    // OrderIdInHandle
+    DeliveriesOverTime,
+    OrderIdInHandle
 }
 
 
@@ -128,15 +128,17 @@ public enum ScheduleStatus
 /// </summary>
 public enum OrderInListFilterBy
 {
-    /// <summary>
-    /// Filter by logical order status (BO.OrderStatus).
-    /// </summary>
-    Status,
+    OrderId,
 
     /// <summary>
     /// Filter by logical order type (BO.TypeOfOrder).
     /// </summary>
     TypeOfOrder,
+
+    /// <summary>
+    /// Filter by logical order status (BO.OrderStatus).
+    /// </summary>
+    OrderStatus,
 
     /// <summary>
     /// Filter by schedule status (BO.ScheduleStatus - OnTime / InRisk / Late).
@@ -155,24 +157,24 @@ public enum OrderInListSortBy
     OrderId,
 
     /// <summary>
-    /// Sort by logical order status (BO.OrderStatus).
-    /// </summary>
-    Status,
-
-    /// <summary>
     /// Sort by logical order type (BO.TypeOfOrder).
     /// </summary>
     TypeOfOrder,
 
     /// <summary>
-    /// Sort by schedule status (BO.ScheduleStatus).
-    /// </summary>
-    ScheduleStatus,
-
-    /// <summary>
     /// Sort by air distance between the order destination and the courier (if relevant).
     /// </summary>
     AirDistance,
+
+    /// <summary>
+    /// Sort by logical order status (BO.OrderStatus).
+    /// </summary>
+    OrderStatus,
+
+    /// <summary>
+    /// Sort by schedule status (BO.ScheduleStatus).
+    /// </summary>
+    ScheduleStatus,
 
     /// <summary>
     /// Sort by time left until the required finish time.
@@ -213,25 +215,12 @@ public enum ClosedDeliverySortBy
 }
 
 /// <summary>
-/// Fields that can be used to filter the open orders list
-/// for a courier (BO.OpenOrderInList).
-/// </summary>
-public enum OpenOrderFilterBy
-{
-   
-    /// <summary>Filter by order type (BO.TypeOfOrder).</summary>
-    TypeOfOrder
-}
-
-/// <summary>
 /// Fields that can be used to sort the open orders list
 /// for a courier (BO.OpenOrderInList).
 /// </summary>
 public enum OpenOrderSortBy
 {
-    /// <summary>
-    /// Sort by order ID.
-    /// </summary>
+    OrderId,
 
     TypeOfOrder,
 
@@ -241,10 +230,8 @@ public enum OpenOrderSortBy
 
     OrderSize,
 
-    /// <summary>Sort by air distance between courier and order destination.</summary>
     AirDistance,
 
-    /// <summary>Sort by schedule status (on time / in risk / late).</summary>
     ScheduleStatus,
 
     TimeLeftToFinish,
@@ -272,4 +259,15 @@ public enum LogicalOrderStatus
     Supplied,
     Refused,
     Canceled
+}
+
+/// <summary>
+/// Fields that can be used to filter the open orders list
+/// for a courier (BO.OpenOrderInList).
+/// </summary>
+public enum OpenOrderFilterBy
+{
+
+    /// <summary>Filter by order type (BO.TypeOfOrder).</summary>
+    TypeOfOrder
 }

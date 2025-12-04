@@ -34,7 +34,10 @@ public interface ICourier
     /// <returns>
     /// A collection of <see cref="BO.CourierInList"/> objects.
     /// </returns>
-    IEnumerable<BO.CourierInList> GetCouriers(int requesterId, bool? isActiveFilter = null, BO.CourierListSortBy? sortBy = null);
+    IEnumerable<BO.CourierInList> GetCouriers(
+        int requesterId, 
+        bool? isActiveFilter = null, 
+        BO.CourierListSortBy? sortBy = null);
 
     /// <summary>
     /// Retrieves full details of a specific courier.

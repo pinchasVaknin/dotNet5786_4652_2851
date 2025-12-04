@@ -5,19 +5,6 @@
     /// </summary>
     public interface IAdmin
     {
-        /// <summary>
-        /// Resets the entire database:
-        /// - Resets all configuration values to their initial defaults.
-        /// - Clears all data lists of all entities.
-        /// </summary>
-        void ResetDB();
-
-        /// <summary>
-        /// Initializes the database with initial data:
-        /// - First resets the database.
-        /// - Then fills all entities with initial values according to the project requirements.
-        /// </summary>
-        void InitializeDB();
 
         /// <summary>
         /// Retrieves the current logical system clock.
@@ -56,6 +43,22 @@
         /// A <see cref="BO.Config"/> object containing the configuration values
         /// to be applied.
         /// </param>
-        void SetConfig(BO.Config config);
+        void SetConfig(BO.Config config); ////////////
+
+        /// <summary>
+        /// Resets the entire database:
+        /// - Resets all configuration values to their initial defaults.
+        /// - Clears all data lists of all entities.
+        /// </summary>
+        void ResetDB();
+
+        /// <summary>
+        /// Initializes the database with initial data:
+        /// - First resets the database.
+        /// - Then fills all entities with initial values according to the project requirements.
+        /// </summary>
+        void InitializeDB();
+
+        
     }
 }
