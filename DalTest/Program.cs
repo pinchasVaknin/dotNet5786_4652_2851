@@ -222,13 +222,16 @@ internal class Program
     /// </summary>
     private static void ResetAllData()
     {
-        // clear all data entities
-        s_dal.Courier.DeleteAll();
-        s_dal.Order.DeleteAll();
-        s_dal.Delivery.DeleteAll();
 
+        //s_dal.Courier.DeleteAll(); // stage 2
+        //s_dal.Order.DeleteAll(); // stage 2
+        //s_dal.Delivery.DeleteAll(); // stage 2
         // reset configuration (e.g., clock and IDs)
-        s_dal.Config.Reset();
+        //s_dal.Config.Reset(); // stage 2
+
+
+        // clear all data entities
+        s_dal.ResetDB(); // stage 3
         Console.WriteLine("All lists cleared and Config reset.");
     }
 
@@ -464,8 +467,9 @@ internal class Program
     {
         int id = ReadInt("Order Id to update: "); // read order Id
         var o = s_dal.Order.Read(id); // get existing order
-        Console.WriteLine($"Current: {o}");
         if (o == null) throw new DalDoesNotExistException($"Order with ID={id} does not exist");
+        Console.WriteLine($"Current: {o}");
+        
 
         // read updated (optional) fields
         string detail = ReadOptional($"Detail [{o.OrderDetail}]: ", o.OrderDetail);
