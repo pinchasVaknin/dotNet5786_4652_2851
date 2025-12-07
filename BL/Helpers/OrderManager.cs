@@ -6,61 +6,14 @@ using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Runtime.InteropServices;
 
 internal static class OrderManager
 {
     private static IDal s_dal = Factory.Get;
 
-    internal static void SaveOrder(BO.Order Order) // create or update Order
-    {
-        try
-        {
-            // Map the business object Order to a data object Order
-            DO.Order doOrder = ConvertBoToDoOrder(Order);
-
-            // Create or update the Order in the data access layer
-            var existing = s_dal.Order.Read(c => c.OrderId == Order.OrderId);
-
-            if (existing is null)
-                s_dal.Order.Create(doOrder);
-            else
-                s_dal.Order.Update(doOrder);
-        }
-        catch (DalAlreadyExistsException ex)
-        {
-            // Wrap and rethrow any exceptions that occur during the save operation
-            throw new Exception("Failed to save Order", ex);
-        }
-        catch (DalXMLFileLoadCreateException ex)
-        {
-            // Wrap and rethrow any exceptions that occur during the save operation
-            throw new Exception("Failed to save Order", ex);
-        }
-        catch (DalDoesNotExistException ex)
-        {
-            // Wrap and rethrow any exceptions that occur during the save operation
-            throw new Exception("Failed to save Order", ex);
-        }
-    }
-
-    internal static BO.Order GetOrder(int id) // read Order by id
-    {
-        try
-        {
-            // Read the Order from the data access layer
-            DO.Order doOrder = s_dal.Order.Read(id)
-                ?? throw new Exception($"Order with ID={id} does not exist");
-
-            // Build and return the business object representation of the Order
-            return ConvertDoToBoOrder(doOrder);
-        }
-        catch (Exception ex)
-        {
-            // Wrap and rethrow any exceptions that occur during the process
-            throw new Exception("Failed to load Order", ex);
-        }
-    }
+   
+    
 
     internal static IEnumerable<BO.OrderInList> GetOrders() // read all Orders - query syntax
     {
@@ -133,36 +86,7 @@ internal static class OrderManager
         }
     }
 
-    internal static void DeleteOrders(int id)
-    {
-        try
-        {
-            // Check that order exists
-            DO.Order? doOrder = s_dal.Order.Read(id)
-                ?? throw new Exception($"Order with ID={id} does not exist");
-
-            // Check if order has an active delivery
-            bool hasActiveDelivery = s_dal.Delivery
-                .ReadAll(d => d.OrderId == id)
-                .Any(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
-
-            if (hasActiveDelivery)
-                throw new Exception($"Cannot delete order {id}: courier is on way with delivery.");
-
-            // Perform deletion
-            s_dal.Order.Delete(id);
-        }
-        catch (DalDoesNotExistException ex)
-        {
-            throw new Exception("Failed to delete order", ex);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Failed to delete order", ex);
-        }
-
-    }
-
+    
     //-------------------- BO Public Methods --------------------\\
 
     internal static BO.OrderInProgress? BuildOrderInProgress(DO.Order doOrder, DO.Delivery activeDelivery)
@@ -275,6 +199,182 @@ internal static class OrderManager
         catch (DalDoesNotExistException ex)
         {
             throw new Exception("Failed to build open orders in list", ex);
+        }
+    }
+
+    internal static int [] GetOrderStatusSummary()
+    {
+
+    }
+
+
+
+    // ============ BO CRUD Methods ======== \\ done
+
+    internal static void AddOrder(BO.Order order) // create order
+    {
+        try
+        {
+            var existing = s_dal.Order.Read(order.OrderId);
+            if (existing is not null)
+                throw new Exception($"Order with ID={order.OrderId} already exists.");
+
+            DO.Order doOrder = ConvertBoToDoOrder(order);
+            s_dal.Order.Create(doOrder);
+        }
+        catch (DO.DalAlreadyExistsException ex)
+        {
+            throw new Exception("Failed to add order", ex);
+        }
+        catch (DO.DalXMLFileLoadCreateException ex)
+        {
+            throw new Exception("Failed to add order", ex);
+        }
+    }
+
+    internal static void UpdateOrder(BO.Order order) // update order
+    {
+        try
+        {
+            // Map the business object order to a data object order
+            DO.Order doOrder = ConvertBoToDoOrder(order);
+
+            s_dal.Order.Update(doOrder);
+        }
+        catch (DO.DalXMLFileLoadCreateException ex)
+        {
+            // Wrap and rethrow any exceptions that occur during the save operation
+            throw new Exception("Failed to update order", ex);
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            // Wrap and rethrow any exceptions that occur during the save operation
+            throw new Exception("Failed to update order", ex);
+        }
+    }
+
+    internal static BO.Order GetOrder(int id) // read Order by id
+    {
+        try
+        {
+            // Read the Order from the data access layer
+            DO.Order doOrder = s_dal.Order.Read(id)
+                ?? throw new Exception($"Order with ID={id} does not exist");
+
+            // Build and return the business object representation of the Order
+            return ConvertDoToBoOrder(doOrder);
+        }
+        catch (Exception ex)
+        {
+            // Wrap and rethrow any exceptions that occur during the process
+            throw new Exception("Failed to load Order", ex);
+        }
+    }
+
+    internal static void DeleteOrder(int id)
+    {
+        try
+        {
+            // Check that order exists
+            DO.Order? doOrder = s_dal.Order.Read(id)
+                ?? throw new Exception($"Order with ID={id} does not exist");
+
+            // Check if order has an active delivery
+            bool hasActiveDelivery = s_dal.Delivery
+                .ReadAll(d => d.OrderId == id)
+                .Any(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
+
+            if (hasActiveDelivery)
+                throw new Exception($"Cannot delete order {id}: courier is on way with delivery.");
+
+            // Perform deletion
+            s_dal.Order.Delete(id);
+        }
+        catch (DalDoesNotExistException ex)
+        {
+            throw new Exception("Failed to delete order", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to delete order", ex);
+        }
+
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="courierId"></param>
+    /// <param name="deliveryId"></param>
+    /// <exception cref="Exception"></exception>
+
+    internal static void CancelOrder(int orderId)
+    {
+        try
+        {
+            var doOrder = s_dal.Order.Read(orderId)
+                ?? throw new Exception($"Order with ID={orderId} does not exist.");
+
+            var boOrder = ConvertDoToBoOrder(doOrder);
+
+            if (boOrder.OrderStatus == BO.OrderStatus.Open)
+            {
+                Delivery delivery = new Delivery
+                {
+                    DeliveryId = 0,
+                    OrderId = orderId,
+                    CourierId = 0,
+                    DeliveryMaxDistance = null,
+                    DeliveryDate = s_dal.Config.Clock,
+                    DeliveryFinishDate = s_dal.Config.Clock,
+                    ShipmentType = DO.ShipmentType.Standard,
+                    DeliveryFinishType = DO.DeliveryFinishType.Cancelled
+                };
+                s_dal.Delivery.Create(delivery);
+            }
+            if (boOrder.OrderStatus == BO.OrderStatus.InProgress)
+            {
+                var activeDeliveries = s_dal.Delivery
+                    .ReadAll(d => d.OrderId == orderId && d.DeliveryFinishType == DO.DeliveryFinishType.None).Single();
+
+                s_dal.Delivery.Update(
+                activeDeliveries with
+                {
+                    DeliveryFinishDate = s_dal.Config.Clock,
+                    DeliveryFinishType = DO.DeliveryFinishType.Cancelled
+                });
+            }
+
+            throw new Exception($"Order {orderId} is already canceled.");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to cancel order", ex);
+        }
+    }
+
+    internal static void CompleteOrderHandling(int courierId, int deliveryId)
+    {
+        try
+        {
+            var delivery = s_dal.Delivery.Read(deliveryId)
+                ?? throw new Exception($"Delivery with ID={deliveryId} does not exist.");
+
+            if (delivery.CourierId != courierId)
+                throw new Exception($"Courier with ID={courierId} is not assigned to delivery ID={deliveryId}.");
+
+            s_dal.Delivery.Update(
+                delivery with
+                {
+                    DeliveryFinishDate = s_dal.Config.Clock,
+                    DeliveryFinishType = DO.DeliveryFinishType.Completed
+                });
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to complete order handling", ex);
         }
     }
 
