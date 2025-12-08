@@ -32,7 +32,7 @@ internal static class Tools
         return distance;
     }
 
-    // Converts degrees to radians
+    /* Converts degrees to radians */
     private static double DegreesToRadians(double degrees) =>
         degrees * Math.PI / 180.0;
 
@@ -55,6 +55,39 @@ internal static class Tools
             return BO.ScheduleStatus.InRisk;
 
         return BO.ScheduleStatus.Late;
+    }
+
+    /// <summary>
+    /// Tries to convert an object to an enum value of type TEnum.
+    /// Supports: TEnum itself, string (name), numeric values.
+    /// </summary>
+    internal static bool TryConvertEnum<TEnum>(object? value, out TEnum result)
+        where TEnum : struct, Enum
+    {
+
+        if (value is TEnum enumVal)
+        {
+            result = enumVal;
+            return true;
+        }
+
+        if (value is string s &&
+            Enum.TryParse<TEnum>(s, ignoreCase: true, out var parsedByName))
+        {
+            result = parsedByName;
+            return true;
+        }
+
+        if (value is IConvertible &&
+            int.TryParse(Convert.ToString(value), out int intVal) &&
+            Enum.IsDefined(typeof(TEnum), intVal))
+        {
+            result = (TEnum)Enum.ToObject(typeof(TEnum), intVal);
+            return true;
+        }
+
+        result = default;
+        return false;
     }
 
 

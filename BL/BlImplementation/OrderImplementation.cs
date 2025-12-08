@@ -9,16 +9,12 @@ internal class OrderImplementation : IOrder
 
     //======== Order Operations ========\\
 
+    #region CRUD Operations
+
     public void AddOrder(int requesterId, BO.Order order)
     {
         Tools.EnsureAdmin(requesterId, nameof(AddOrder));
         OrderManager.AddOrder(order);
-    }
-
-    public void UpdateOrder(int requesterId, BO.Order order)
-    {
-        Tools.EnsureAdmin(requesterId, nameof(UpdateOrder));
-        OrderManager.UpdateOrder(order);
     }
 
     public BO.Order GetOrder(int requesterId, int orderId)
@@ -27,13 +23,70 @@ internal class OrderImplementation : IOrder
         return OrderManager.GetOrder(orderId);
     }
 
+    public void UpdateOrder(int requesterId, BO.Order order)
+    {
+        Tools.EnsureAdmin(requesterId, nameof(UpdateOrder));
+        OrderManager.UpdateOrder(order);
+    }
+
     public void DeleteOrder(int requesterId, int orderId)
     {
         Tools.EnsureAdmin(requesterId, nameof(DeleteOrder));
         OrderManager.DeleteOrder(orderId);
     }
 
+    #endregion
 
+    // ======== List Operations ========\\
+
+    #region List Operations
+
+    //======== List Retrieval ========\\
+
+    public IEnumerable<BO.OrderInList> GetOrders(
+           int requesterId,
+           BO.OrderInListFilterBy? filterField = null,
+           object? filterValue = null,
+           BO.OrderInListSortBy? sortBy = null)
+    {
+        Tools.EnsureAdmin(requesterId, nameof(GetOrders));
+        return OrderManager.GetOrders(filterField, filterValue, sortBy);
+    }
+
+
+    //======== Courier-Specific Lists ========\\
+    public IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesByCourier(
+            int requesterId,
+            int courierId,
+            BO.TypeOfOrder? typeFilter = null,
+            BO.ClosedDeliverySortBy? sortBy = null)
+    {
+        Tools.EnsureAdmin(requesterId, nameof(GetOrders));
+        return OrderManager.GetClosedDeliveriesByCourier(courierId, typeFilter, sortBy);
+    }
+
+    public IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(
+        int requesterId,
+        int courierId,
+        BO.TypeOfOrder? typeFilter = null,
+        BO.OpenOrderSortBy? sortBy = null)
+    {
+        Tools.EnsureAdmin(requesterId, nameof(GetOpenOrdersForCourier));
+        return OrderManager.GetOpenOrdersForCourier(courierId, typeFilter, sortBy);
+    }
+
+
+    #endregion
+
+    // ======== Order Management ========\\
+
+    #region Order Management
+
+    public int[] GetOrderStatusSummary(int requesterId)
+    {
+        Tools.EnsureAdmin(requesterId, nameof(GetOrderStatusSummary));
+        return OrderManager.GetOrderStatusSummary();
+    }
 
     public void CompleteOrderHandling(int requesterId, int courierId, int deliveryId)
     {
@@ -49,36 +102,10 @@ internal class OrderImplementation : IOrder
 
     public void AssignOrderToCourier(int requesterId, int courierId, int orderId)
     {
-        throw new NotImplementedException();
+        Tools.EnsureAdmin(requesterId, nameof(AssignOrderToCourier));
+        OrderManager.AssignOrderToCourier(courierId, orderId);
     }
 
-    
+    #endregion
 
-    
-
-    
-
-    public IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesByCourier(int requesterId, int courierId, TypeOfOrder? typeFilter = null, BO.ClosedDeliverySortBy? sortBy = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(int requesterId, int courierId, TypeOfOrder? typeFilter = null, BO.OpenOrderSortBy? sortBy = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    
-
-    public IEnumerable<BO.OrderInList> GetOrders(int requesterId, BO.OrderInListFilterBy? filterField = null, object? filterValue = null, BO.OrderInListSortBy? sortBy = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public int[] GetOrderStatusSummary(int requesterId)
-    {
-        throw new NotImplementedException();
-    }
-
-    
 }

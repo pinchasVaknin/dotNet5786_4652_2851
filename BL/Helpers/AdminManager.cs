@@ -195,15 +195,18 @@ internal static class AdminManager //stage 4
     /// Mutex to use from BL methods to get mutual exclusion while the simulator is running
     /// </summary>
     internal static readonly object BlMutex = new(); // BlMutex = s_dal; // This field is actually the same as s_dal - it is defined for readability of locks
+    
     /// <summary>
     /// The thread of the simulator
     /// </summary>
     private static volatile Thread? s_thread;
+
     /// <summary>
     /// The Interval for clock updating
     /// in minutes by second (default value is 1, will be set on Start())    
     /// </summary>
     private static int s_interval = 1;
+
     /// <summary>
     /// The flag that signs whether simulator is running
     /// 
