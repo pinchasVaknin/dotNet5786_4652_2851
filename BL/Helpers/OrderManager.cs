@@ -780,7 +780,6 @@ internal static class OrderManager
 
     #endregion Private Conversion Methods
 
-
     //=========== Not in use ===========\\
     internal static List<BO.OpenOrderInList> BuildOpenOrderInlist()
     {
