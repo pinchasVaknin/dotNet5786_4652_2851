@@ -43,12 +43,12 @@ internal class OrderImplementation : IOrder
     }
     public Order? Read(Func<Order, bool> filter)
     {
-        foreach (var item in DataSource.Orders) { if (filter(item)) return item; } return null;
+        foreach (var item in DataSource.Orders) { if (filter(item)) return item; } return null; //stage 2
     }
     public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null) //stage 2
-        => filter == null
-            ? DataSource.Orders.Select(item => item)
-            : DataSource.Orders.Where(filter);
+        => filter == null ?
+            DataSource.Orders.Select(item => item) :
+            DataSource.Orders.Where(filter);
     public void Update(Order item)
     {
         int newId = item.OrderId;

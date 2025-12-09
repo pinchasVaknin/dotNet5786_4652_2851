@@ -418,8 +418,8 @@ public static class Initialization
         s_dal.Config.AvgWalkSpeed = 5.0;         // Walk average
 
         // Time policy ranges
-        s_dal.Config.MaxDelTimeRnge = TimeSpan.FromHours(3);     // deliveries should usually complete within ~3h
-        s_dal.Config.RiskTimeRnge = TimeSpan.FromMinutes(30);    // if ETA exceeds by 30m → mark as "at risk"
+        s_dal.Config.MaxDelTimeRnge = TimeSpan.FromDays(2);     // deliveries should usually complete within ~48h
+        s_dal.Config.RiskTimeRnge = TimeSpan.FromHours(3);    // if ETA exceeds by 3h → mark as "at risk"
         s_dal.Config.UnactiveTimeRnge = TimeSpan.FromDays(45);   // 45 days of inactivity is considered stale
     }
 

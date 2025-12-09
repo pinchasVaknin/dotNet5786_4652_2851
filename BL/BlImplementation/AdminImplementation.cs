@@ -1,38 +1,59 @@
 ﻿namespace BlImplementation;
 
-using BlApi;
 using BO;
+using BlApi;
+using Helpers;
 
 
 internal class AdminImplementation : IAdmin
 {
-    public void ForwardClock(TimeUnit unit)
-    {
-        throw new NotImplementedException();
-    }
+
+    //======== Clock =========\\
+
+    #region Clock
 
     public DateTime GetClock()
     {
-        throw new NotImplementedException();
+        return AdminManager.Now;
     }
+
+    public void ForwardClock(TimeUnit unit)
+    {
+        AdminManager.ForwardClock(unit);
+    }
+
+    #endregion Clock
+
+    //======== Configuration Variables =========\\
+
+    #region Configuration Variables
 
     public Config GetConfig()
     {
-        throw new NotImplementedException();
+        return AdminManager.GetConfig();
     }
+
+    public void SetConfig(Config config)
+    {
+        AdminManager.SetConfig(config);
+    }
+
+    #endregion Configuration Variables
+
+    //======== Database Initialization / Reset =========\\
+
+    #region Database Initialization / Reset
 
     public void InitializeDB()
     {
-        throw new NotImplementedException();
+        AdminManager.InitializeDB();
     }
 
     public void ResetDB()
     {
-        throw new NotImplementedException();
+        AdminManager.ResetDB();
     }
 
-    public void SetConfig(Config config, ConfigFields field, object? value)
-    {
-        throw new NotImplementedException();
-    }
+    #endregion Database Initialization / Reset
+
 }

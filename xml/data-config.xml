@@ -2,13 +2,13 @@
 <config>
   <NextOrderId>0</NextOrderId>
   <NextDeliveryId>0</NextDeliveryId>
-  <Clock>04/12/2025 13:30:46</Clock>
+  <Clock>09/12/2025 17:36:03</Clock>
   <AdminId>1001</AdminId>
   <AdminPassword>ChangeMe!1234</AdminPassword>
   <CompanyAddress>Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem</CompanyAddress>
-  <Latitude>31.7479</Latitude>
-  <Longitude>35.188</Longitude>
-  <MaxAirDistance>25</MaxAirDistance>
+  <latitude></latitude>
+  <longitude></longitude>
+  <maxAirDistance></maxAirDistance>
   <AvgCarSpeed>35</AvgCarSpeed>
   <AvgMotorcycleSpeed>40</AvgMotorcycleSpeed>
   <AvgBicycleSpeed>15</AvgBicycleSpeed>
@@ -16,7 +16,4 @@
   <MaxDelTimeRnge>2.00:00:00</MaxDelTimeRnge>
   <RiskTimeRnge>03:00:00</RiskTimeRnge>
   <UnactiveTimeRnge>00:00:00</UnactiveTimeRnge>
-  <latitude></latitude>
-  <longitude></longitude>
-  <maxAirDistance></maxAirDistance>
 </config>

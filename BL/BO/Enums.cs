@@ -1,6 +1,8 @@
 ﻿namespace BO;
 
-//--------------- From DAL Layer ---------------\\
+// ============ For DAL Layer =========== \\
+
+#region DAL Enums Conversion Comments
 
 /// <summary>
 /// Represents the logical status of an order in the system.
@@ -67,8 +69,15 @@ public enum DeliveryFinishType
     None
 }
 
+#endregion DAL Enums Conversion Comments
 
-//------------ For BL ICourier ------------\\
+// ============ For BL Layer ============ \\
+
+#region BL Enums Comments General
+
+// ============ For BL Layer ICourier ============ \\
+
+#region BL Enums Comments ICourier
 
 /// <summary>
 /// Represents the logical role of a user in the system(for login & permissions).
@@ -94,8 +103,11 @@ public enum CourierListSortBy
     OrderIdInHandle
 }
 
+#endregion BL Enums Comments ICourier
 
-//------------ For BL IAdmin ------------\\
+// ============ For BL Layer IConfig ============ \\
+
+#region BL Enums Comments IConfig
 
 /// <summary>
 /// Units of time used to advance the logical system clock.
@@ -127,7 +139,11 @@ public enum ConfigFields
     UnactiveTimeRnge
 }
 
-//------------ For BL IOrder ------------\\
+#endregion BL Enums Comments IConfig
+
+// ============ For BL Layer IOrder ============ \\
+
+#region BL Enums Comments IOrder
 
 /// <summary>
 /// Represents the timing status of an order or delivery
@@ -288,3 +304,7 @@ public enum OpenOrderFilterBy
     /// <summary>Filter by order type (BO.TypeOfOrder).</summary>
     TypeOfOrder
 }
+
+#endregion BL Enums Comments IOrder
+
+#endregion BL Enums Comments General

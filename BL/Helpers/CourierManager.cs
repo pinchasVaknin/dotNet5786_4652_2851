@@ -2,8 +2,9 @@
 
 using DalApi;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Security.Cryptography;
 
 internal static class CourierManager
@@ -27,7 +28,7 @@ internal static class CourierManager
                 if (config.AdminPassword == password)
                     return BO.UserRole.Admin;
 
-                else throw new Exception("Incorrect password for admin user");
+                else throw new BO.BlInvalidPasswordException("Incorrect password for admin user");
             }
 
             var courierUser = s_dal.Courier.Read(userId);
@@ -37,15 +38,15 @@ internal static class CourierManager
                 if (courierUser.CourierPassword == password)
                     return BO.UserRole.Courier;
 
-                else throw new Exception("Incorrect password for courier user");
+                else throw new BO.BlInvalidPasswordException("Incorrect password for courier user");
             }
 
-            throw new Exception("User ID does not exist");
+            throw new BO.BlUserNotFoundException("User ID does not exist");
 
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to get user role", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to get user role", ex);
         }
     }
 
@@ -56,7 +57,6 @@ internal static class CourierManager
     {
         try
         {
-
             var boCouriers =
                 from c in s_dal.Courier.ReadAll()
                 select GetCourierInList(c.CourierId);
@@ -96,7 +96,7 @@ internal static class CourierManager
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to load couriers list", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to load couriers list", ex);
         }
     }
 
@@ -122,7 +122,7 @@ internal static class CourierManager
         {
 
             var doCourier = s_dal.Courier.Read(courierId) ??
-                throw new Exception($"Courier with ID={courierId} does not exist");
+                throw new BO.BlDoesNotExistException($"Courier with ID={courierId} does not exist");
 
             var boCourier = ConvertDoToBoCourier(doCourier);
 
@@ -140,11 +140,11 @@ internal static class CourierManager
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to load couriers list (query syntax)", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to load couriers list (query syntax)", ex);
         }
     }
 
-    #endregion
+    #endregion Login and List Retrieval
 
     //======== Courier Operations ========\\
 
@@ -156,18 +156,18 @@ internal static class CourierManager
         {
             var existing = s_dal.Courier.Read(courier.CourierId);
             if (existing is not null)
-                throw new Exception($"Courier with ID={courier.CourierId} already exists.");
+                throw new BO.BlAlreadyExistsException($"Courier with ID={courier.CourierId} already exists.");
 
             DO.Courier doCourier = ConvertBoToDoCourier(courier);
             s_dal.Courier.Create(doCourier);
         }
         catch (DO.DalAlreadyExistsException ex)
         {
-            throw new Exception("Failed to add courier", ex);
+            throw new BO.BlAlreadyExistsException("Failed to add courier", ex);
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to add courier", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to add courier", ex);
         }
     }
 
@@ -183,15 +183,15 @@ internal static class CourierManager
         {
             // Read the courier from the data access layer
             DO.Courier doCourier = s_dal.Courier.Read(id)
-                ?? throw new Exception($"Courier with ID={id} does not exist");
+                ?? throw new BO.BlDoesNotExistException($"Courier with ID={id} does not exist");
 
             // Build and return the business object representation of the courier
             return ConvertDoToBoCourier(doCourier);
         }
-        catch (Exception ex)
+        catch (DO.DalXMLFileLoadCreateException ex)
         {
-            // Wrap and rethrow any exceptions that occur during the process
-            throw new Exception("Failed to load courier", ex);
+            // Wrap and rethrow any exceptions that occur during the load operation
+            throw new BO.BlXMLFileLoadCreateException("Failed to load courier", ex);
         }
     }
 
@@ -207,12 +207,12 @@ internal static class CourierManager
         catch (DO.DalXMLFileLoadCreateException ex)
         {
             // Wrap and rethrow any exceptions that occur during the save operation
-            throw new Exception("Failed to update courier", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to update courier", ex);
         }
         catch (DO.DalDoesNotExistException ex)
         {
             // Wrap and rethrow any exceptions that occur during the save operation
-            throw new Exception("Failed to update courier", ex);
+            throw new BO.BlDoesNotExistException("Failed to update courier", ex);
         }
     }
 
@@ -230,7 +230,7 @@ internal static class CourierManager
         {
             // Check that courier exists
             DO.Courier? doCourier = s_dal.Courier.Read(id)
-                ?? throw new Exception($"Courier with ID={id} does not exist");
+                ?? throw new BO.BlDoesNotExistException($"Courier with ID={id} does not exist");
 
             // Check if courier has an active delivery
             bool hasActiveDelivery = s_dal.Delivery
@@ -238,23 +238,23 @@ internal static class CourierManager
                 .Any(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
 
             if (hasActiveDelivery)
-                throw new Exception($"Cannot delete courier {id}: courier has an active delivery.");
+                throw new BO.BlCourierHasActiveDeliveryException($"Cannot delete courier {id}: courier has an active delivery.");
 
             // Perform deletion
             s_dal.Courier.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception("Failed to delete courier", ex);
+            throw new BO.BlDoesNotExistException("Failed to delete courier", ex);
         }
-        catch (Exception ex)
+        catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to delete courier", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to delete courier", ex);
         }
 
     }
 
-    #endregion
+    #endregion CRUD Methods
 
     //======== Private Conversion Methods ========\\
 
@@ -296,7 +296,7 @@ internal static class CourierManager
         var orderInProgress = activeDelivery is null ?
                                 null :
                                 OrderManager.BuildOrderInProgress(s_dal.Order.Read(activeDelivery.OrderId) ??
-                                throw new Exception($"Order {activeDelivery.OrderId} for courier {doCourier.CourierId} not found"),
+                                throw new BO.BlDoesNotExistException($"Order {activeDelivery.OrderId} for courier {doCourier.CourierId} not found"),
                                 activeDelivery);
 
         return new BO.Courier
@@ -340,5 +340,76 @@ internal static class CourierManager
             CourierVehicleType: (DO.CourierVehicleType)boCourier.VehicleType // enum
         );
 
-    #endregion
+    #endregion Private Conversion Methods
+
+    //======== Periodic Updates ========\\
+
+    #region Periodic Updates
+
+    /// <summary>
+    /// Periodic updates for couriers that depend on the logical clock.
+    /// Currently: updates CourierEnabled based on time since last closed delivery
+    /// and the UnactiveTimeRnge configuration.
+    /// </summary>
+    /// <param name="oldClock">Previous clock value before the update.</param>
+    /// <param name="newClock">New clock value after the update.</param>
+    internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
+    {
+        try
+        {
+            // Get all active couriers
+            var activeCouriers = s_dal.Courier.ReadAll(c => c.CourierEnabled);
+
+            foreach (var courier in activeCouriers)
+            {
+                UpdateCourierActivityByClosedDeliveries(courier, newClock);
+            }
+        }
+        catch (DO.DalXMLFileLoadCreateException ex)
+        {
+            throw new BO.BlXMLFileLoadCreateException("Failed to perform periodic courier updates", ex);
+
+        }
+    }
+
+    /// <summary>
+    /// Updates a single courier's CourierEnabled flag according to the time that
+    /// has passed since their last closed delivery.
+    /// </summary>
+    private static void UpdateCourierActivityByClosedDeliveries(DO.Courier courier, DateTime currentClock)
+    {
+        try
+        {
+            var lastClosedDelivery = s_dal.Delivery
+            .ReadAll(d => d.CourierId == courier.CourierId &&
+                          d.DeliveryFinishType != DO.DeliveryFinishType.None)
+            .OrderByDescending(d => d.DeliveryFinishDate)
+            .FirstOrDefault();
+
+            if (lastClosedDelivery is null)
+                return;
+
+            var config = AdminManager.GetConfig();
+
+            var timePassed = currentClock - lastClosedDelivery.DeliveryFinishDate;
+
+            bool stillActive = timePassed < config.UnactiveTimeRnge;
+
+            if (courier.CourierEnabled != stillActive)
+            {
+                var updatedCourier = courier with { CourierEnabled = stillActive };
+                s_dal.Courier.Update(updatedCourier);
+            }
+        }
+        catch (DO.DalXMLFileLoadCreateException ex)
+        {
+            throw new BO.BlXMLFileLoadCreateException("Failed to update courier activity", ex);
+        }
+        catch (DO.DalDoesNotExistException ex)
+        {
+            throw new BO.BlDoesNotExistException("Failed to update courier activity", ex);
+        }
+    }
+
+    #endregion Periodic Updates
 }
