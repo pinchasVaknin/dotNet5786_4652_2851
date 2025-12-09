@@ -631,6 +631,8 @@ internal static class OrderManager
             if (activeDelivery is null) return null;
 
             var thisOrder = GetOrder(doOrder.OrderId);
+            var thisCurier = CourierManager.GetCourier(activeDelivery.CourierId);
+            var config = AdminManager.GetConfig();
 
             var expectedDeliveryTime = thisOrder.ExpectedDeliveryTime ?? thisOrder.MaxDeliveryTime;
 
@@ -646,7 +648,16 @@ internal static class OrderManager
                     TimeSpan.Zero :
                 (activeDelivery.DeliveryDate + maxRange) - s_dal.Config.Clock;
 
-            double? actualDistance = activeDelivery.DeliveryMaxDistance;
+            double? actualDistance = null;
+            if (config.Latitude != null && config.Longitude != null)
+            {
+                actualDistance = Tools.GetActualDistanceAsync(
+                doOrder.OrderLatitude,
+                doOrder.OrderLongitude,
+                config.Latitude.Value,
+                config.Longitude.Value,
+                (DO.CourierVehicleType)thisCurier.VehicleType).Result;
+            }
 
             return new BO.OrderInProgress
             {

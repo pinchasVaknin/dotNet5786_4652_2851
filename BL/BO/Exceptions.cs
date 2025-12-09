@@ -9,7 +9,7 @@ public class BlDoesNotExistException : Exception
 {
     public BlDoesNotExistException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlDoesNotExistException(string message, Exception DalException) : base(message) { }
+    public BlDoesNotExistException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -17,7 +17,7 @@ public class BlAlreadyExistsException : Exception
 {
     public BlAlreadyExistsException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlAlreadyExistsException(string message, Exception DalException) : base(message) { }
+    public BlAlreadyExistsException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -25,7 +25,7 @@ public class BlInvalidIntegerException : Exception
 {
     public BlInvalidIntegerException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlInvalidIntegerException(string message, Exception DalException) : base(message) { }
+    public BlInvalidIntegerException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -33,7 +33,7 @@ public class BlInvalidDoubleException : Exception
 {
     public BlInvalidDoubleException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlInvalidDoubleException(string message, Exception DalException) : base(message) { }
+    public BlInvalidDoubleException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -41,7 +41,7 @@ public class BlInvalidStringException : Exception
 {
     public BlInvalidStringException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlInvalidStringException(string message, Exception DalException) : base(message) { }
+    public BlInvalidStringException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -49,7 +49,7 @@ public class BlInvalidTimeSpanException : Exception
 {
     public BlInvalidTimeSpanException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlInvalidTimeSpanException(string message, Exception DalException) : base(message) { }
+    public BlInvalidTimeSpanException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -57,7 +57,7 @@ public class BlInvalidDateException : Exception
 {
     public BlInvalidDateException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlInvalidDateException(string message, Exception DalException) : base(message) { }
+    public BlInvalidDateException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -65,7 +65,7 @@ public class BlInvalidVehicleTypeException : Exception
 {
     public BlInvalidVehicleTypeException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlInvalidVehicleTypeException(string message, Exception DalException) : base(message) { }
+    public BlInvalidVehicleTypeException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -73,7 +73,7 @@ public class BlInvalidShipmentTypeException : Exception
 {
     public BlInvalidShipmentTypeException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlInvalidShipmentTypeException(string message, Exception DalException) : base(message) { }
+    public BlInvalidShipmentTypeException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -81,7 +81,7 @@ public class BlInvalidDeliveryStatusException : Exception
 {
     public BlInvalidDeliveryStatusException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlInvalidDeliveryStatusException(string message, Exception DalException) : base(message) { }
+    public BlInvalidDeliveryStatusException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 [Serializable]
@@ -89,7 +89,7 @@ public class BlXMLFileLoadCreateException : Exception
 {
     public BlXMLFileLoadCreateException(string? message) : base(message) { }
     // Exception chaining constructor to wrap DAL exceptions
-    public BlXMLFileLoadCreateException(string message, Exception DalException) : base(message) { }
+    public BlXMLFileLoadCreateException(string message, Exception DalException) : base(message, DalException) { }
 }
 
 #endregion DalToBlException

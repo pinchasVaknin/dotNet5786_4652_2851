@@ -3,6 +3,8 @@
 using BO;
 using DalApi;
 using DO;
+using System.Text.Json;
+using System.Text.Json;
 
 internal static class Tools
 {
@@ -109,5 +111,52 @@ internal static class Tools
         if (requesterId != config.AdminId)
             throw new BlAdminPermissionException($"User {requesterId} is not authorized to perform action '{actionName}'.");
     }
+
+
+
+
+
+
+    internal static async Task<double> GetActualDistanceAsync(
+        double fromLat, double fromLon,
+        double toLat, double toLon,
+        DO.CourierVehicleType vehicleType)
+    {
+        try
+        {
+            string profile = vehicleType switch
+            {
+                DO.CourierVehicleType.Car => "car",
+                DO.CourierVehicleType.Motorcycle => "car",
+                DO.CourierVehicleType.Bicycle => "bike",
+                _ => "foot"
+            };
+
+            string url = $"https://router.project-osrm.org/table/v1/{profile}/{fromLon},{fromLat};{toLon},{toLat}?annotations=distance";
+
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonString = await response.Content.ReadAsStringAsync();
+                    using JsonDocument doc = JsonDocument.Parse(jsonString);
+                    JsonElement root = doc.RootElement;
+
+                    double distance = root.GetProperty("distances")[0][1].GetDouble();
+                    return distance / 1000; // km
+                }
+            }
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error calculating distance: {ex.Message}");
+            return 0;
+        }
+    }
+
+
+
 }
 
