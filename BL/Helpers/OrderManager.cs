@@ -22,18 +22,18 @@ internal static class OrderManager
         {
             var existing = s_dal.Order.Read(order.OrderId);
             if (existing is not null)
-                throw new Exception($"Order with ID={order.OrderId} already exists.");
+                throw new BO.BlAlreadyExistsException($"Order with ID={order.OrderId} already exists.");
 
             DO.Order doOrder = ConvertBoToDoOrder(order);
             s_dal.Order.Create(doOrder);
         }
         catch (DO.DalAlreadyExistsException ex)
         {
-            throw new Exception("Failed to add order", ex);
+            throw new BO.BlAlreadyExistsException("Failed to add order", ex);
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to add order", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to add order", ex);
         }
     }
 
@@ -43,15 +43,20 @@ internal static class OrderManager
         {
             // Read the Order from the data access layer
             DO.Order doOrder = s_dal.Order.Read(id)
-                ?? throw new Exception($"Order with ID={id} does not exist");
+                ?? throw new BO.BlDoesNotExistException($"Order with ID={id} does not exist");
 
             // Build and return the business object representation of the Order
             return ConvertDoToBoOrder(doOrder);
         }
-        catch (Exception ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            // Wrap and rethrow any exceptions that occur during the process
-            throw new Exception("Failed to load Order", ex);
+            // Wrap and rethrow any exceptions that occur during the read operation
+            throw new BO.BlDoesNotExistException("Failed to get order", ex);
+        }
+        catch (DO.DalXMLFileLoadCreateException ex)
+        {
+            // Wrap and rethrow any exceptions that occur during the read operation
+            throw new BO.BlXMLFileLoadCreateException("Failed to get order", ex);
         }
     }
 
@@ -67,12 +72,12 @@ internal static class OrderManager
         catch (DO.DalXMLFileLoadCreateException ex)
         {
             // Wrap and rethrow any exceptions that occur during the save operation
-            throw new Exception("Failed to update order", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to update order", ex);
         }
         catch (DO.DalDoesNotExistException ex)
         {
             // Wrap and rethrow any exceptions that occur during the save operation
-            throw new Exception("Failed to update order", ex);
+            throw new BO.BlDoesNotExistException("Failed to update order", ex);
         }
     }
 
@@ -82,7 +87,7 @@ internal static class OrderManager
         {
             // Check that order exists
             DO.Order? doOrder = s_dal.Order.Read(id)
-                ?? throw new Exception($"Order with ID={id} does not exist");
+                ?? throw new BO.BlDoesNotExistException($"Order with ID={id} does not exist");
 
             // Check if order has an active delivery
             bool hasActiveDelivery = s_dal.Delivery
@@ -90,23 +95,23 @@ internal static class OrderManager
                 .Any(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
 
             if (hasActiveDelivery)
-                throw new Exception($"Cannot delete order {id}: courier is on way with delivery.");
+                throw new BO.BlOrderHasActiveDeliveryException($"Cannot delete order {id}: courier is on way with delivery.");
 
             // Perform deletion
             s_dal.Order.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception("Failed to delete order", ex);
+            throw new BO.BlDoesNotExistException("Failed to delete order", ex);
         }
-        catch (Exception ex)
+        catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to delete order", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to delete order", ex);
         }
 
     }
 
-    #endregion
+    #endregion BO CRUD Methods
 
     // ============ Order Action Methods ======== \\
 
@@ -118,7 +123,7 @@ internal static class OrderManager
         try
         {
             var doOrder = s_dal.Order.Read(orderId)
-                ?? throw new Exception($"Order with ID={orderId} does not exist.");
+                ?? throw new BO.BlDoesNotExistException($"Order with ID={orderId} does not exist.");
 
             var boOrder = ConvertDoToBoOrder(doOrder);
 
@@ -150,11 +155,15 @@ internal static class OrderManager
                 });
             }
 
-            throw new Exception($"Order {orderId} is already canceled.");
+            throw new BO.BlOrderAlreadyCanceledException($"Order {orderId} is already canceled.");
         }
-        catch (Exception ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception("Failed to cancel order", ex);
+            throw new BO.BlDoesNotExistException("Failed to cancel order", ex);
+        }
+        catch (DO.DalAlreadyExistsException ex)
+        {
+            throw new BO.BlAlreadyExistsException("Failed to cancel order", ex);
         }
     }
 
@@ -163,10 +172,11 @@ internal static class OrderManager
         try
         {
             var delivery = s_dal.Delivery.Read(deliveryId)
-                ?? throw new Exception($"Delivery with ID={deliveryId} does not exist.");
+                ?? throw new BO.BlDoesNotExistException($"Delivery with ID={deliveryId} does not exist.");
 
             if (delivery.CourierId != courierId)
-                throw new Exception($"Courier with ID={courierId} is not assigned to delivery ID={deliveryId}.");
+                throw new BO.BlCourierNotAssignedToDeliveryException(
+                    $"Courier with ID={courierId} is not assigned to delivery ID={deliveryId}.");
 
             s_dal.Delivery.Update(
                 delivery with
@@ -176,9 +186,9 @@ internal static class OrderManager
                 });
 
         }
-        catch (Exception ex)
+        catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception("Failed to complete order handling", ex);
+            throw new BO.BlDoesNotExistException("Failed to complete order handling", ex);
         }
     }
 
@@ -196,11 +206,12 @@ internal static class OrderManager
                 ?? throw new DO.DalDoesNotExistException($"Courier with ID={courierId} does not exist.");
 
             if (!doCourier.CourierEnabled)
-                throw new Exception($"Courier {courierId} is disabled and cannot take orders.");
+                throw new BO.BlCourierDisabledException($"Courier {courierId} is disabled and cannot take orders.");
 
             BO.OrderStatus orderStatus = GetOrderStatus(doOrder);
             if (orderStatus != BO.OrderStatus.Open)
-                throw new Exception($"Order {orderId} is not open for assignment (current status: {orderStatus}).");
+                throw new BO.BlOrderNotOpenForAssignmentException(
+                    $"Order {orderId} is not open for assignment (current status: {orderStatus}).");
 
             bool hasActiveDelivery =
                 s_dal.Delivery.ReadAll(d =>
@@ -209,7 +220,7 @@ internal static class OrderManager
                 .Any();
 
             if (hasActiveDelivery)
-                throw new Exception($"Order {orderId} already has an active delivery.");
+                throw new BO.BlOrderHasActiveDeliveryException($"Order {orderId} already has an active delivery.");
 
             var newDelivery = new DO.Delivery(
                 DeliveryId: 0,
@@ -226,11 +237,11 @@ internal static class OrderManager
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception("Order or courier not found for assignment.", ex);
+            throw new BO.BlDoesNotExistException("Order or courier not found for assignment.", ex);
         }
         catch (DO.DalAlreadyExistsException ex)
         {
-            throw new Exception("Delivery already exists for this order.", ex);
+            throw new BO.BlAlreadyExistsException("Delivery already exists for this order.", ex);
         }
     }
 
@@ -275,8 +286,7 @@ internal static class OrderManager
                     BO.OrderStatus.Refused
 
                 let ScheduleStatus =
-                    Tools.CalcScheduleStatus(o.OrderDate, s_dal.Config.Clock, lastDelivery?.DeliveryFinishDate,
-                                             maxRangeWithoutRisk, maxRange)
+                    Tools.CalcScheduleStatus(o.OrderDate, lastDelivery?.DeliveryFinishDate)
 
                 let TimeLeftToFinish =
                         lastDelivery is null || (lastDelivery.DeliveryDate + maxRange) < s_dal.Config.Clock ?
@@ -365,7 +375,7 @@ internal static class OrderManager
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to load orders list (query syntax)", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to load orders list (query syntax)", ex);
         }
     }
 
@@ -425,7 +435,7 @@ internal static class OrderManager
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to load closed deliveries list for courier.", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to load closed deliveries list for courier.", ex);
         }
     }
 
@@ -469,8 +479,8 @@ internal static class OrderManager
                     OrderSize = fullOrder.OrderSize,
                     CustomerAddress = fullOrder.OrderAddress,
                     AirDistance = o.AirDistance,
-                    ActualDistance = null,          
-                    EstimatedActualTime = null,   
+                    ActualDistance = null,
+                    EstimatedActualTime = null,
                     ScheduleStatus = o.ScheduleStatus,
                     TimeLeftToFinish = o.TimeLeftToFinish,
                     MaxDeliveryTime = fullOrder.MaxDeliveryTime
@@ -502,15 +512,15 @@ internal static class OrderManager
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception("Courier not found while building open orders list.", ex);
+            throw new BO.BlDoesNotExistException("Courier not found while building open orders list.", ex);
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new Exception("Failed to load open orders list.", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to load open orders list.", ex);
         }
     }
 
-    #endregion
+    #endregion List Retrieval Methods
 
     // ============ Status Summary Methods ============ \\
 
@@ -564,8 +574,8 @@ internal static class OrderManager
             return BO.OrderStatus.Open;
 
         var lastDelivery = deliveries
-            .OrderByDescending(d => d.DeliveryDate) 
-            .ThenByDescending(d => d.DeliveryId) 
+            .OrderByDescending(d => d.DeliveryDate)
+            .ThenByDescending(d => d.DeliveryId)
             .First();
 
         if (lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.None)
@@ -598,24 +608,17 @@ internal static class OrderManager
             deliveries
                 .Where(d => d.DeliveryFinishType != DO.DeliveryFinishType.None)
                 .OrderByDescending(d => d.DeliveryFinishDate)
-                .Select(d => (DateTime?)d.DeliveryFinishDate) 
-                .FirstOrDefault();                          
-
-        DateTime clock = s_dal.Config.Clock;
-        TimeSpan maxRange = s_dal.Config.MaxDelTimeRnge;
-        TimeSpan maxRangeWithoutRisk = maxRange - s_dal.Config.RiskTimeRnge;
+                .Select(d => (DateTime?)d.DeliveryFinishDate)
+                .FirstOrDefault();
 
         return Tools.CalcScheduleStatus(
             order.OrderDate,
-            clock,
-            lastFinishDate,      
-            maxRangeWithoutRisk,
-            maxRange);
+            lastFinishDate);
     }
 
-    #endregion
+    #endregion Status Summary Methods
 
-    #endregion
+    #endregion Order Action Methods
 
     //  ============ Helper Out Methods ======== \\
 
@@ -636,8 +639,7 @@ internal static class OrderManager
             var maxRange = s_dal.Config.MaxDelTimeRnge;
             var maxRangeWithoutRisk = maxRange - s_dal.Config.RiskTimeRnge;
 
-            var scheduleStatus = Tools.CalcScheduleStatus(doOrder.OrderDate, s_dal.Config.Clock, null,
-                                                            maxRangeWithoutRisk, maxRange);
+            var scheduleStatus = Tools.CalcScheduleStatus(doOrder.OrderDate, null);
 
             TimeSpan timeLeftToFinish =
                 (activeDelivery.DeliveryDate + maxRange) < s_dal.Config.Clock ?
@@ -668,18 +670,18 @@ internal static class OrderManager
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception("Failed to build orders in progress list", ex);
+            throw new BO.BlDoesNotExistException("Failed to build orders in progress list", ex);
         }
 
     }
 
-    #endregion
+    #endregion Helper Out Methods
 
-    //======== Private Conversion Methods ========\\
+    //======== Conversion Methods ========\\
 
     #region Private Conversion Methods
 
-    private static BO.Order ConvertDoToBoOrder(DO.Order doOrder) // build BO.Order from DO.Order
+    internal static BO.Order ConvertDoToBoOrder(DO.Order doOrder) // build BO.Order from DO.Order
     {
         // Maximum allowed delivery time range from configuration
         var maxRange = s_dal.Config.MaxDelTimeRnge;
@@ -708,8 +710,7 @@ internal static class OrderManager
 
         var maxDelTime = doOrder.OrderDate + s_dal.Config.MaxDelTimeRnge;
 
-        var ScheduleStatus = Tools.CalcScheduleStatus(doOrder.OrderDate, s_dal.Config.Clock, lastDelivery?.DeliveryFinishDate,
-                                                        maxRangeWithoutRisk, maxRange);
+        var ScheduleStatus = Tools.CalcScheduleStatus(doOrder.OrderDate, lastDelivery?.DeliveryFinishDate);
 
         var TimeLeftToFinish =
                 lastDelivery is null || (lastDelivery.DeliveryDate + maxRange) < s_dal.Config.Clock ?
@@ -760,7 +761,7 @@ internal static class OrderManager
         };
     }
 
-    private static DO.Order ConvertBoToDoOrder(BO.Order boOrder) =>
+    internal static DO.Order ConvertBoToDoOrder(BO.Order boOrder) =>
     new DO.Order(
         OrderId: boOrder.OrderId,
         OrderStatus: boOrder.OrderStatus.ToString(),
@@ -777,7 +778,7 @@ internal static class OrderManager
         TypeOfOrder: (DO.TypeOfOrder)boOrder.TypeOfOrder
     );
 
-    #endregion
+    #endregion Private Conversion Methods
 
 
     //=========== Not in use ===========\\
@@ -838,7 +839,7 @@ internal static class OrderManager
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new Exception("Failed to build open orders in list", ex);
+            throw new BO.BlDoesNotExistException("Failed to build open orders in list", ex);
         }
     }
 

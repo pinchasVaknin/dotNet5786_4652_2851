@@ -1,5 +1,5 @@
 ﻿namespace Helpers;
-using BO;
+using DalApi;
 using System.Runtime.CompilerServices;
 
 /// <summary>
@@ -8,17 +8,28 @@ using System.Runtime.CompilerServices;
 internal static class AdminManager //stage 4
 {
     #region Stage 4-7
+
+    //======== DAL & Sync Objects ========\\
+
+    #region Data Access Layer Instance
+
     private static readonly DalApi.IDal s_dal = DalApi.Factory.Get; //stage 4
-    
-    /// <summary>
-    /// Property for providing current application's clock value for any BL class that may need it
-    /// </summary>
-    internal static DateTime Now { get => s_dal.Config.Clock; } //stage 4
 
     internal static event Action? ConfigUpdatedObservers; //stage 5 - for config update observers
     internal static event Action? ClockUpdatedObservers; //stage 5 - for clock update observers
 
     private static Task? _periodicTask = null; //stage 7
+
+    #endregion Data Access Layer Instance
+
+    //======== Clock =========\\
+
+    #region Clock TimeUnit Enum
+
+    /// <summary>
+    /// Property for providing current application's clock value for any BL class that may need it
+    /// </summary>
+    internal static DateTime Now { get => s_dal.Config.Clock; } //stage 4
 
     /// <summary>
     /// Method to update application's clock from any BL class as may be required
@@ -36,7 +47,7 @@ internal static class AdminManager //stage 4
         // - (students become not active after 5 years etc.)
 
         //TO_DO: //stage 4
-        StudentManager.PeriodicStudentsUpdates(oldClock, newClock); //stage 4. to be removed in stage 7 and replaced as below
+        CourierManager.PeriodicCouriersUpdates(oldClock, newClock); //stage 4. to be removed in stage 7 and replaced as below
         //...
 
         //TO_DO: //stage 7
@@ -48,12 +59,42 @@ internal static class AdminManager //stage 4
         ClockUpdatedObservers?.Invoke(); //prepared for stage 5
     }
 
+    internal static void ForwardClock(BO.TimeUnit unit) //stage 4
+    {
+        switch (unit) //stage 4
+        {
+            case BO.TimeUnit.Minute:
+                UpdateClock(Now.AddMinutes(1));
+                break;
+            case BO.TimeUnit.Hour:
+                UpdateClock(Now.AddHours(1));
+                break;
+            case BO.TimeUnit.Day:
+                UpdateClock(Now.AddDays(1));
+                break;
+            case BO.TimeUnit.Month:
+                UpdateClock(Now.AddMonths(1));
+                break;
+            case BO.TimeUnit.Year:
+                UpdateClock(Now.AddYears(1));
+                break;
+            default:
+                throw new BO.BlUnknownTimeUnitException($"Unknown TimeUnit value: {unit}");
+        }
+    }
+
+    #endregion Clock TimeUnit Enum
+
+    //======== Configuration Variables =========\\
+
+    #region Configuration Variables
+
     /// <summary>
     /// Method for providing current configuration variables values for any BL class that may need it
     /// </summary>
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
-    internal static Config GetConfig() //stage 4
-    => new Config()
+    internal static BO.Config GetConfig() //stage 4
+    => new BO.Config()
     {
         Clock = s_dal.Config.Clock,
         AdminId = s_dal.Config.AdminId,
@@ -75,7 +116,7 @@ internal static class AdminManager //stage 4
     /// Method for setting current configuration variables values for any BL class that may need it
     /// </summary>
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
-    internal static void SetConfig(Config configuration) //stage 4
+    internal static void SetConfig(BO.Config configuration) //stage 4
     {
         bool configChanged = false; // stage 5
 
@@ -167,6 +208,13 @@ internal static class AdminManager //stage 4
         if (configChanged) // stage 5
             ConfigUpdatedObservers?.Invoke(); // stage 5
     }
+
+    #endregion Configuration Variables
+
+    //======== Database Initialization / Reset =========\\
+
+    #region Database Initialization / Reset
+
     internal static void ResetDB() //stage 4-7
     {
         lock (BlMutex) //stage 7
@@ -187,10 +235,12 @@ internal static class AdminManager //stage 4
         }
     }
 
+    #endregion Database Initialization / Reset
+
     #endregion Stage 4-7
 
     #region Stage 7 base
-
+    
     /// <summary>    
     /// Mutex to use from BL methods to get mutual exclusion while the simulator is running
     /// </summary>
@@ -216,7 +266,7 @@ internal static class AdminManager //stage 4
     public static void ThrowOnSimulatorIsRunning()
     {
         if (s_thread is not null)
-            throw new BO.BLTemporaryNotAvailableException("Cannot perform the operation since Simulator is running");
+            throw new BO.BlTemporaryNotAvailableException("Cannot perform the operation since Simulator is running");
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7                                                 
@@ -254,8 +304,11 @@ internal static class AdminManager //stage 4
             //TO_DO: //stage 7
             //Add calls here to any logic simulation that was required in stage 7
             //for example: course registration simulation
-            if (_simulateTask is null || _simulateTask.IsCompleted)//stage 7
-                _simulateTask = Task.Run(() => StudentManager.SimulateCourseRegistrationAndGrade());
+
+
+            //if (_simulateTask is null || _simulateTask.IsCompleted)//stage 7
+            //    _simulateTask = Task.Run(() => StudentManager.SimulateCourseRegistrationAndGrade());
+
 
             //etc...
 
@@ -266,6 +319,9 @@ internal static class AdminManager //stage 4
             catch (ThreadInterruptedException) { }
         }
     }
-
+    
     #endregion Stage 7 base
 }
+
+
+

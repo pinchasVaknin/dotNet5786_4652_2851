@@ -45,10 +45,7 @@ public interface IAdmin
     /// A <see cref="BO.Config"/> object containing the configuration values
     /// to be applied.
     /// </param>
-    void SetConfig(
-        BO.Config config, 
-        BO.ConfigFields field, 
-        object? value);
+    void SetConfig(BO.Config config);
 
     /// <summary>
     /// Resets the entire database:

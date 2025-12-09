@@ -1,4 +1,6 @@
 ﻿namespace Helpers;
+
+using BO;
 using DalApi;
 using DO;
 
@@ -40,18 +42,21 @@ internal static class Tools
     /// Calculates schedule status (OnTime / InRisk / Late)
     /// based on order date, last delivery finish time and allowed ranges.
     /// </summary>
-    public static BO.ScheduleStatus CalcScheduleStatus(DateTime orderDate, DateTime clock, DateTime? lastDeliveryFinishDate,
-                                                       TimeSpan maxRangeWithoutRisk, TimeSpan maxRange)
+    public static BO.ScheduleStatus CalcScheduleStatus(DateTime orderDate, DateTime? lastDeliveryFinishDate)
     {
+        var config = AdminManager.GetConfig();
+        var maxRange = config.MaxDelTimeRnge;
+        var maxRangeWithoutRisk = maxRange - config.RiskTimeRnge;
+
         TimeSpan handleTime =
             (lastDeliveryFinishDate is null)
-                ? clock - orderDate
+                ? AdminManager.Now - orderDate
                 : lastDeliveryFinishDate.Value - orderDate;
 
         if (handleTime <= maxRangeWithoutRisk)
             return BO.ScheduleStatus.OnTime;
 
-        if (handleTime <= maxRange)
+        if (handleTime <= config.MaxDelTimeRnge)
             return BO.ScheduleStatus.InRisk;
 
         return BO.ScheduleStatus.Late;
@@ -102,7 +107,7 @@ internal static class Tools
         var config = AdminManager.GetConfig();
 
         if (requesterId != config.AdminId)
-            throw new Exception($"User {requesterId} is not authorized to perform action '{actionName}'.");
+            throw new BlAdminPermissionException($"User {requesterId} is not authorized to perform action '{actionName}'.");
     }
 }
 

@@ -69,7 +69,7 @@ public enum DeliveryFinishType
     None
 }
 
-#endregion
+#endregion DAL Enums Conversion Comments
 
 // ============ For BL Layer ============ \\
 
@@ -103,7 +103,7 @@ public enum CourierListSortBy
     OrderIdInHandle
 }
 
-#endregion 
+#endregion BL Enums Comments ICourier
 
 // ============ For BL Layer IConfig ============ \\
 
@@ -139,7 +139,7 @@ public enum ConfigFields
     UnactiveTimeRnge
 }
 
-#endregion
+#endregion BL Enums Comments IConfig
 
 // ============ For BL Layer IOrder ============ \\
 
@@ -305,6 +305,6 @@ public enum OpenOrderFilterBy
     TypeOfOrder
 }
 
-#endregion
+#endregion BL Enums Comments IOrder
 
-#endregion
+#endregion BL Enums Comments General

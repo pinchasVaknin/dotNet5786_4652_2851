@@ -35,7 +35,7 @@ internal class OrderImplementation : IOrder
         OrderManager.DeleteOrder(orderId);
     }
 
-    #endregion
+    #endregion CRUD Operations
 
     // ======== List Operations ========\\
 
@@ -76,7 +76,7 @@ internal class OrderImplementation : IOrder
     }
 
 
-    #endregion
+    #endregion List Operations
 
     // ======== Order Management ========\\
 
@@ -106,6 +106,6 @@ internal class OrderImplementation : IOrder
         OrderManager.AssignOrderToCourier(courierId, orderId);
     }
 
-    #endregion
+    #endregion Order Management
 
 }
