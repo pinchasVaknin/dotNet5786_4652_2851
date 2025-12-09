@@ -1,5 +1,6 @@
 ﻿namespace Helpers;
 
+using BO;
 using DalApi;
 using System;
 using System.Collections.Generic;
@@ -455,6 +456,7 @@ internal static class OrderManager
             double? maxDistance = courier.MaxCourierDistance;
 
             var orderInList = GetOrders();
+            var config = AdminManager.GetConfig();
 
             var query =
                 from o in orderInList
@@ -469,7 +471,36 @@ internal static class OrderManager
 
             var resultQuery =
                 from o in query
+
+                let thisCourier = CourierManager.GetCourier(courierId)
+
                 let fullOrder = GetOrder(o.OrderId)
+
+                let courierVehicleType = (DO.CourierVehicleType)thisCourier.VehicleType
+
+                let ActualDistance = Tools.GetActualDistanceAsync(
+                                                fullOrder.OrderLatitude,
+                                                fullOrder.OrderLongitude,
+                                                config.Latitude,
+                                                config.Longitude,
+                                                courierVehicleType)
+                                                .GetAwaiter().GetResult()
+
+                let EstimatedActualTime =
+                        ActualDistance is null ?
+                            (TimeSpan?)null :
+                        courierVehicleType switch
+                        {
+                            DO.CourierVehicleType.Car =>
+                                TimeSpan.FromHours(ActualDistance.Value / s_dal.Config.AvgCarSpeed),
+                            DO.CourierVehicleType.Motorcycle =>
+                                TimeSpan.FromHours(ActualDistance.Value / s_dal.Config.AvgMotorcycleSpeed),
+                            DO.CourierVehicleType.Bicycle =>
+                                TimeSpan.FromHours(ActualDistance.Value / s_dal.Config.AvgBicycleSpeed),
+                            _ =>
+                                TimeSpan.FromHours(ActualDistance.Value / s_dal.Config.AvgWalkSpeed)
+                        }
+
                 select new BO.OpenOrderInList
                 {
                     OrderId = o.OrderId,
@@ -479,8 +510,8 @@ internal static class OrderManager
                     OrderSize = fullOrder.OrderSize,
                     CustomerAddress = fullOrder.OrderAddress,
                     AirDistance = o.AirDistance,
-                    ActualDistance = null,
-                    EstimatedActualTime = null,
+                    ActualDistance = ActualDistance,
+                    EstimatedActualTime = EstimatedActualTime,
                     ScheduleStatus = o.ScheduleStatus,
                     TimeLeftToFinish = o.TimeLeftToFinish,
                     MaxDeliveryTime = fullOrder.MaxDeliveryTime
@@ -648,16 +679,14 @@ internal static class OrderManager
                     TimeSpan.Zero :
                 (activeDelivery.DeliveryDate + maxRange) - s_dal.Config.Clock;
 
-            double? actualDistance = null;
-            if (config.Latitude != null && config.Longitude != null)
-            {
-                actualDistance = Tools.GetActualDistanceAsync(
+
+            var actualDistance = Tools.GetActualDistanceAsync(
                 doOrder.OrderLatitude,
                 doOrder.OrderLongitude,
-                config.Latitude.Value,
-                config.Longitude.Value,
-                (DO.CourierVehicleType)thisCurier.VehicleType).Result;
-            }
+                config.Latitude,
+                config.Longitude,
+                (DO.CourierVehicleType)thisCurier.VehicleType).GetAwaiter().GetResult();
+
 
             return new BO.OrderInProgress
             {
@@ -798,6 +827,7 @@ internal static class OrderManager
         {
             var allDeliveries = s_dal.Delivery.ReadAll();
             var orderinlist = GetOrders();
+            var config = AdminManager.GetConfig();
 
             var query =
                 from o in orderinlist
@@ -827,6 +857,12 @@ internal static class OrderManager
                         TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgBicycleSpeed) :
                     TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgWalkSpeed)
 
+                // let ActualDistance = Tools.GetActualDistanceAsync(
+                //     thisOrder.OrderLatitude,
+                //     thisOrder.OrderLongitude,
+                //     config.Latitude,
+                //     config.Longitude,
+                //(DO.CourierVehicleType)thisCurier.VehicleType).GetAwaiter().GetResult()
 
                 select new BO.OpenOrderInList
                 {
@@ -838,7 +874,7 @@ internal static class OrderManager
                     OrderSize = thisOrder.OrderSize,
                     CustomerAddress = thisOrder.OrderAddress,
                     AirDistance = o.AirDistance,
-                    ActualDistance = lastDelivery.DeliveryMaxDistance,
+                    ActualDistance = 1,
                     EstimatedActualTime = EstimatedActualTime,
                     ScheduleStatus = o.ScheduleStatus,
                     TimeLeftToFinish = o.TimeLeftToFinish,

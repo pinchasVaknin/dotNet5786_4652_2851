@@ -40,18 +40,18 @@ internal static class DeliveryManager
 
             let thisCurier = CourierManager.GetCourier(delivery.CourierId)
 
-            let Config = AdminManager.GetConfig()
+            let config = AdminManager.GetConfig()
 
             let totalHandleTime = delivery.DeliveryFinishDate - delivery.DeliveryDate
 
-            let ActualDistance = Tools.GetActualDistanceAsync(
+            let actualDistance = Tools.GetActualDistanceAsync(
                 Order.OrderLatitude,
                 Order.OrderLongitude,
-                Config.Latitude.Value,
-                Config.Longitude.Value,
-                (DO.CourierVehicleType)thisCurier.VehicleType)
+                config.Latitude,
+                config.Longitude,
+                (DO.CourierVehicleType)thisCurier.VehicleType).GetAwaiter().GetResult()
 
-        select new BO.ClosedDeliveryInList
+            select new BO.ClosedDeliveryInList
             {
                 DeliveryId = delivery.DeliveryId,
                 OrderId = delivery.OrderId,

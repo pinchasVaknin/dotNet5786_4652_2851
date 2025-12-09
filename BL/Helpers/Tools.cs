@@ -1,13 +1,10 @@
 ﻿namespace Helpers;
 
-using BO;
-using DalApi;
-using DO;
-using System.Text.Json;
 using System.Text.Json;
 
 internal static class Tools
 {
+
     /// <summary>
     /// Calculates great-circle distance (air distance) between two points
     /// given their latitude/longitude in degrees, using the Haversine formula.
@@ -109,19 +106,23 @@ internal static class Tools
         var config = AdminManager.GetConfig();
 
         if (requesterId != config.AdminId)
-            throw new BlAdminPermissionException($"User {requesterId} is not authorized to perform action '{actionName}'.");
+            throw new BO.BlAdminPermissionException($"User {requesterId} is not authorized to perform action '{actionName}'.");
     }
 
 
-
-
-
-
-    internal static async Task<double> GetActualDistanceAsync(
-        double fromLat, double fromLon,
-        double toLat, double toLon,
+    // HttpClient instance for making HTTP requests
+    internal static readonly HttpClient s_httpClient = new HttpClient();
+    
+    internal static async Task<double?> GetActualDistanceAsync(
+        double ?fromLat, double ?fromLon,
+        double ?toLat, double ?toLon,
         DO.CourierVehicleType vehicleType)
     {
+        // Validate coordinates
+        if (!fromLat.HasValue || !fromLon.HasValue || !toLat.HasValue || !toLon.HasValue)
+            return null;
+
+        // Use OSRM API to get distance
         try
         {
             string profile = vehicleType switch
