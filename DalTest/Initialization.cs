@@ -1,6 +1,5 @@
 ﻿namespace DalTest;
 using DalApi;
-using DO;
 using System;
 using System.Net;
 
@@ -99,16 +98,16 @@ public static class Initialization
             DateTime employmentStartTime = startBase.AddDays(s_rand.Next(range));
 
             // Randomly pick a vehicle type from enum values
-            var VehicleTypes = Enum.GetValues<CourierVehicleType>();
+            var VehicleTypes = Enum.GetValues<DO.CourierVehicleType>();
             var VehicleType = VehicleTypes[s_rand.Next(VehicleTypes.Length)];
 
             // Random max travel distance depending on vehicle type (or null sometimes)
             double? MaxDistance = (s_rand.NextDouble() < 0.6) ? VehicleType switch
             {
-                CourierVehicleType.Car        =>  10 + s_rand.NextDouble() * (35 - 10),
-                CourierVehicleType.Motorcycle =>   8 + s_rand.NextDouble() * (25 - 8),
-                CourierVehicleType.Bicycle    =>   3 + s_rand.NextDouble() * (12 - 3),
-                CourierVehicleType.Foot       =>   1 + s_rand.NextDouble() * (4 - 1),
+                DO.CourierVehicleType.Car        =>  10 + s_rand.NextDouble() * (35 - 10),
+                DO.CourierVehicleType.Motorcycle =>   8 + s_rand.NextDouble() * (25 - 8),
+                DO.CourierVehicleType.Bicycle    =>   3 + s_rand.NextDouble() * (12 - 3),
+                DO.CourierVehicleType.Foot       =>   1 + s_rand.NextDouble() * (4 - 1),
                 _ => null
             } : null;
             // round the MaxDistance
@@ -123,7 +122,7 @@ public static class Initialization
             DO.ShipmentType preferredType = types[s_rand.Next(types.Length)];
 
             // Create and save courier in DAL
-            s_dal!.Courier.Create(new Courier(
+            s_dal!.Courier.Create(new DO.Courier(
              CourierId: id,
              CourierFullName: name,
              CourierCellPhone: phone,
@@ -224,7 +223,7 @@ public static class Initialization
         double companyLon = s_dal.Config.Longitude ?? 35.2034;
 
         // All order categories (enum values) + the project simulation clock
-        var allKinds = Enum.GetValues<TypeOfOrder>();
+        var allKinds = Enum.GetValues<DO.TypeOfOrder>();
         var clock = s_dal.Config.Clock;
 
         // Build a flat sequence of status tags, then iterate once to create all orders
@@ -242,15 +241,15 @@ public static class Initialization
             // Compact electronics catalog: (category enum, array of product names)
             string[] items = kind switch
             {
-                TypeOfOrder.Smartphone => Enum.GetNames<Catalog.SmartphoneDetails>(),
-                TypeOfOrder.Laptop => Enum.GetNames<Catalog.LaptopDetails>(),
-                TypeOfOrder.Tablet => Enum.GetNames<Catalog.TabletDetails>(),
-                TypeOfOrder.TV => Enum.GetNames<Catalog.TVDetails>(),
-                TypeOfOrder.Camera => Enum.GetNames<Catalog.CameraDetails>(),
-                TypeOfOrder.Audio => Enum.GetNames<Catalog.AudioDetails>(),
-                TypeOfOrder.SmartHome => Enum.GetNames<Catalog.SmartHomeDetails>(),
-                TypeOfOrder.GamingConsole => Enum.GetNames<Catalog.GamingConsoleDetails>(),
-                TypeOfOrder.Accessory => Enum.GetNames<Catalog.AccessoryDetails>(),
+                DO.TypeOfOrder.Smartphone => Enum.GetNames<DO.Catalog.SmartphoneDetails>(),
+                DO.TypeOfOrder.Laptop => Enum.GetNames<DO.Catalog.LaptopDetails>(),
+                DO.TypeOfOrder.Tablet => Enum.GetNames<DO.Catalog.TabletDetails>(),
+                DO.TypeOfOrder.TV => Enum.GetNames<DO.Catalog.TVDetails>(),
+                DO.TypeOfOrder.Camera => Enum.GetNames<DO.Catalog.CameraDetails>(),
+                DO.TypeOfOrder.Audio => Enum.GetNames<DO.Catalog.AudioDetails>(),
+                DO.TypeOfOrder.SmartHome => Enum.GetNames<DO.Catalog.SmartHomeDetails>(),
+                DO.TypeOfOrder.GamingConsole => Enum.GetNames<DO.Catalog.GamingConsoleDetails>(),
+                DO.TypeOfOrder.Accessory => Enum.GetNames<DO.Catalog.AccessoryDetails>(),
                 _ => Array.Empty<string>()
             };
 
@@ -282,15 +281,15 @@ public static class Initialization
             // Size/weight profile per category (min/max + fragility probability)
             (double weightMin, double weightMax, double sizeMin, double sizeMax, bool fragP) pack = kind switch
             {
-                TypeOfOrder.Smartphone => (0.2, 0.8, 0.1, 0.3, false),
-                TypeOfOrder.Tablet => (0.3, 1.0, 0.15, 0.35, true),
-                TypeOfOrder.Laptop => (1.0, 3.0, 0.3, 0.8, true),
-                TypeOfOrder.TV => (8.0, 25.0, 0.9, 2.0, true),
-                TypeOfOrder.Camera => (0.4, 2.0, 0.2, 0.6, true),
-                TypeOfOrder.Audio => (0.2, 1.5, 0.15, 0.6, false),
-                TypeOfOrder.SmartHome => (0.3, 2.5, 0.2, 0.7, false),
-                TypeOfOrder.GamingConsole => (2.0, 6.0, 0.5, 1.0, false),
-                TypeOfOrder.Accessory => (0.05, 0.5, 0.05, 0.2, false),
+                DO.TypeOfOrder.Smartphone => (0.2, 0.8, 0.1, 0.3, false),
+                DO.TypeOfOrder.Tablet => (0.3, 1.0, 0.15, 0.35, true),
+                DO.TypeOfOrder.Laptop => (1.0, 3.0, 0.3, 0.8, true),
+                DO.TypeOfOrder.TV => (8.0, 25.0, 0.9, 2.0, true),
+                DO.TypeOfOrder.Camera => (0.4, 2.0, 0.2, 0.6, true),
+                DO.TypeOfOrder.Audio => (0.2, 1.5, 0.15, 0.6, false),
+                DO.TypeOfOrder.SmartHome => (0.3, 2.5, 0.2, 0.7, false),
+                DO.TypeOfOrder.GamingConsole => (2.0, 6.0, 0.5, 1.0, false),
+                DO.TypeOfOrder.Accessory => (0.05, 0.5, 0.05, 0.2, false),
                 _ => (0.5, 5.0, 0.2, 1.0, true)
             };
 
@@ -311,7 +310,7 @@ public static class Initialization
             string detail = $" {product} => {kind} , {weight}kg , ~{airKm:F1}km";
 
             // Persist via DAL: orderId = 0 so DAL assigns the next running ID
-            s_dal!.Order.Create(new Order(
+            s_dal!.Order.Create(new DO.Order(
                 OrderId: 0,
                 OrderStatus: orderStatusTag,
                 OrderDetail: detail,
@@ -343,8 +342,8 @@ public static class Initialization
         int targetDeliveries = Math.Max(1, (int)(total * 0.6));
 
         // get enum values for random sampling
-        var shipmentTypes = Enum.GetValues<ShipmentType>();
-        var finishTypes = Enum.GetValues<DeliveryFinishType>();
+        var shipmentTypes = Enum.GetValues<DO.ShipmentType>();
+        var finishTypes = Enum.GetValues<DO.DeliveryFinishType>();
 
         // Shuffle orders lightly by sampling indexes;
         var orderIndexes = new List<int>(total);
@@ -368,21 +367,21 @@ public static class Initialization
             DateTime deliveryFinishDate = deliveryDate.AddMinutes(s_rand.Next(30, 240));
 
             // sample randomly from enum (later you can derive from order.typeOfOrder if desired)
-            ShipmentType shipmentType = shipmentTypes[s_rand.Next(shipmentTypes.Length)];
+            DO.ShipmentType shipmentType = shipmentTypes[s_rand.Next(shipmentTypes.Length)];
 
             // Delivery finish type Cancelled/Failed/Returned.
-            DeliveryFinishType finishType;
+            DO.DeliveryFinishType finishType;
             int p = s_rand.Next(100);
-            if (p < 85) finishType = DeliveryFinishType.Completed;        // ~85%
-            else if (p < 92) finishType = DeliveryFinishType.Cancelled;   // ~7%
-            else if (p < 95) finishType = DeliveryFinishType.Failed;      // ~3%
-            else finishType = DeliveryFinishType.Returned;                // ~5%
+            if (p < 85) finishType = DO.DeliveryFinishType.Completed;        // ~85%
+            else if (p < 92) finishType = DO.DeliveryFinishType.Cancelled;   // ~7%
+            else if (p < 95) finishType = DO.DeliveryFinishType.Failed;      // ~3%
+            else finishType = DO.DeliveryFinishType.Returned;                // ~5%
 
             // Max distance policy used for later checks.
             double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dal.Config.MaxAirDistance : null;
 
             // Persist via DAL (DeliveryImplementation will assign the running deliveryId).
-            s_dal.Delivery.Create(new Delivery(
+            s_dal.Delivery.Create(new DO.Delivery(
                 DeliveryId: 0,                    // Next Delivery Id
                 OrderId: order.OrderId,           // link order
                 CourierId: courier.CourierId,     // link courier
@@ -400,8 +399,8 @@ public static class Initialization
         s_dal.Config.Clock = DateTime.Now;
 
         // Admin credentials
-        s_dal.Config.AdminId = 1001;                     // admin id
-        s_dal.Config.AdminPassword = "ChangeMe!1234";    // password
+        s_dal.Config.AdminId = 333333333;               // admin id
+        s_dal.Config.AdminPassword = "ChangeMe!1234";   // password
 
         // Company address and its geo-coordinates
         s_dal.Config.CompanyAddress = "Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem"; // textual address

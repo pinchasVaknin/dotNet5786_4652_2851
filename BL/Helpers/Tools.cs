@@ -1,6 +1,6 @@
 ﻿namespace Helpers;
 
-using BO;
+using DalApi;
 using System.Collections;
 using System.Reflection;
 using System.Text.Json;
@@ -8,6 +8,8 @@ using System.Xml.Linq;
 
 internal static class Tools
 {
+
+    private static readonly IDal s_dal = Factory.Get;
 
     //==============================================================\\
 
@@ -150,7 +152,7 @@ internal static class Tools
     internal static void ValidatePersonId(int checkInt)
     {
         if (checkInt < 200000000 || checkInt > 400000000)
-            throw new BlInvalidIntegerException($"ID {checkInt} is invalid. " +
+            throw new BO.BlInvalidIntegerException($"ID {checkInt} is invalid. " +
                                                 $"Id must be between 200,000,000 and 400,000,000.");
     }
 
@@ -169,7 +171,7 @@ internal static class Tools
     internal static void ValidateOrder(BO.Order order)
     {
 
-        Tools.ValidateNotNull(order);
+        ValidateNotNull(order);
 
         if (string.IsNullOrWhiteSpace(order.OrderAddress))
             throw new BO.BlInvalidStringException("Order Address is missing");
@@ -189,8 +191,12 @@ internal static class Tools
         if (order.OrderSize <= 0)
             throw new BO.BlInvalidDoubleException("Order Size must be greater than 0");
 
-        if (order.OrderOpenTime > DateTime.Now)
-            throw new BO.BlInvalidDateException("Order time cannot be in the future");
+        DateTime currentSystemTime = s_dal.Config.Clock;
+
+        if (order.OrderOpenTime > currentSystemTime.AddMinutes(30))
+        {
+            throw new BO.BlInvalidDateException("Order time cannot be in the future (relative to system clock).");
+        }
 
         if (order.MaxDeliveryTime < order.OrderOpenTime)
             throw new BO.BlInvalidDateException("Max Delivery Time must be later than Order Time");
