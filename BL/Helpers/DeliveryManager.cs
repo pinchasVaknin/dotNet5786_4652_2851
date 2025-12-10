@@ -8,24 +8,28 @@ internal static class DeliveryManager
 
     internal static List<BO.DeliveryPerOrderInList> BuildDeliveryPerOrderInList(DO.Order doOrder)
     {
-
         var deliveries = s_dal.Delivery.ReadAll(d => d.OrderId == doOrder.OrderId);
 
         var query =
             from delivery in deliveries
 
-            let courier = CourierManager.GetCourier(delivery.CourierId)
+            let doCourier = s_dal.Courier.Read(delivery.CourierId)
 
             select new BO.DeliveryPerOrderInList
             {
                 DeliveryId = delivery.DeliveryId,
                 CourierId = delivery.CourierId,
-                CourierFullName = courier.CourierFullName,
+                CourierFullName =
+                    (delivery.CourierId == 0) 
+                    ? "System/Admin" 
+                    : (doCourier?.CourierFullName ?? "Unknown Courier"),
+
                 ShipmentType = (BO.ShipmentType)delivery.ShipmentType,
                 StartDeliveryDate = delivery.DeliveryDate,
                 DeliveryFinishType = (BO.DeliveryFinishType)delivery.DeliveryFinishType,
                 FinishDeliveryTime = delivery.DeliveryFinishDate
             };
+
         return query.ToList();
     }
 
@@ -36,9 +40,9 @@ internal static class DeliveryManager
         var query =
             from delivery in deliveries
 
-            let Order = OrderManager.GetOrder(delivery.OrderId)
+            let Order = s_dal.Order.Read(delivery.OrderId)
 
-            let thisCurier = CourierManager.GetCourier(delivery.CourierId)
+            let thisCurier = s_dal.Courier.Read(delivery.CourierId)
 
             let config = AdminManager.GetConfig()
 
@@ -49,7 +53,7 @@ internal static class DeliveryManager
                 Order.OrderLongitude,
                 config.Latitude,
                 config.Longitude,
-                (DO.CourierVehicleType)thisCurier.VehicleType).GetAwaiter().GetResult()
+                thisCurier.CourierVehicleType).GetAwaiter().GetResult()
 
             select new BO.ClosedDeliveryInList
             {
@@ -64,5 +68,5 @@ internal static class DeliveryManager
             };
         return query.ToList();
     }
-    
+
 }

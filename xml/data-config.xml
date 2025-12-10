@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
   <NextOrderId>50</NextOrderId>
-  <NextDeliveryId>30</NextDeliveryId>
-  <Clock>09/12/2025 20:43:15</Clock>
-  <AdminId>333333333</AdminId>
+  <NextDeliveryId>31</NextDeliveryId>
+  <Clock>10/12/2025 17:21:54</Clock>
+  <AdminId>1001</AdminId>
   <AdminPassword>ChangeMe!1234</AdminPassword>
   <CompanyAddress>Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem</CompanyAddress>
   <latitude>31.7479</latitude>
@@ -16,4 +16,7 @@
   <MaxDelTimeRnge>2.00:00:00</MaxDelTimeRnge>
   <RiskTimeRnge>03:00:00</RiskTimeRnge>
   <UnactiveTimeRnge>45.00:00:00</UnactiveTimeRnge>
+  <Latitude>31.7479</Latitude>
+  <Longitude>35.188</Longitude>
+  <MaxAirDistance>25</MaxAirDistance>
 </config>

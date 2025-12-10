@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 /// <summary>
 /// Represents an order that is currently in progress, including details about delivery, customer, and timing.
@@ -27,4 +29,5 @@ public class OrderInProgress
     public ScheduleStatus ScheduleStatus { get; init; }
     public TimeSpan TimeLeftToFinish { get; init; }
 
+    public override string ToString() => this.ToStringProperty();
 }

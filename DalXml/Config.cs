@@ -46,8 +46,8 @@ internal static class Config
     /// </summary>
     internal static int AdminId
     {
-        get => XMLTools.GetConfigIntVal(s_data_config_xml, "adminId");
-        set => XMLTools.SetConfigIntVal(s_data_config_xml, "adminId", value);
+        get => XMLTools.GetConfigIntVal(s_data_config_xml, "AdminId");
+        set => XMLTools.SetConfigIntVal(s_data_config_xml, "AdminId", value);
     }
 
     /// <summary>
@@ -55,8 +55,8 @@ internal static class Config
     /// </summary>
     internal static string AdminPassword
     {
-        get => XMLTools.GetConfigStringVal(s_data_config_xml, "adminPassword");
-        set => XMLTools.SetConfigStringVal(s_data_config_xml, "adminPassword", value);
+        get => XMLTools.GetConfigStringVal(s_data_config_xml, "AdminPassword");
+        set => XMLTools.SetConfigStringVal(s_data_config_xml, "AdminPassword", value);
     }
 
     /// <summary>
@@ -64,8 +64,8 @@ internal static class Config
     /// </summary>
     internal static string? CompanyAddress
     {
-        get => XMLTools.GetConfigStringNullableVal(s_data_config_xml, "companyAdress");
-        set => XMLTools.SetConfigStringNullableVal(s_data_config_xml, "companyAdress", value);
+        get => XMLTools.GetConfigStringNullableVal(s_data_config_xml, "CompanyAddress");
+        set => XMLTools.SetConfigStringNullableVal(s_data_config_xml, "CompanyAddress", value);
     }
 
     /// <summary>
@@ -73,8 +73,8 @@ internal static class Config
     /// </summary>
     internal static double? Latitude
     {
-        get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "latitude");
-        set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "latitude", value);
+        get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "Latitude");
+        set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "Latitude", value);
     }
 
     /// <summary>
@@ -82,8 +82,8 @@ internal static class Config
     /// </summary>
     internal static double? Longitude
     {
-        get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "longitude");
-        set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "longitude", value);
+        get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "Longitude");
+        set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "Longitude", value);
     }
 
     /// <summary>
@@ -91,8 +91,8 @@ internal static class Config
     /// </summary>
     internal static double? MaxAirDistance
     {
-        get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "maxAirDistance");
-        set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "maxAirDistance", value);
+        get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "MaxAirDistance");
+        set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "MaxAirDistance", value);
     }
 
     /// <summary>
@@ -100,8 +100,8 @@ internal static class Config
     /// </summary>
     internal static double AvgCarSpeed
     {
-        get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "avgCarSpeed");
-        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "avgCarSpeed", value);
+        get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "AvgCarSpeed");
+        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "AvgCarSpeed", value);
     }
 
     /// <summary>
@@ -109,8 +109,8 @@ internal static class Config
     /// </summary>
     internal static double AvgMotorcycleSpeed
     {
-        get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "avgMotorcycleSpeed");
-        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "avgMotorcycleSpeed", value);
+        get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "AvgMotorcycleSpeed");
+        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "AvgMotorcycleSpeed", value);
     }
 
     /// <summary>
@@ -118,8 +118,8 @@ internal static class Config
     /// </summary>
     internal static double AvgBicycleSpeed
     {
-        get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "avgBicyleSpeed");
-        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "avgBicyleSpeed", value);
+        get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "AvgBicycleSpeed");
+        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "AvgBicycleSpeed", value);
     }
 
     /// <summary>
@@ -127,8 +127,8 @@ internal static class Config
     /// </summary>
     internal static double AvgWalkSpeed
     {
-        get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "avgWalkSpeed");
-        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "avgWalkSpeed", value);
+        get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "AvgWalkSpeed");
+        set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "AvgWalkSpeed", value);
     }
 
     /// <summary>
@@ -136,8 +136,8 @@ internal static class Config
     /// </summary>
     internal static TimeSpan MaxDelTimeRnge
     {
-        get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "maxDelTimeRnge");
-        set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "maxDelTimeRnge", value);
+        get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "MaxDelTimeRnge");
+        set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "MaxDelTimeRnge", value);
     }
 
     /// <summary>
@@ -145,8 +145,8 @@ internal static class Config
     /// </summary>
     internal static TimeSpan RiskTimeRnge
     {
-        get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "riskTimeRnge");
-        set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "riskTimeRnge", value);
+        get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "RiskTimeRnge");
+        set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "RiskTimeRnge", value);
     }
 
     /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 /// <summary>
 /// Represents an order within a list, including details such as delivery ID, order type, and status.
@@ -19,4 +21,5 @@ public class OrderInList
     public TimeSpan TotalHandleTime { get; init; }
     public int TotalDeliveries { get; init; }
 
+    public override string ToString() => this.ToStringProperty();
 }

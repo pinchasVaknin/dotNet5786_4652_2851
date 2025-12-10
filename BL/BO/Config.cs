@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 public class Config
 {
@@ -19,4 +21,6 @@ public class Config
     public TimeSpan MaxDelTimeRnge { get; set; }
     public TimeSpan RiskTimeRnge { get; set; }
     public TimeSpan UnactiveTimeRnge { get; set; }
+
+    public override string ToString() => this.ToStringProperty();
 }

@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 /// <summary>
 /// Represents the delivery details for a specific order in a list.
@@ -17,4 +19,5 @@ public class DeliveryPerOrderInList
     public DeliveryFinishType? DeliveryFinishType { get; init; }
     public DateTime? FinishDeliveryTime { get; init; }
 
+    public override string ToString() => this.ToStringProperty();
 }

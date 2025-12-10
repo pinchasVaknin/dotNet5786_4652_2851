@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 /// <summary>
 /// Represents a courier responsible for delivering orders.
@@ -29,4 +31,6 @@ public class Courier
     public int TotalLateDeliveries { get; init; }
 
     public BO.OrderInProgress? OrderInProgress { get; set; }
+
+    public override string ToString() => this.ToStringProperty();
 }

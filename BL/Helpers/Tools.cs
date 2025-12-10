@@ -1,5 +1,7 @@
 ﻿namespace Helpers;
 
+using System.Collections;
+using System.Reflection;
 using System.Text.Json;
 
 internal static class Tools
@@ -94,6 +96,33 @@ internal static class Tools
         return false;
     }
 
+    
+    public static string ToStringProperty<T>(this T t)
+    {
+        if (t == null) return "";
+        string str = "";
+        foreach (PropertyInfo item in t.GetType().GetProperties())
+        {
+            // get property value
+            var value = item.GetValue(t, null);
+
+            // check if property is a collection
+            if (value is IEnumerable list && value is not string)
+            {
+                // collection property
+                str += "\n" + item.Name + ":";
+                foreach (var listItem in list)
+                {
+                    str += "\n  " + listItem.ToString();
+                }
+            }
+            else // simple property
+            {
+                str += "\n" + item.Name + ": " + (value ?? "null");
+            }
+        }
+        return str;
+    }
 
     /// <summary>
     /// Ensures that the requester is the admin. 
@@ -109,13 +138,14 @@ internal static class Tools
             throw new BO.BlAdminPermissionException($"User {requesterId} is not authorized to perform action '{actionName}'.");
     }
 
+    //======== Distance Calculation using OSRM API ======\\
 
     // HttpClient instance for making HTTP requests
     internal static readonly HttpClient s_httpClient = new HttpClient();
-    
+
     internal static async Task<double?> GetActualDistanceAsync(
-        double ?fromLat, double ?fromLon,
-        double ?toLat, double ?toLon,
+        double? fromLat, double? fromLon,
+        double? toLat, double? toLon,
         DO.CourierVehicleType vehicleType)
     {
         // Validate coordinates

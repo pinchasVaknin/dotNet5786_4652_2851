@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 /// <summary>
 /// Represents an order with details such as type, address, customer information, and delivery schedule.
@@ -30,5 +32,5 @@ public class Order
     public TimeSpan TimeRemaining { get; init; }
 
     public List<DeliveryPerOrderInList>? DeliveryPerOrderInList { get; init; }
-
+    public override string ToString() => this.ToStringProperty();
 }

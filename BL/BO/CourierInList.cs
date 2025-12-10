@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 /// <summary>
 /// Represents a courier in the list with details about their deliveries and status.
@@ -17,4 +19,6 @@ public class CourierInList
     public int DeliveriesInTime { get; init; }
     public int DeliveriesOverTime { get; init; }
     public int? OrderIdInHandle { get; init; }
+
+    public override string ToString() => this.ToStringProperty();
 }

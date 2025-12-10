@@ -159,3 +159,12 @@ public class BlCourierDisabledException : Exception
 {
     public BlCourierDisabledException(string? message) : base(message) { }
 }
+
+[Serializable]
+public class BlNullPropertyException : Exception
+{
+    public BlNullPropertyException(string? message) : base(message) { }
+}
+
+
+

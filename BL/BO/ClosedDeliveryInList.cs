@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 /// <summary>
 /// Represents a closed delivery entry in a list, containing details about the delivery and its associated order.
@@ -21,4 +23,5 @@ public class ClosedDeliveryInList
     public TimeSpan TotalHandleTime { get; init; }
     public DeliveryFinishType? DeliveryFinishType { get; init; }
 
+    public override string ToString() => this.ToStringProperty();
 }

@@ -412,4 +412,5 @@ internal static class CourierManager
     }
 
     #endregion Periodic Updates
+
 }

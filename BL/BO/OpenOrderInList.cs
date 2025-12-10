@@ -1,4 +1,6 @@
-﻿namespace BO;
+﻿using Helpers;
+
+namespace BO;
 
 /// <summary>
 /// Represents an open order in a list, including details such as order type, weight, size, and delivery information.
@@ -23,4 +25,6 @@ public class OpenOrderInList
     public ScheduleStatus ScheduleStatus { get; init; }
     public TimeSpan TimeLeftToFinish { get; init; }
     public DateTime MaxDeliveryTime { get; init; }
+
+    public override string ToString() => this.ToStringProperty();
 }

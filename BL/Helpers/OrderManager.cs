@@ -21,9 +21,6 @@ internal static class OrderManager
     {
         try
         {
-            var existing = s_dal.Order.Read(order.OrderId);
-            if (existing is not null)
-                throw new BO.BlAlreadyExistsException($"Order with ID={order.OrderId} already exists.");
 
             DO.Order doOrder = ConvertBoToDoOrder(order);
             s_dal.Order.Create(doOrder);
@@ -472,11 +469,11 @@ internal static class OrderManager
             var resultQuery =
                 from o in query
 
-                let thisCourier = CourierManager.GetCourier(courierId)
+                let thisCourier = s_dal.Courier.Read(courierId)
 
                 let fullOrder = GetOrder(o.OrderId)
 
-                let courierVehicleType = (DO.CourierVehicleType)thisCourier.VehicleType
+                let courierVehicleType = thisCourier.CourierVehicleType
 
                 let ActualDistance = Tools.GetActualDistanceAsync(
                                                 fullOrder.OrderLatitude,
@@ -662,7 +659,9 @@ internal static class OrderManager
             if (activeDelivery is null) return null;
 
             var thisOrder = GetOrder(doOrder.OrderId);
-            var thisCurier = CourierManager.GetCourier(activeDelivery.CourierId);
+
+            var thisCurier = s_dal.Courier.Read(c => c.CourierId == activeDelivery.CourierId)
+                ?? throw new DO.DalDoesNotExistException($"Courier with ID={activeDelivery.CourierId} does not exist.");
             var config = AdminManager.GetConfig();
 
             var expectedDeliveryTime = thisOrder.ExpectedDeliveryTime ?? thisOrder.MaxDeliveryTime;
@@ -685,7 +684,7 @@ internal static class OrderManager
                 doOrder.OrderLongitude,
                 config.Latitude,
                 config.Longitude,
-                (DO.CourierVehicleType)thisCurier.VehicleType).GetAwaiter().GetResult();
+                thisCurier.CourierVehicleType).GetAwaiter().GetResult();
 
 
             return new BO.OrderInProgress
@@ -744,7 +743,37 @@ internal static class OrderManager
                 null :
             s_dal.Courier.Read(c => c.CourierId == lastDelivery.CourierId);
 
-        var enumOrderStatus = (BO.OrderStatus)Enum.Parse(typeof(BO.OrderStatus), doOrder.OrderStatus.ToString());
+        // Determine OrderStatus based on last delivery
+        BO.OrderStatus enumOrderStatus;
+
+        // No deliveries yet
+        if (lastDelivery == null)
+            enumOrderStatus = BO.OrderStatus.Open;
+
+        // Last delivery is still in progress
+        else if (lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.None)
+            enumOrderStatus = BO.OrderStatus.InProgress;
+
+        // Last delivery is finished
+        else
+        {
+            switch (lastDelivery.DeliveryFinishType)
+            {
+                case DO.DeliveryFinishType.Completed:
+                    enumOrderStatus = BO.OrderStatus.Supplied;
+                    break;
+                case DO.DeliveryFinishType.Cancelled:
+                    enumOrderStatus = BO.OrderStatus.Canceled;
+                    break;
+                case DO.DeliveryFinishType.Failed:
+                case DO.DeliveryFinishType.Returned:
+                    enumOrderStatus = BO.OrderStatus.Refused;
+                    break;
+                default:
+                    throw new BlInvalidDeliveryStatusException($"Unknown delivery finish type: " +
+                        $"{lastDelivery.DeliveryFinishType} for Delivery ID: {lastDelivery.DeliveryId}");
+            }
+        }
 
         var calculateAirDistance = Tools.DistanceKm(doOrder.OrderLatitude, doOrder.OrderLongitude, 31.7479, 35.188);
 
