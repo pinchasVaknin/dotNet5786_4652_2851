@@ -1,6 +1,5 @@
 ﻿namespace Helpers;
 
-using BO;
 using DalApi;
 using System;
 using System.Collections.Generic;
@@ -19,9 +18,18 @@ internal static class OrderManager
 
     internal static void AddOrder(BO.Order order) // create order
     {
+
+        Tools.ValidateOrder(order);
+
+        var coords = Tools.GetLocationFromAddress(order.OrderAddress);
+        if (coords == null)
+            throw new BO.BlInvalidStringException($"Address '{order.OrderAddress}' is invalid.");
+
+        order.OrderLatitude = coords.Value.Lat ?? 0;
+        order.OrderLongitude = coords.Value.Lon ?? 0;
+
         try
         {
-
             DO.Order doOrder = ConvertBoToDoOrder(order);
             s_dal.Order.Create(doOrder);
         }
@@ -37,6 +45,9 @@ internal static class OrderManager
 
     internal static BO.Order GetOrder(int id) // read Order by id
     {
+
+        Tools.ValidateSystemId(id);
+
         try
         {
             // Read the Order from the data access layer
@@ -60,6 +71,26 @@ internal static class OrderManager
 
     internal static void UpdateOrder(BO.Order order) // update order
     {
+
+        Tools.ValidateOrder(order);
+
+        var oldOrder = s_dal.Order.Read(order.OrderId);
+
+        if (oldOrder.OrderAddress != order.OrderAddress)
+        {
+            var coords = Tools.GetLocationFromAddress(order.OrderAddress);
+            if (coords == null)
+                throw new BO.BlInvalidStringException($"New address '{order.OrderAddress}' is invalid.");
+
+            order.OrderLatitude = coords.Value.Lat ?? 0;
+            order.OrderLongitude = coords.Value.Lon ?? 0;
+        }
+        else
+        {
+            order.OrderLatitude = oldOrder.OrderLatitude;
+            order.OrderLongitude = oldOrder.OrderLongitude;
+        }
+
         try
         {
             // Map the business object order to a data object order
@@ -81,6 +112,9 @@ internal static class OrderManager
 
     internal static void DeleteOrder(int id)
     {
+
+        Tools.ValidateSystemId(id);
+
         try
         {
             // Check that order exists
@@ -118,6 +152,9 @@ internal static class OrderManager
     // =========== Order State Change Methods ======== \\
     internal static void CancelOrder(int orderId)
     {
+
+        Tools.ValidateSystemId(orderId);
+
         try
         {
             var doOrder = s_dal.Order.Read(orderId)
@@ -140,7 +177,8 @@ internal static class OrderManager
                 };
                 s_dal.Delivery.Create(delivery);
             }
-            if (boOrder.OrderStatus == BO.OrderStatus.InProgress)
+
+            else if (boOrder.OrderStatus == BO.OrderStatus.InProgress)
             {
                 var activeDeliveries = s_dal.Delivery
                     .ReadAll(d => d.OrderId == orderId && d.DeliveryFinishType == DO.DeliveryFinishType.None).Single();
@@ -153,7 +191,7 @@ internal static class OrderManager
                 });
             }
 
-            throw new BO.BlOrderAlreadyCanceledException($"Order {orderId} is already canceled.");
+            else throw new BO.BlOrderAlreadyCanceledException($"Order {orderId} is already canceled.");
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -167,6 +205,10 @@ internal static class OrderManager
 
     internal static void CompleteOrderHandling(int courierId, int deliveryId)
     {
+
+        Tools.ValidatePersonId(courierId);
+        Tools.ValidateSystemId(deliveryId);
+
         try
         {
             var delivery = s_dal.Delivery.Read(deliveryId)
@@ -195,6 +237,10 @@ internal static class OrderManager
     /// </summary>
     internal static void AssignOrderToCourier(int courierId, int orderId)
     {
+
+        Tools.ValidatePersonId(courierId);
+        Tools.ValidateSystemId(orderId);
+
         try
         {
             DO.Order doOrder = s_dal.Order.Read(o => o.OrderId == orderId)
@@ -386,6 +432,9 @@ internal static class OrderManager
         BO.TypeOfOrder? typeFilter,
         BO.ClosedDeliverySortBy? sortBy)
     {
+
+        Tools.ValidatePersonId(courierId);
+
         try
         {
             var allClosed = DeliveryManager.BuildClosedDeliveryInList();
@@ -446,6 +495,9 @@ internal static class OrderManager
         BO.TypeOfOrder? typeFilter,
         BO.OpenOrderSortBy? sortBy)
     {
+
+        Tools.ValidatePersonId(courierId);
+
         try
         {
             DO.Courier courier = s_dal.Courier.Read(c => c.CourierId == courierId)
@@ -770,7 +822,7 @@ internal static class OrderManager
                     enumOrderStatus = BO.OrderStatus.Refused;
                     break;
                 default:
-                    throw new BlInvalidDeliveryStatusException($"Unknown delivery finish type: " +
+                    throw new BO.BlInvalidDeliveryStatusException($"Unknown delivery finish type: " +
                         $"{lastDelivery.DeliveryFinishType} for Delivery ID: {lastDelivery.DeliveryId}");
             }
         }

@@ -1,6 +1,5 @@
 ﻿namespace BlImplementation;
 
-using BO;
 using BlApi;
 using Helpers;
 
@@ -17,7 +16,7 @@ internal class AdminImplementation : IAdmin
         return AdminManager.Now;
     }
 
-    public void ForwardClock(TimeUnit unit)
+    public void ForwardClock(BO.TimeUnit unit)
     {
         AdminManager.ForwardClock(unit);
     }
@@ -28,12 +27,12 @@ internal class AdminImplementation : IAdmin
 
     #region Configuration Variables
 
-    public Config GetConfig()
+    public BO.Config GetConfig()
     {
         return AdminManager.GetConfig();
     }
 
-    public void SetConfig(Config config)
+    public void SetConfig(BO.Config config)
     {
         AdminManager.SetConfig(config);
     }

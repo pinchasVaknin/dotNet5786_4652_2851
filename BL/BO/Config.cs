@@ -1,6 +1,6 @@
-﻿using Helpers;
+﻿namespace BO;
 
-namespace BO;
+using Helpers;
 
 public class Config
 {

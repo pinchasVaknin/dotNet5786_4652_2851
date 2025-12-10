@@ -19,6 +19,10 @@ internal static class CourierManager
 
     internal static BO.UserRole GetUserRole(int userId, string password)
     {
+
+        Tools.ValidatePersonId(userId);
+        Tools.ValidateNotNull(password);
+
         try
         {
             var config = AdminManager.GetConfig();
@@ -152,6 +156,14 @@ internal static class CourierManager
 
     internal static void AddCourier(BO.Courier courier) // create or update courier
     {
+
+        Tools.ValidateCourier(courier);
+
+        if (Tools.GetLocationFromAddress(courier.CourierLocation) == null)
+        {
+            throw new BO.BlInvalidStringException($"Location '{courier.CourierLocation}' is invalid.");
+        }
+
         try
         {
             var existing = s_dal.Courier.Read(courier.CourierId);
@@ -179,6 +191,9 @@ internal static class CourierManager
     /// <exception cref="Exception">Thrown if the courier with the specified ID does not exist or if an error occurs while loading the courier.</exception>
     internal static BO.Courier GetCourier(int id) // read courier by id
     {
+
+        Tools.ValidatePersonId(id);
+
         try
         {
             // Read the courier from the data access layer
@@ -197,6 +212,14 @@ internal static class CourierManager
 
     internal static void UpdateCourier(BO.Courier courier) // update courier
     {
+
+        Tools.ValidateCourier(courier);
+
+        if (Tools.GetLocationFromAddress(courier.CourierLocation) == null)
+        {
+            throw new BO.BlInvalidStringException($"Location '{courier.CourierLocation}' is invalid.");
+        }
+
         try
         {
             // Map the business object courier to a data object courier
@@ -226,6 +249,9 @@ internal static class CourierManager
     /// </exception>
     internal static void DeleteCourier(int id)
     {
+
+        Tools.ValidatePersonId(id);
+
         try
         {
             // Check that courier exists

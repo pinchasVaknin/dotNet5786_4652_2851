@@ -1,6 +1,5 @@
 ﻿namespace BlImplementation;
 using BlApi;
-using DO;
 using Helpers;
 using System.Collections.Generic;
 
@@ -61,7 +60,9 @@ internal class OrderImplementation : IOrder
             BO.TypeOfOrder? typeFilter = null,
             BO.ClosedDeliverySortBy? sortBy = null)
     {
-        Tools.EnsureAdmin(requesterId, nameof(GetOrders));
+        if (requesterId != courierId)
+            Tools.EnsureAdmin(requesterId, nameof(GetClosedDeliveriesByCourier));
+
         return OrderManager.GetClosedDeliveriesByCourier(courierId, typeFilter, sortBy);
     }
 
@@ -71,7 +72,9 @@ internal class OrderImplementation : IOrder
         BO.TypeOfOrder? typeFilter = null,
         BO.OpenOrderSortBy? sortBy = null)
     {
-        Tools.EnsureAdmin(requesterId, nameof(GetOpenOrdersForCourier));
+        if (requesterId != courierId)
+            Tools.EnsureAdmin(requesterId, nameof(GetClosedDeliveriesByCourier));
+
         return OrderManager.GetOpenOrdersForCourier(courierId, typeFilter, sortBy);
     }
 
@@ -90,7 +93,9 @@ internal class OrderImplementation : IOrder
 
     public void CompleteOrderHandling(int requesterId, int courierId, int deliveryId)
     {
-        Tools.EnsureAdmin(requesterId, nameof(CompleteOrderHandling));
+        if (requesterId != courierId)
+            throw new BO.BlAdminPermissionException("Only the courier can complete the delivery");
+
         OrderManager.CompleteOrderHandling(courierId, deliveryId);
     }
 
@@ -102,7 +107,10 @@ internal class OrderImplementation : IOrder
 
     public void AssignOrderToCourier(int requesterId, int courierId, int orderId)
     {
-        Tools.EnsureAdmin(requesterId, nameof(AssignOrderToCourier));
+        if (requesterId != courierId)
+            Tools.EnsureAdmin(requesterId, nameof(AssignOrderToCourier));
+
+        //Tools.EnsureAdmin(requesterId, nameof(AssignOrderToCourier));
         OrderManager.AssignOrderToCourier(courierId, orderId);
     }
 

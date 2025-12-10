@@ -1,4 +1,6 @@
 ﻿namespace Helpers;
+
+using BO;
 using DalApi;
 using System.Runtime.CompilerServices;
 
@@ -39,7 +41,7 @@ internal static class AdminManager //stage 4
     {
         var oldClock = s_dal.Config.Clock; //stage 4
         s_dal.Config.Clock = newClock; //stage 4
-        
+
         //Add calls here to any logic method that should be called periodically,
         //after each clock update
         //for example, Periodic students' updates:
@@ -61,6 +63,10 @@ internal static class AdminManager //stage 4
 
     internal static void ForwardClock(BO.TimeUnit unit) //stage 4
     {
+
+        if (!Enum.IsDefined(typeof(BO.TimeUnit), unit))
+            throw new BO.BlInvalidIntegerException("Invalid time unit.");
+
         switch (unit) //stage 4
         {
             case BO.TimeUnit.Minute:
@@ -110,7 +116,7 @@ internal static class AdminManager //stage 4
         MaxDelTimeRnge = s_dal.Config.MaxDelTimeRnge,
         RiskTimeRnge = s_dal.Config.RiskTimeRnge,
         UnactiveTimeRnge = s_dal.Config.UnactiveTimeRnge
-};
+    };
 
     /// <summary>
     /// Method for setting current configuration variables values for any BL class that may need it
@@ -118,7 +124,30 @@ internal static class AdminManager //stage 4
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     internal static void SetConfig(BO.Config configuration) //stage 4
     {
+
+        Tools.ValidateConfig(configuration);
+
         bool configChanged = false; // stage 5
+
+        if (configuration.CompanyAddress != s_dal.Config.CompanyAddress)
+        {
+            if (!string.IsNullOrWhiteSpace(configuration.CompanyAddress))
+            {
+                var coords = Tools.GetLocationFromAddress(configuration.CompanyAddress);
+
+                if (coords == null)
+                    throw new BO.BlInvalidStringException($"Company address '{configuration.CompanyAddress}' is invalid.");
+
+                s_dal.Config.Latitude = coords.Value.Lat;
+                s_dal.Config.Longitude = coords.Value.Lon;
+            }
+            else
+            {
+                s_dal.Config.Latitude = null;
+                s_dal.Config.Longitude = null;
+            }
+            configChanged = true;
+        } 
 
         if (s_dal.Config.Clock != configuration.Clock) //stage 4
         {
@@ -141,18 +170,6 @@ internal static class AdminManager //stage 4
         if (s_dal.Config.CompanyAddress != configuration.CompanyAddress) //stage 4
         {
             s_dal.Config.CompanyAddress = configuration.CompanyAddress;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.Latitude != configuration.Latitude) //stage 4
-        {
-            s_dal.Config.Latitude = configuration.Latitude;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.Longitude != configuration.Longitude) //stage 4
-        {
-            s_dal.Config.Longitude = configuration.Longitude;
             configChanged = true;
         }
 
@@ -240,12 +257,12 @@ internal static class AdminManager //stage 4
     #endregion Stage 4-7
 
     #region Stage 7 base
-    
+
     /// <summary>    
     /// Mutex to use from BL methods to get mutual exclusion while the simulator is running
     /// </summary>
     internal static readonly object BlMutex = new(); // BlMutex = s_dal; // This field is actually the same as s_dal - it is defined for readability of locks
-    
+
     /// <summary>
     /// The thread of the simulator
     /// </summary>
@@ -319,7 +336,7 @@ internal static class AdminManager //stage 4
             catch (ThreadInterruptedException) { }
         }
     }
-    
+
     #endregion Stage 7 base
 }
 
