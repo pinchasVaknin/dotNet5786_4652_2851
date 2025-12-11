@@ -158,7 +158,7 @@ internal static class Tools
 
     internal static void ValidateSystemId(int id)
     {
-        if (id <= 0)
+        if (id < 0)
             throw new BO.BlInvalidIntegerException($"ID {id} is invalid. System ID must be positive.");
     }
 
