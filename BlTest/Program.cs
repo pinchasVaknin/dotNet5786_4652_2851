@@ -80,7 +80,7 @@ namespace BlTest
 
                     s_currentUserId = id;
                     loggedIn = true;
-                    Console.WriteLine($"Login Successful!\n \n Role: {role}");
+                    Console.WriteLine($"Login Successful!\n \nRole: {role}");
                 }
                 catch (Exception ex)
                 {
@@ -168,9 +168,9 @@ namespace BlTest
                             CourierPassword = SafeReadString("Password: "),
                             VehicleType = SafeReadEnum<VehicleType>("Vehicle Type:"),
                             MaxCourierDistance = SafeReadDouble("Max Distance: "),
+                            CourierLocation = SafeReadString("Location: "),
                             CourierIsActive = true,
-                            StartWorkDate = DateTime.Now,
-                            CourierLocation = "Unknown"
+                            StartWorkDate = DateTime.Now
                         };
                         s_bl.Courier.AddCourier(s_currentUserId, newC);
                         Console.WriteLine("Courier added successfully.");
@@ -234,22 +234,32 @@ namespace BlTest
             {
                 switch (choice)
                 {
+
                     case 1:
+                        // 1. שליפת הזמן הנוכחי של המערכת (השעון המדומה)
+                        DateTime now = s_bl.Admin.GetClock();
+
                         BO.Order newO = new BO.Order
                         {
-                            OrderId = 0, 
+                            OrderId = 0,
                             CustomerFullName = SafeReadString("Customer Name: "),
                             CustomerPhone = SafeReadString("Customer Phone: "),
                             OrderAddress = SafeReadString("Address: "),
                             TypeOfOrder = SafeReadEnum<TypeOfOrder>("Product Type:"),
-                            OrderLatitude = 31.7,
-                            OrderLongitude = 35.2,
-                            OrderOpenTime = s_bl.Admin.GetClock(),
+
+                            OrderLatitude = 0,
+                            OrderLongitude = 0,
+
+                            OrderOpenTime = now, 
+                            MaxDeliveryTime = now.AddDays(14), 
+
                             OrderWeight = SafeReadDouble("Weight: "),
                             OrderSize = SafeReadDouble("Size: "),
                             IsFragile = false,
-                            OrderDetail = "Test Order"
+                            OrderDetail = "Test Order",
+                            OrderStatus = BO.OrderStatus.Open
                         };
+
                         s_bl.Order.AddOrder(s_currentUserId, newO);
                         Console.WriteLine("Order added.");
                         break;
