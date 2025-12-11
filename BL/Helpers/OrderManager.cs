@@ -834,9 +834,9 @@ internal static class OrderManager
         var ScheduleStatus = Tools.CalcScheduleStatus(doOrder.OrderDate, lastDelivery?.DeliveryFinishDate);
 
         var TimeLeftToFinish =
-                lastDelivery is null || (lastDelivery.DeliveryDate + maxRange) < s_dal.Config.Clock ?
+                (doOrder.OrderDate + maxRange) < s_dal.Config.Clock ?
                     TimeSpan.Zero :
-                (lastDelivery.DeliveryDate + maxRange) - s_dal.Config.Clock;
+                (doOrder.OrderDate + maxRange) - s_dal.Config.Clock;
 
         DateTime? expectedDeliveryTime = null;
 
