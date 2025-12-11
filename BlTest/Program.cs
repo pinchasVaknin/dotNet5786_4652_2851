@@ -23,6 +23,15 @@ namespace BlTest
         {
             Console.WriteLine(@"//==== Delivery System BL Test ====\\");
 
+            try { s_bl.Courier.Login(333333333, "ChangeMe!1234"); }
+
+            catch (BO.BlUserNotFoundException)
+            {
+                Console.Write("Database is empty (DalList detected). Initializing... ");
+                s_bl.Admin.InitializeDB();
+                Console.WriteLine("Done.");
+            }
+            catch (Exception) { }
 
             while (true)
             {

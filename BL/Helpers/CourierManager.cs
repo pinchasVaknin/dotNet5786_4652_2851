@@ -384,7 +384,7 @@ internal static class CourierManager
         try
         {
             // Get all active couriers
-            var activeCouriers = s_dal.Courier.ReadAll(c => c.CourierEnabled);
+            var activeCouriers = s_dal.Courier.ReadAll(c => c.CourierEnabled).ToList();
 
             foreach (var courier in activeCouriers)
             {
