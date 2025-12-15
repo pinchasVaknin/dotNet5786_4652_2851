@@ -327,7 +327,14 @@ internal static class Tools
     /// <param name="config">The config object.</param>
     internal static void ValidateConfig(BO.Config config)
     {
+
+        // Basic null check
         ValidateNotNull(config);
+
+        // 0 AdminId indicates uninitialized config - skip validation
+        if (config.AdminId == 0) return;
+
+        // Required fields
         ValidatePersonId(config.AdminId);
 
         if (string.IsNullOrWhiteSpace(config.AdminPassword))

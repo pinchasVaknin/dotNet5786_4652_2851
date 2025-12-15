@@ -36,13 +36,27 @@ internal static class CourierManager
     /// <exception cref="BO.BlXMLFileLoadCreateException">Thrown if there is a data access error.</exception>
     internal static BO.UserRole GetUserRole(int userId, string password)
     {
+        var config = AdminManager.GetConfig();
+
+        if (config.AdminId == 0)
+        {
+            if (userId == 0)
+            {
+                // Initial setup mode
+                if (password == config.AdminPassword)
+                    return BO.UserRole.Admin;
+
+                // Incorrect password during initial setup
+                throw new BO.BlInvalidPasswordException("Incorrect password for system setup (Reset State).");
+            }
+        }
+
         Tools.ValidatePersonId(userId);
         Tools.ValidateNotNull(password);
 
         try
         {
             // 1. Check Admin
-            var config = AdminManager.GetConfig();
             if (config.AdminId == userId)
             {
                 if (config.AdminPassword == password)
