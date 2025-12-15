@@ -1,7 +1,5 @@
 ﻿namespace Helpers;
 
-using BO;
-using DalApi;
 using System.Runtime.CompilerServices;
 
 /// <summary>
@@ -9,6 +7,7 @@ using System.Runtime.CompilerServices;
 /// </summary>
 internal static class AdminManager //stage 4
 {
+
     #region Stage 4-7
 
     //======== DAL & Sync Objects ========\\
@@ -338,6 +337,7 @@ internal static class AdminManager //stage 4
     }
 
     #endregion Stage 7 base
+
 }
 
 

@@ -5,32 +5,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+//==================== Courier CRUD Implementation (XML) ===================\\
+
 /// <summary>
-/// Provides methods to manage courier data, including creating, reading, updating, and deleting couriers.
+/// Implementation of the ICourier interface for the DalXml layer.
+/// Manages Courier data using XML serialization for persistent storage.
 /// </summary>
-/// <remarks>
-/// This class interacts with an XML data store to perform CRUD operations on courier records.
-/// It ensures that each courier has a unique identifier and handles exceptions when operations
-/// cannot be completed due to existing or non-existing records.
-/// </remarks>
 internal class CourierImplementation : ICourier
 {
+    //==================== Create & Update ===================\\
 
-    //------------------ CRUD Courier functions ------------------\\
+    #region CreateUpdate
+
     /// <summary>
     /// Creates a new courier record in the XML store.
-    /// Throws <see cref="DalAlreadyExistsException"/> if a courier with the same ID already exists.
     /// </summary>
+    /// <param name="item">The courier entity to add.</param>
+    /// <exception cref="DalAlreadyExistsException">Thrown if a courier with the same ID already exists.</exception>
     public void Create(Courier item)
     {
         // Load all couriers from the XML file into a list
-        List<Courier> Couriers =
-            XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
+        List<Courier> Couriers = XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
 
         // Check if a courier with the same ID already exists
         if (Couriers.Any(c => c.CourierId == item.CourierId))
-            throw new DalAlreadyExistsException(
-                $"Courier with ID={item.CourierId} already exists");
+            throw new DalAlreadyExistsException($"Courier with ID={item.CourierId} already exists");
 
         // Add new courier to the list
         Couriers.Add(item);
@@ -40,63 +39,19 @@ internal class CourierImplementation : ICourier
     }
 
     /// <summary>
-    /// Reads a courier by its identifier.
-    /// Returns the courier or null if not found.
+    /// Updates an existing courier record in the XML store.
     /// </summary>
-    public Courier? Read(int id)
-    {
-        // Load list of couriers from XML
-        List<Courier> Couriers =
-            XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
-
-        // Find courier with matching ID (or null)
-        return Couriers.FirstOrDefault(c => c.CourierId == id);
-    }
-
-    /// <summary>
-    /// Reads the first courier that matches the provided predicate.
-    /// Returns the courier or null if no match is found.
-    /// </summary>
-    public Courier? Read(Func<Courier, bool> filter)
-    {
-        // Load list of couriers from XML
-        List<Courier> Couriers =
-            XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
-
-        // Return first courier that satisfies the filter
-        return Couriers.FirstOrDefault(filter);
-    }
-
-    /// <summary>
-    /// Reads all couriers, optionally filtered by the provided predicate.
-    /// Returns an enumerable of couriers.
-    /// </summary>
-    public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null)
-    {
-        // Load list of couriers from XML
-        List<Courier> Couriers =
-            XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
-
-        // If no filter is provided, return all couriers
-        // Otherwise, return only couriers matching the filter
-        return filter is null ? Couriers : Couriers.Where(filter);
-    }
-
-    /// <summary>
-    /// Updates an existing courier record.
-    /// Throws <see cref="DalDoesNotExistException"/> if the courier does not exist.
-    /// </summary>
+    /// <param name="item">The courier entity with updated values.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the courier to update does not exist.</exception>
     public void Update(Courier item)
     {
         // Load current couriers from XML
-        List<Courier> Couriers =
-            XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
+        List<Courier> Couriers = XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
 
         // Remove the old courier entry (must exist)
         // RemoveAll returns how many items were removed
         if (Couriers.RemoveAll(c => c.CourierId == item.CourierId) == 0)
-            throw new DalDoesNotExistException(
-                $"Courier with ID={item.CourierId} does not exist");
+            throw new DalDoesNotExistException($"Courier with ID={item.CourierId} does not exist");
 
         // Add the updated courier version
         Couriers.Add(item);
@@ -105,20 +60,74 @@ internal class CourierImplementation : ICourier
         XMLTools.SaveListToXMLSerializer(Couriers, Config.s_couriers_xml);
     }
 
+    #endregion CreateUpdate
+
+    //==================== Read Operations ===================\\
+
+    #region ReadOperations
+
     /// <summary>
-    /// Deletes a courier by its identifier.
-    /// Throws <see cref="DalDoesNotExistException"/> if the courier does not exist.
+    /// Retrieves a courier by its unique identifier.
     /// </summary>
+    /// <param name="id">The ID of the courier to find.</param>
+    /// <returns>The courier entity if found, otherwise null.</returns>
+    public Courier? Read(int id)
+    {
+        // Load list of couriers from XML
+        List<Courier> Couriers = XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
+
+        // Find courier with matching ID (or null)
+        return Couriers.FirstOrDefault(c => c.CourierId == id);
+    }
+
+    /// <summary>
+    /// Retrieves the first courier that matches the specified filter condition.
+    /// </summary>
+    /// <param name="filter">A predicate function to test each element.</param>
+    /// <returns>The first matching courier, or null if no match is found.</returns>
+    public Courier? Read(Func<Courier, bool> filter)
+    {
+        // Load list of couriers from XML
+        List<Courier> Couriers = XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
+
+        // Return first courier that satisfies the filter
+        return Couriers.FirstOrDefault(filter);
+    }
+
+    /// <summary>
+    /// Retrieves all couriers, optionally filtered by a condition.
+    /// </summary>
+    /// <param name="filter">Optional predicate to filter the results.</param>
+    /// <returns>A collection of courier entities.</returns>
+    public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null)
+    {
+        // Load list of couriers from XML
+        List<Courier> Couriers = XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
+
+        // If no filter is provided, return all couriers
+        // Otherwise, return only couriers matching the filter
+        return filter is null ? Couriers : Couriers.Where(filter);
+    }
+
+    #endregion ReadOperations
+
+    //==================== Delete Operations ===================\\
+
+    #region DeleteOperations
+
+    /// <summary>
+    /// Deletes a courier by its unique identifier.
+    /// </summary>
+    /// <param name="id">The ID of the courier to delete.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the courier does not exist.</exception>
     public void Delete(int id)
     {
         // Load couriers from XML
-        List<Courier> Couriers =
-            XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
+        List<Courier> Couriers = XMLTools.LoadListFromXMLSerializer<Courier>(Config.s_couriers_xml);
 
         // Attempt to remove matching courier
         if (Couriers.RemoveAll(c => c.CourierId == id) == 0)
-            throw new DalDoesNotExistException(
-                $"Courier with ID={id} does not exist");
+            throw new DalDoesNotExistException($"Courier with ID={id} does not exist");
 
         // Save updated list
         XMLTools.SaveListToXMLSerializer(Couriers, Config.s_couriers_xml);
@@ -132,5 +141,7 @@ internal class CourierImplementation : ICourier
         // Overwrite file with an empty list to clear all couriers
         XMLTools.SaveListToXMLSerializer(new List<Courier>(), Config.s_couriers_xml);
     }
-}
 
+    #endregion DeleteOperations
+
+}

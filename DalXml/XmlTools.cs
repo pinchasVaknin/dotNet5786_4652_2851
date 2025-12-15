@@ -1,7 +1,6 @@
 ﻿namespace Dal;
 
 using DO;
-using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -19,6 +18,11 @@ using System.Xml.Serialization;
 /// </remarks>
 static class XMLTools
 {
+
+    //==================== Directory Setup ===================\\
+
+    #region DirectorySetup
+
     // Base directory for all XML files used by the DAL layer
     const string s_xmlDir = @"..\xml\";
 
@@ -28,6 +32,10 @@ static class XMLTools
         if (!Directory.Exists(s_xmlDir))
             Directory.CreateDirectory(s_xmlDir);
     }
+
+    #endregion DirectorySetup
+
+    // ==================== Save/Load with XmlSerializer ===================\\
 
     #region SaveLoadWithXMLSerializer
 
@@ -95,6 +103,8 @@ static class XMLTools
     }
 
     #endregion
+
+    // ==================== Save/Load with XElement ===================\\
 
     #region SaveLoadWithXElement
 
@@ -168,9 +178,9 @@ static class XMLTools
 
     #endregion
 
-    #region XmlConfig
+    // ==================== XmlConfig Typed Getters/Setters ===================\\
 
-    //----------- Configuration (Config XML) Typed Getters/Setters -----------\\
+    #region XmlConfig
 
     //----------- Getters -----------\\
 
@@ -521,6 +531,8 @@ static class XMLTools
     }
 
     #endregion
+
+    // ==================== XElement Extension Methods ===================\\
 
     #region ExtensionFuctions
 

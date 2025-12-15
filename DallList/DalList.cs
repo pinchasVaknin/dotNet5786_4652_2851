@@ -2,20 +2,35 @@
 using DalApi;
 using DO;
 
+//==================== Main List DAL Implementation ===================\\
+
 /// <summary>
-/// build and resets
+/// Main entry point for the List-based (In-Memory) Data Access Layer.
+/// Implements the IDal interface using internal static lists for storage.
 /// </summary>
-sealed internal class DalList : IDal 
+sealed internal class DalList : IDal
 {
-    // private constructor to prevent external instantiation
+    //==================== Singleton Pattern ===================\\
+
+    #region Singleton
+
+    // Private constructor to prevent external instantiation
     private DalList() { }
 
-    //------ Lazy intialization + Thread safe ------\\
-    private static readonly Lazy<DalList> s_instance = 
-        new Lazy<DalList>(()=> new DalList() , true);
+    // Lazy initialization for thread safety
+    private static readonly Lazy<DalList> s_instance =
+        new Lazy<DalList>(() => new DalList(), true);
 
-    // publc access to the instance
-    public static IDal Instance  => s_instance.Value;
+    /// <summary>
+    /// Gets the singleton instance of the DalList class.
+    /// </summary>
+    public static IDal Instance => s_instance.Value;
+
+    #endregion Singleton
+
+    //==================== Entity Implementations ===================\\
+
+    #region Entities
 
     /// <summary>
     /// Gets the courier service implementation used for handling delivery operations.
@@ -23,7 +38,7 @@ sealed internal class DalList : IDal
     public ICourier Courier { get; } = new CourierImplementation();
 
     /// <summary>
-    /// Gets the current order instance.
+    /// Gets the current order service implementation.
     /// </summary>
     public IOrder Order { get; } = new OrderImplementation();
 
@@ -31,6 +46,12 @@ sealed internal class DalList : IDal
     /// Gets the delivery service implementation.
     /// </summary>
     public IDelivery Delivery { get; } = new DeliveryImplementation();
+
+    #endregion Entities
+
+    //==================== System & Config ===================\\
+
+    #region SystemAndConfig
 
     /// <summary>
     /// Gets the configuration settings for the application.
@@ -42,8 +63,7 @@ sealed internal class DalList : IDal
     /// </summary>
     /// <remarks>
     /// This method deletes all entries from the Courier, Order, and Delivery tables, and resets the
-    /// configuration settings to their default values.  Use with caution as this operation is irreversible and will
-    /// result in the loss of all current data.
+    /// configuration settings to their default values. Use with caution as this operation is irreversible.
     /// </remarks>
     public void ResetDB()
     {
@@ -52,4 +72,7 @@ sealed internal class DalList : IDal
         Delivery.DeleteAll();
         Config.Reset();
     }
+
+    #endregion SystemAndConfig
+
 }

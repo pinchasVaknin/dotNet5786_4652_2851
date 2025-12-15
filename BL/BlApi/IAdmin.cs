@@ -1,17 +1,22 @@
-﻿using BO;
+﻿namespace BlApi;
+using System;
 
-namespace BlApi;
+//==================== IAdmin Service Contract ===================\\
 
 /// <summary>
 /// Logical service contract for system administration operations.
+/// Includes System Clock management, Configuration settings, and Database maintenance.
 /// </summary>
 public interface IAdmin
 {
+    //==================== System Clock ===================\\
+
+    #region SystemClock
 
     /// <summary>
     /// Retrieves the current logical system clock.
     /// </summary>
-    /// <returns>The current system time as a <see cref="System.DateTime"/>.</returns>
+    /// <returns>The current system time as a <see cref="DateTime"/>.</returns>
     DateTime GetClock();
 
     /// <summary>
@@ -23,10 +28,15 @@ public interface IAdmin
     /// </param>
     /// <remarks>
     /// The implementation should compute the new time based on the current clock
-    /// and then call the appropriate helper method, e.g.:
-    /// AdminManager.UpdateClock(AdminManager.Now.AddMinutes(1));
+    /// and trigger any time-dependent periodic updates.
     /// </remarks>
     void ForwardClock(BO.TimeUnit unit);
+
+    #endregion SystemClock
+
+    //==================== Configuration ===================\\
+
+    #region Configuration
 
     /// <summary>
     /// Retrieves all relevant configuration values for the presentation layer.
@@ -39,7 +49,6 @@ public interface IAdmin
 
     /// <summary>
     /// Updates configuration values based on the given logical config object.
-    /// Only configuration values that are exposed to the PL should be updated.
     /// </summary>
     /// <param name="config">
     /// A <see cref="BO.Config"/> object containing the configuration values
@@ -47,19 +56,26 @@ public interface IAdmin
     /// </param>
     void SetConfig(BO.Config config);
 
+    #endregion Configuration
+
+    //==================== Database Maintenance ===================\\
+
+    #region DatabaseMaintenance
+
     /// <summary>
     /// Resets the entire database:
     /// - Resets all configuration values to their initial defaults.
-    /// - Clears all data lists of all entities.
+    /// - Clears all data lists of all entities (Orders, Couriers, Deliveries).
     /// </summary>
     void ResetDB();
 
     /// <summary>
-    /// Initializes the database with initial data:
+    /// Initializes the database with seed data:
     /// - First resets the database.
-    /// - Then fills all entities with initial values according to the project requirements.
+    /// - Then fills entities with initial sample values for testing/demo purposes.
     /// </summary>
     void InitializeDB();
 
-    
+    #endregion DatabaseMaintenance
+
 }

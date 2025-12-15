@@ -1,5 +1,4 @@
 ﻿namespace Dal;
-
 using DalApi;
 using DO;
 using System;
@@ -7,24 +6,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
+//==================== Delivery CRUD Implementation (XML via XElement) ===================\\
+
 /// <summary>
-/// Provides an implementation for managing delivery records, including creating, reading, updating, and deleting
-/// deliveries.
+/// Implementation of the IDelivery interface for the DalXml layer.
+/// Manages Delivery data using XElement (LINQ to XML) for direct XML manipulation.
 /// </summary>
-/// <remarks>
-/// This class interacts with an XML data store to persist delivery information.
-/// It ensures unique IDs and provides querying/filtering capabilities.
-/// </remarks>
 internal class DeliveryImplementation : IDelivery
 {
     // Path to the XML file that stores delivery records
     private static readonly string filePath = Config.s_deliverys_xml;
 
-    //------------------ Help functions ------------------\\
+    //==================== XML Helpers ===================\\
+
+    #region XMLHelpers
+
     /// <summary>
     /// Parses a <see cref="Delivery"/> instance from an XElement.
-    /// Performs validation for required fields and throws specific Dal* exceptions.
+    /// Performs validation for required fields and throws specific Dal* exceptions if data is missing or invalid.
     /// </summary>
+    /// <param name="d">The XElement representing a delivery.</param>
+    /// <returns>A populated Delivery object.</returns>
     private static Delivery FromXElement(XElement d)
     {
         // Extract and validate DeliveryId (required)
@@ -74,6 +76,8 @@ internal class DeliveryImplementation : IDelivery
     /// <summary>
     /// Converts a Delivery object into an XElement for serialization into the XML file.
     /// </summary>
+    /// <param name="d">The Delivery object to convert.</param>
+    /// <returns>An XElement representation of the delivery.</returns>
     private static XElement ToXElement(Delivery d) =>
         new XElement("Delivery",
             new XElement("DeliveryId", d.DeliveryId),
@@ -86,13 +90,18 @@ internal class DeliveryImplementation : IDelivery
             new XElement("DeliveryFinishType", d.DeliveryFinishType)
         );
 
+    #endregion XMLHelpers
 
-    //------------------ CRUD Courier functions ------------------\\
+    //==================== Create & Update ===================\\
+
+    #region CreateUpdate
+
     /// <summary>
     /// Creates a new delivery record in the XML store.
     /// Assigns a new unique ID using Config.NextDeliveryId.
-    /// Throws exception if the ID already exists.
     /// </summary>
+    /// <param name="item">The delivery entity to add.</param>
+    /// <exception cref="DalAlreadyExistsException">Thrown if the generated ID already exists.</exception>
     public void Create(Delivery item)
     {
         // Load the current XML root element
@@ -114,16 +123,45 @@ internal class DeliveryImplementation : IDelivery
     }
 
     /// <summary>
-    /// Reads a delivery by its identifier.
-    /// Returns null if not found.
+    /// Updates an existing delivery in the XML store.
     /// </summary>
+    /// <param name="item">The delivery entity with updated values.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the delivery to update does not exist.</exception>
+    public void Update(Delivery item)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(filePath);
+
+        // Find the delivery to update
+        XElement? elem = root.Elements("Delivery")
+                .FirstOrDefault(d => (int?)d.Element("DeliveryId") == item.DeliveryId);
+
+        if (elem is null)
+            throw new DalDoesNotExistException($"Delivery with ID={item.DeliveryId} does not exist");
+
+        // Replace the old element with a new one
+        elem.ReplaceWith(ToXElement(item));
+
+        // Save changes
+        XMLTools.SaveListToXMLElement(root, filePath);
+    }
+
+    #endregion CreateUpdate
+
+    //==================== Read Operations ===================\\
+
+    #region ReadOperations
+
+    /// <summary>
+    /// Retrieves a delivery by its unique identifier.
+    /// </summary>
+    /// <param name="id">The ID of the delivery to find.</param>
+    /// <returns>The delivery entity if found, otherwise null.</returns>
     public Delivery? Read(int id)
     {
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
 
         // Find matching element in XML
-        XElement? elem =
-            root.Elements("Delivery")
+        XElement? elem = root.Elements("Delivery")
                 .FirstOrDefault(d => (int?)d.Element("DeliveryId") == id);
 
         // Convert to object if found
@@ -131,9 +169,10 @@ internal class DeliveryImplementation : IDelivery
     }
 
     /// <summary>
-    /// Reads the first delivery matching the provided predicate.
-    /// Returns null if none match.
+    /// Retrieves the first delivery that matches the specified filter condition.
     /// </summary>
+    /// <param name="filter">A predicate function to test each element.</param>
+    /// <returns>The first matching delivery, or null if no match is found.</returns>
     public Delivery? Read(Func<Delivery, bool> filter)
     {
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
@@ -145,61 +184,42 @@ internal class DeliveryImplementation : IDelivery
     }
 
     /// <summary>
-    /// Returns all deliveries, optionally filtered by the provided predicate.
+    /// Retrieves all deliveries, optionally filtered by a condition.
     /// </summary>
+    /// <param name="filter">Optional predicate to filter the results.</param>
+    /// <returns>A collection of delivery entities.</returns>
     public IEnumerable<Delivery> ReadAll(Func<Delivery, bool>? filter = null)
     {
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
 
         // Convert XML to Delivery objects
-        IEnumerable<Delivery> all =
-            root.Elements("Delivery")
-                .Select(FromXElement);
+        IEnumerable<Delivery> all = root.Elements("Delivery").Select(FromXElement);
 
         // Apply filter if provided
         return filter is null ? all : all.Where(filter);
     }
 
-    /// <summary>
-    /// Updates an existing delivery.
-    /// Throws if the delivery does not exist.
-    /// </summary>
-    public void Update(Delivery item)
-    {
-        XElement root = XMLTools.LoadListFromXMLElement(filePath);
+    #endregion ReadOperations
 
-        // Find the delivery to update
-        XElement? elem =
-            root.Elements("Delivery")
-                .FirstOrDefault(d => (int?)d.Element("DeliveryId") == item.DeliveryId);
+    //==================== Delete Operations ===================\\
 
-        if (elem is null)
-            throw new DalDoesNotExistException(
-                $"Delivery with ID={item.DeliveryId} does not exist");
-
-        // Replace the old element with a new one
-        elem.ReplaceWith(ToXElement(item));
-
-        // Save changes
-        XMLTools.SaveListToXMLElement(root, filePath);
-    }
+    #region DeleteOperations
 
     /// <summary>
-    /// Deletes the delivery with the given ID.
-    /// Throws if not found.
+    /// Deletes a delivery by its unique identifier.
     /// </summary>
+    /// <param name="id">The ID of the delivery to delete.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the delivery does not exist.</exception>
     public void Delete(int id)
     {
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
 
         // Find the node to delete
-        XElement? elem =
-            root.Elements("Delivery")
+        XElement? elem = root.Elements("Delivery")
                 .FirstOrDefault(d => (int?)d.Element("DeliveryId") == id);
 
         if (elem is null)
-            throw new DalDoesNotExistException(
-                $"Delivery with ID={id} does not exist");
+            throw new DalDoesNotExistException($"Delivery with ID={id} does not exist");
 
         // Remove from XML
         elem.Remove();
@@ -209,7 +229,7 @@ internal class DeliveryImplementation : IDelivery
     }
 
     /// <summary>
-    /// Clears all delivery records from the XML file.
+    /// Deletes all delivery records from the XML store.
     /// </summary>
     public void DeleteAll()
     {
@@ -219,4 +239,7 @@ internal class DeliveryImplementation : IDelivery
         // Write empty list to file
         XMLTools.SaveListToXMLElement(root, filePath);
     }
+
+    #endregion DeleteOperations
+
 }

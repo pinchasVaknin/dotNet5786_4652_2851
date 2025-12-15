@@ -1,54 +1,69 @@
 ﻿namespace DalTest;
 using DalApi;
+using DO;
 using System;
-using System.Net;
+using System.Collections.Generic;
+using System.Linq;
 
+//==================== Data Initialization (Seeding) ===================\\
+
+/// <summary>
+/// Static class responsible for initializing the database with dummy data.
+/// Used for testing purposes to populate Couriers, Orders, Deliveries, and Configuration.
+/// </summary>
 public static class Initialization
 {
-    //private static ICourier? s_dalCourier; // stage 1: Data access layer for couriers
-    //private static IOrder? s_dalOrder; // stage 1: Data access layer for orders
-    //private static IDelivery? s_dalDelivery; // stage 1: Data access layer for deliveries
-    //private static IConfig? s_dalConfig; // stage 1: Data access layer for configuration
+    //==================== Fields & Constants ===================\\
 
-    private static IDal? s_dal; // stage 2
+    #region Fields
 
+    // Access to the DAL layer via the Factory
+    private static IDal? s_dal;
 
-    const int MIN_COURIER_ID = 200000000; // Minimum value for courier ID
-    const int MAX_COURIER_ID = 400000000; // Maximum value for courier ID
+    // Constants for random ID generation
+    const int MIN_COURIER_ID = 200000000;
+    const int MAX_COURIER_ID = 400000000;
 
-    private static readonly Random s_rand = new(); // Random generator for data creation
+    // Random generator for data creation
+    private static readonly Random s_rand = new();
 
+    #endregion Fields
 
-    //--- Main boot function ---\\
-    public static void Do() //stage 4
+    //==================== Main Entry Point ===================\\
+
+    #region MainBoot
+
+    /// <summary>
+    /// Main boot function to reset the database and seed initial data.
+    /// </summary>
+    public static void Do()
     {
-        // Guard: DAL order, Delivery, Courier, config must be initialized before seeding
-        //s_dalCourier = dalCourier ?? throw new NullReferenceException("DAL courier cannot be null!");   // stage 1
-        //s_dalDelivery = dalDelivery ?? throw new NullReferenceException("DAL delivery cannot be null!");// stage 1
-        //s_dalOrder = dalOrder ?? throw new NullReferenceException("DAL order cannot be null!");         // stage 1
-        //s_dalConfig = dalConfig ?? throw new NullReferenceException("DAL config cannot be null!");      // stage 1
+        // Get the DAL instance from the Factory
+        s_dal = DalApi.Factory.Get;
 
-        //s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!"); // stage 2
+        Console.WriteLine("Resetting configuration and lists...");
 
-        s_dal = DalApi.Factory.Get; //stage 4
+        // Reset the database (clears XMLs or Lists depending on implementation)
+        s_dal.ResetDB();
 
-        Console.WriteLine("Reset configuration and lists...");
-        //s_dalConfig.Reset();      // stage 1 Restart
-        //s_dalCourier.DeleteAll(); // stage 1 Restart
-        //s_dalOrder.DeleteAll();   // stage 1 Restart
-        //s_dalDelivery.DeleteAll();// stage 1 Restart
-        s_dal.ResetDB(); // stage 2
+        Console.WriteLine("Creating initial data...");
 
-        Console.WriteLine("Create initial data...");
-        // stage 1 Creation
+        // Create Data
         createConfig();
         createCouriers();
         createOrders();
         createDeliverys();
     }
 
+    #endregion MainBoot
 
-    //--- Individual initialization functions ---\\
+    //==================== Data Creation Methods ===================\\
+
+    #region DataCreation
+
+    /// <summary>
+    /// Generates and stores random Courier entities.
+    /// </summary>
     private static void createCouriers()
     {
         // List of courier names to generate demo data
@@ -67,13 +82,15 @@ public static class Initialization
             "Jaffa", "King George", "Ben Yehuda", "Aza", "Herzl",
             "Hillel", "Agripas", "Jabotinsky", "Begin", "Bialik"
         };
-        
+
         foreach (string name in courierNames)
         {
             // Generate unique courier ID
             int id;
             do
+            {
                 id = s_rand.Next(MIN_COURIER_ID, MAX_COURIER_ID); // Random ID in valid range
+            }
             while (s_dal!.Courier.Read(id) != null); // Ensure ID is not taken
 
             // Generate email and phone based on name + random pattern
@@ -89,9 +106,6 @@ public static class Initialization
             // Pick random street + house number
             string address = $"{streets[s_rand.Next(streets.Length)]}, St {s_rand.Next(1, 200)}";
 
-            // Max weight the courier can carry (5, 10, or 15 KG)
-            double maxWeight = s_rand.Next(1, 4) * 5.0;
-
             // Employment start time randomly chosen sometime over the past 3 years
             DateTime startBase = new DateTime(s_dal!.Config.Clock.Year - 3, 1, 1);
             int range = (s_dal.Config.Clock - startBase).Days;
@@ -104,22 +118,18 @@ public static class Initialization
             // Random max travel distance depending on vehicle type (or null sometimes)
             double? MaxDistance = (s_rand.NextDouble() < 0.6) ? VehicleType switch
             {
-                DO.CourierVehicleType.Car        =>  10 + s_rand.NextDouble() * (35 - 10),
-                DO.CourierVehicleType.Motorcycle =>   8 + s_rand.NextDouble() * (25 - 8),
-                DO.CourierVehicleType.Bicycle    =>   3 + s_rand.NextDouble() * (12 - 3),
-                DO.CourierVehicleType.Foot       =>   1 + s_rand.NextDouble() * (4 - 1),
+                DO.CourierVehicleType.Car => 10 + s_rand.NextDouble() * (35 - 10),
+                DO.CourierVehicleType.Motorcycle => 8 + s_rand.NextDouble() * (25 - 8),
+                DO.CourierVehicleType.Bicycle => 3 + s_rand.NextDouble() * (12 - 3),
+                DO.CourierVehicleType.Foot => 1 + s_rand.NextDouble() * (4 - 1),
                 _ => null
             } : null;
-            // round the MaxDistance
+
+            // Round the MaxDistance
             if (MaxDistance is not null)
             {
                 MaxDistance = Math.Round(MaxDistance.Value, 3);
             }
-
-
-            // Choose preferred shipment type randomly
-            DO.ShipmentType[] types = Enum.GetValues<DO.ShipmentType>();
-            DO.ShipmentType preferredType = types[s_rand.Next(types.Length)];
 
             // Create and save courier in DAL
             s_dal!.Courier.Create(new DO.Courier(
@@ -133,84 +143,87 @@ public static class Initialization
              MaxCourierDistance: MaxDistance,
              SeniorityOfCourier: employmentStartTime,
              CourierVehicleType: VehicleType
-          ));
+         ));
         }
     }
+
+    /// <summary>
+    /// Generates and stores random Order entities.
+    /// </summary>
     private static void createOrders()
     {
         // Sample pool of customer names to randomly pick from
         string[] customers =
         {
-        "Noa Levi","Yossi Cohen","Dana Bar","Itai Mor","Rina Azulay","Gal Shachar",
-        "Eden Peri","Liad Shalom","Hila Porat","Ido Tal","Maya Dayan","Nir Omer",
-        "Rotem Halevi","Eli Abramov","Yael Menachem","Tal Shani","Omer Golan","Roni Sagi",
-        "Shir Avital","Yair Katz","Ofir Shalev","Hadar Sinai","Aviv Dagan","Orly Tamir",
-        "Shaked Bar-On","Maor David","Shani Eldar","Roy Daniel","Lihi Bram",
-        "Tom Elbaz","Yotam Hen","Liron Shalom","Adi Ravid","Erez Shachar",
-        "Hila Arbel","Emanuel Sharon","Sapir Menashe","Yuval Avraham","Bar Shahar",
-        "Noga Vardi","Naor Levy","Shachar Shemesh","Or Peleg","Yaara Gold",
-        "Efrat Shoshani","Omri Shoham","Karen Levi","Ofek Azulay","Dvir Mizrahi",
-        "Meitar Sahar"
+            "Noa Levi","Yossi Cohen","Dana Bar","Itai Mor","Rina Azulay","Gal Shachar",
+            "Eden Peri","Liad Shalom","Hila Porat","Ido Tal","Maya Dayan","Nir Omer",
+            "Rotem Halevi","Eli Abramov","Yael Menachem","Tal Shani","Omer Golan","Roni Sagi",
+            "Shir Avital","Yair Katz","Ofir Shalev","Hadar Sinai","Aviv Dagan","Orly Tamir",
+            "Shaked Bar-On","Maor David","Shani Eldar","Roy Daniel","Lihi Bram",
+            "Tom Elbaz","Yotam Hen","Liron Shalom","Adi Ravid","Erez Shachar",
+            "Hila Arbel","Emanuel Sharon","Sapir Menashe","Yuval Avraham","Bar Shahar",
+            "Noga Vardi","Naor Levy","Shachar Shemesh","Or Peleg","Yaara Gold",
+            "Efrat Shoshani","Omri Shoham","Karen Levi","Ofek Azulay","Dvir Mizrahi",
+            "Meitar Sahar"
         };
-
 
         // Real Jerusalem addresses with latitude/longitude tuples
         var addresses = new List<(string orderAddress, double lat, double lon)>
         {
-        ("Jaffa 97, Jerusalem",                          31.78849, 35.20412),
-        ("King George 3, Jerusalem",                     31.78025, 35.21492),
-        ("Ben Yehuda 10, Jerusalem",                     31.78144, 35.21603),
-        ("Azza 34, Jerusalem",                           31.77652, 35.20998),
-        ("Hillel 18, Jerusalem",                         31.78098, 35.22002),
-        ("Agripas 80, Mahane Yehuda",                    31.78364, 35.21413),
-        ("Jabotinsky 2, Jerusalem",                      31.77343, 35.21262),
-        ("Herzl 90, Jerusalem",                          31.80235, 35.19855),
-        ("Malha Mall, Jerusalem",                        31.74788, 35.18803),
-        ("Givat Shaul 40, Jerusalem",                    31.78886, 35.18847),
-        ("Har Hotzvim, Jerusalem",                       31.80619, 35.20750),
-        ("Talpiot, HaUman 17, Jerusalem",                31.74880, 35.22330),
-        ("Central Bus Station, Jerusalem",               31.79000, 35.20420),
-        ("Shlomtzion HaMalka 6, Jerusalem",              31.77744, 35.22543),
-        ("Derech Beit Lehem 112, Jerusalem",             31.75683, 35.21988),
-        ("Emek Refaim 21, Jerusalem",                    31.76501, 35.21765),
-        ("Yehuda 64, Bakaa, Jerusalem",                  31.75919, 35.22274),
-        ("HaPalmach 45, Jerusalem",                      31.77315, 35.21297),
-        ("Kiryat HaYovel, Stern 33, Jerusalem",          31.76481, 35.18595),
-        ("Bayit Vegan, Shaarei Torah 12, Jerusalem",     31.76577, 35.19064),
-        ("Mount Herzl, Jerusalem",                       31.77357, 35.18554),
-        ("Ein Kerem, Jerusalem",                         31.76452, 35.14696),
-        ("Pisgat Ze'ev Center, Jerusalem",               31.83852, 35.24322),
-        ("Neve Yaakov Blvd, Jerusalem",                  31.84455, 35.22750),
-        ("Ramat Eshkol, Ussishkin 14, Jerusalem",        31.80587, 35.22674),
-        ("French Hill, HaGoren 2, Jerusalem",            31.79274, 35.24134),
-        ("Gonen (Katamon), Hovevei Zion 5, Jerusalem",   31.76217, 35.20862),
-        ("Rehavia, Ramban 15, Jerusalem",                31.77673, 35.21388),
-        ("Talbiya, Dubnov 7, Jerusalem",                 31.77498, 35.21911),
-        ("Kiryat Moshe, Herzl Blvd 18, Jerusalem",       31.78735, 35.19877),
-        ("Romema, Zmora 9, Jerusalem",                   31.79921, 35.20461),
-        ("Gilo Center, Jerusalem",                       31.72718, 35.19039),
-        ("Armon HaNatziv, Yanovski 12, Jerusalem",       31.75090, 35.22988),
-        ("Shaare Zedek Hospital, Jerusalem",             31.76971, 35.19573),
-        ("Hadassah Ein Kerem Hospital, Jerusalem",       31.76318, 35.14852),
-        ("Ramot, Golda Meir Blvd 254, Jerusalem",        31.82050, 35.18590),
-        ("Mishkenot Shaananim, Jerusalem",               31.77098, 35.22651),
-        ("Yemin Moshe, Jerusalem",                       31.77135, 35.22620),
-        ("Mamilla Mall, Jerusalem",                      31.77705, 35.22162),
-        ("Hebrew University, Mt. Scopus",                31.79460, 35.24423),
-        ("Hebrew University, Givat Ram",                 31.77360, 35.20146),
-        ("Ein Yael, Jerusalem",                          31.75681, 35.17579),
-        ("Zoo Biblical, Jerusalem",                      31.74851, 35.17531),
-        ("Tzomet Pat, Jerusalem",                        31.75512, 35.20490),
-        ("Ramat Sharet, Hartom 12, Jerusalem",           31.76133, 35.20395),
-        ("Malha Railway Station, Jerusalem",             31.75033, 35.19230),
-        ("Light Rail — Davidka Station, Jerusalem",      31.78553, 35.21205),
-        ("Light Rail — Shimon HaTzadik Station",         31.80226, 35.23514),
-        ("Rekhes Shmuel, Jerusalem",                     31.79260, 35.21008),
-        ("German Colony, Rachel Imenu 15, Jerusalem",    31.76445, 35.21980),
-        ("Baka, Pierre Koenig 36, Jerusalem",            31.75142, 35.22291)
+            ("Jaffa 97, Jerusalem",                          31.78849, 35.20412),
+            ("King George 3, Jerusalem",                     31.78025, 35.21492),
+            ("Ben Yehuda 10, Jerusalem",                     31.78144, 35.21603),
+            ("Azza 34, Jerusalem",                           31.77652, 35.20998),
+            ("Hillel 18, Jerusalem",                         31.78098, 35.22002),
+            ("Agripas 80, Mahane Yehuda",                    31.78364, 35.21413),
+            ("Jabotinsky 2, Jerusalem",                      31.77343, 35.21262),
+            ("Herzl 90, Jerusalem",                          31.80235, 35.19855),
+            ("Malha Mall, Jerusalem",                        31.74788, 35.18803),
+            ("Givat Shaul 40, Jerusalem",                    31.78886, 35.18847),
+            ("Har Hotzvim, Jerusalem",                       31.80619, 35.20750),
+            ("Talpiot, HaUman 17, Jerusalem",                31.74880, 35.22330),
+            ("Central Bus Station, Jerusalem",               31.79000, 35.20420),
+            ("Shlomtzion HaMalka 6, Jerusalem",              31.77744, 35.22543),
+            ("Derech Beit Lehem 112, Jerusalem",             31.75683, 35.21988),
+            ("Emek Refaim 21, Jerusalem",                    31.76501, 35.21765),
+            ("Yehuda 64, Bakaa, Jerusalem",                  31.75919, 35.22274),
+            ("HaPalmach 45, Jerusalem",                      31.77315, 35.21297),
+            ("Kiryat HaYovel, Stern 33, Jerusalem",          31.76481, 35.18595),
+            ("Bayit Vegan, Shaarei Torah 12, Jerusalem",     31.76577, 35.19064),
+            ("Mount Herzl, Jerusalem",                       31.77357, 35.18554),
+            ("Ein Kerem, Jerusalem",                         31.76452, 35.14696),
+            ("Pisgat Ze'ev Center, Jerusalem",               31.83852, 35.24322),
+            ("Neve Yaakov Blvd, Jerusalem",                  31.84455, 35.22750),
+            ("Ramat Eshkol, Ussishkin 14, Jerusalem",        31.80587, 35.22674),
+            ("French Hill, HaGoren 2, Jerusalem",            31.79274, 35.24134),
+            ("Gonen (Katamon), Hovevei Zion 5, Jerusalem",   31.76217, 35.20862),
+            ("Rehavia, Ramban 15, Jerusalem",                31.77673, 35.21388),
+            ("Talbiya, Dubnov 7, Jerusalem",                 31.77498, 35.21911),
+            ("Kiryat Moshe, Herzl Blvd 18, Jerusalem",       31.78735, 35.19877),
+            ("Romema, Zmora 9, Jerusalem",                   31.79921, 35.20461),
+            ("Gilo Center, Jerusalem",                       31.72718, 35.19039),
+            ("Armon HaNatziv, Yanovski 12, Jerusalem",       31.75090, 35.22988),
+            ("Shaare Zedek Hospital, Jerusalem",             31.76971, 35.19573),
+            ("Hadassah Ein Kerem Hospital, Jerusalem",       31.76318, 35.14852),
+            ("Ramot, Golda Meir Blvd 254, Jerusalem",        31.82050, 35.18590),
+            ("Mishkenot Shaananim, Jerusalem",               31.77098, 35.22651),
+            ("Yemin Moshe, Jerusalem",                       31.77135, 35.22620),
+            ("Mamilla Mall, Jerusalem",                      31.77705, 35.22162),
+            ("Hebrew University, Mt. Scopus",                31.79460, 35.24423),
+            ("Hebrew University, Givat Ram",                 31.77360, 35.20146),
+            ("Ein Yael, Jerusalem",                          31.75681, 35.17579),
+            ("Zoo Biblical, Jerusalem",                      31.74851, 35.17531),
+            ("Tzomet Pat, Jerusalem",                        31.75512, 35.20490),
+            ("Ramat Sharet, Hartom 12, Jerusalem",           31.76133, 35.20395),
+            ("Malha Railway Station, Jerusalem",             31.75033, 35.19230),
+            ("Light Rail — Davidka Station, Jerusalem",      31.78553, 35.21205),
+            ("Light Rail — Shimon HaTzadik Station",         31.80226, 35.23514),
+            ("Rekhes Shmuel, Jerusalem",                     31.79260, 35.21008),
+            ("German Colony, Rachel Imenu 15, Jerusalem",    31.76445, 35.21980),
+            ("Baka, Pierre Koenig 36, Jerusalem",            31.75142, 35.22291)
         };
 
-        // Quantity requirements: total >= 50; at least 20 OPEN, 10 IN_PROGRESS, 20 CLOSED
+        // Quantity requirements: total >= 50
         int totalOrder = 50;
         int openCount = 20;
         int progCount = 10;
@@ -218,8 +231,8 @@ public static class Initialization
         int extra = totalOrder - (openCount + progCount + closedCount);
         openCount += Math.Max(0, extra); // allocate any remainder to OPEN
 
-        // Company coordinates (seeded manually in Config at stage 1). Defaults are fallbacks.
-        double companyLat = s_dal.Config.Latitude ?? 31.7886;
+        // Company coordinates (seeded manually in Config). Defaults are fallbacks.
+        double companyLat = s_dal!.Config.Latitude ?? 31.7886;
         double companyLon = s_dal.Config.Longitude ?? 35.2034;
 
         // All order categories (enum values) + the project simulation clock
@@ -228,17 +241,18 @@ public static class Initialization
 
         // Build a flat sequence of status tags, then iterate once to create all orders
         var statuses = Enumerable.Repeat("OPEN", openCount)
-               .Concat(Enumerable.Repeat("IN_PROGRESS", progCount))
-               .Concat(Enumerable.Repeat("CLOSED", closedCount));
+                .Concat(Enumerable.Repeat("IN_PROGRESS", progCount))
+                .Concat(Enumerable.Repeat("CLOSED", closedCount));
 
         foreach (var statusTag in statuses)
         {
             // Random address tuple (address string + lat/lon)
             var addr = addresses[s_rand.Next(addresses.Count)];
-            // Random category and product within that category
+            // Random category
             var kind = allKinds[s_rand.Next(allKinds.Length)];
 
             // Compact electronics catalog: (category enum, array of product names)
+            // Assumes DO.Catalog.* definitions exist
             string[] items = kind switch
             {
                 DO.TypeOfOrder.Smartphone => Enum.GetNames<DO.Catalog.SmartphoneDetails>(),
@@ -253,23 +267,22 @@ public static class Initialization
                 _ => Array.Empty<string>()
             };
 
-            // chosening product from Catalog
+            // Choosing product from Catalog
             string product = "";
             int count = s_rand.Next(1, 4); // Randomly choose how many products between 1 and 3
-
-            List<string> chosenProducts = new(); // Create a list to keep track of the chosen products
+            List<string> chosenProducts = new();
 
             // Loop to randomly pick products
             for (int i = 0; i < count; i++)
             {
-                string chosen = items[s_rand.Next(items.Length)];
+                string chosen = items.Length > 0 ? items[s_rand.Next(items.Length)] : "Generic Item";
                 if (!chosenProducts.Contains(chosen))
                     chosenProducts.Add(chosen);
-                else count--; // if hit the same try again
+                else
+                    count--; // if hit the same, try again
             }
             // Combine all chosen products into one string separated by commas
             product = string.Join(", ", chosenProducts);
-
 
             // Random customer + phone in Israeli format 05X-XXXXXXX
             string customer = customers[s_rand.Next(customers.Length)];
@@ -303,7 +316,7 @@ public static class Initialization
             // Compute straight-line (air) distance company <-> order address (km)
             double airKm = Haversine(companyLat, companyLon, addr.lat, addr.lon);
 
-            // order Status
+            // order Status Tag
             string orderStatusTag = $"[{statusTag}]";
 
             // Human-readable detail: status tag + product + category + weight + ~air distance
@@ -327,13 +340,17 @@ public static class Initialization
             ));
         }
     }
+
+    /// <summary>
+    /// Generates and stores Delivery entities by matching Orders with Couriers.
+    /// </summary>
     private static void createDeliverys()
     {
         // Fetch current couriers and orders; if either is empty, there is nothing to do
-        var couriers = s_dal.Courier.ReadAll();
+        var couriers = s_dal!.Courier.ReadAll();
         var orders = s_dal.Order.ReadAll();
 
-        // check if empty
+        // Check if empty
         if (!couriers.Any() || !orders.Any())
             return;
 
@@ -341,11 +358,11 @@ public static class Initialization
         int total = orders.Count();
         int targetDeliveries = Math.Max(1, (int)(total * 0.6));
 
-        // get enum values for random sampling
+        // Get enum values for random sampling
         var shipmentTypes = Enum.GetValues<DO.ShipmentType>();
         var finishTypes = Enum.GetValues<DO.DeliveryFinishType>();
 
-        // Shuffle orders lightly by sampling indexes;
+        // Shuffle orders lightly by sampling indexes
         var orderIndexes = new List<int>(total);
         for (int i = 0; i < total; i++) orderIndexes.Add(i);
         for (int i = 0; i < orderIndexes.Count; i++)
@@ -366,10 +383,10 @@ public static class Initialization
             DateTime deliveryDate = order.OrderDate.AddHours(s_rand.Next(0, 24)).AddMinutes(s_rand.Next(0, 60));
             DateTime deliveryFinishDate = deliveryDate.AddMinutes(s_rand.Next(30, 240));
 
-            // sample randomly from enum (later you can derive from order.typeOfOrder if desired)
+            // Sample randomly from enum
             DO.ShipmentType shipmentType = shipmentTypes[s_rand.Next(shipmentTypes.Length)];
 
-            // Delivery finish type Cancelled/Failed/Returned.
+            // Delivery finish type Cancelled/Failed/Returned/Completed
             DO.DeliveryFinishType finishType;
             int p = s_rand.Next(100);
             if (p < 85) finishType = DO.DeliveryFinishType.Completed;        // ~85%
@@ -377,10 +394,10 @@ public static class Initialization
             else if (p < 95) finishType = DO.DeliveryFinishType.Failed;      // ~3%
             else finishType = DO.DeliveryFinishType.Returned;                // ~5%
 
-            // Max distance policy used for later checks.
+            // Max distance policy used for later checks
             double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dal.Config.MaxAirDistance : null;
 
-            // Persist via DAL (DeliveryImplementation will assign the running deliveryId).
+            // Persist via DAL (DeliveryImplementation will assign the running deliveryId)
             s_dal.Delivery.Create(new DO.Delivery(
                 DeliveryId: 0,                    // Next Delivery Id
                 OrderId: order.OrderId,           // link order
@@ -393,10 +410,14 @@ public static class Initialization
             ));
         }
     }
+
+    /// <summary>
+    /// Initializes system configuration variables.
+    /// </summary>
     private static void createConfig()
     {
         // System clock
-        s_dal.Config.Clock = DateTime.Now;
+        s_dal!.Config.Clock = DateTime.Now;
 
         // Admin credentials
         s_dal.Config.AdminId = 333333333;               // admin id
@@ -413,7 +434,7 @@ public static class Initialization
         // Average speeds (km/h)
         s_dal.Config.AvgCarSpeed = 35.0;         // Car average
         s_dal.Config.AvgMotorcycleSpeed = 40.0;  // Motorcycle average
-        s_dal.Config.AvgBicycleSpeed = 15.0;      // Bicyle average
+        s_dal.Config.AvgBicycleSpeed = 15.0;     // Bicyle average
         s_dal.Config.AvgWalkSpeed = 5.0;         // Walk average
 
         // Time policy ranges
@@ -422,78 +443,20 @@ public static class Initialization
         s_dal.Config.UnactiveTimeRnge = TimeSpan.FromDays(45);   // 45 days of inactivity is considered stale
     }
 
-    /*
-    public enum SmartphoneDetails
-    {
-        iPhone_14,
-        Galaxy_S23,
-        Pixel_8,
-        Xiaomi_13,
-        /
-        [Description("iPhone 14")]
-        iPhone14,
-        [Description("Galaxy S23")]
-        GalaxyS23,
-        [Description("Pixel 8")]
-        Pixel8,
-        [Description("Xiaomi 13")]
-        Xiaomi13 
-        /
-    }
-    public enum LaptopDetails
-    {
-        Dell_XPS_13,
-        MacBook_Air_M2,
-        HP_Spectre_x360,
-        Lenovo_ThinkPad_X1
-    }
-    public enum TabletDetails
-    {
-        iPad_Air,
-        Galaxy_Tab_S9,
-        Xiaomi_Pad_6
-    }
-    public enum TVDetails
-    {
-        LG_OLED_C3_55,
-        Samsung_QLED_Q80_65,
-        Sony_Bravia_50
-    }
-    public enum CameraDetails
-    {
-        Canon_EOS_R10,
-        Sony_a6400,
-        Nikon_Z50
-    }
-    public enum AudioDetails
-    {
-        Sony_WH_1000XM5,
-        AirPods_Pro_2,
-        Bose_QC45,
-        JBL_Flip_6
-    }
-    public enum SmartHomeDetails
-    {
-        Google_Nest_Hub,
-        Amazon_Echo,
-        Philips_Hue_Starter
-    }
-    public enum GamingConsoleDetails
-    {
-        PlayStation_5,
-        Xbox_Series_X,
-        Nintendo_Switch_OLED
-    }
-    public enum AccessoryDetails
-    {
-        USB_C_Cable_100W,
-        GaN_Charger_65W,
-        NVMe_SSD_1TB,
-        HDMI_4K_2_1_Cable
-    }
-    */
+    #endregion DataCreation
 
-    //--- Helper functions ---\\
+    //==================== Helpers ===================\\
+
+    #region Helpers
+
+    /// <summary>
+    /// Calculates the great-circle distance between two points on the Earth's surface using the Haversine formula.
+    /// </summary>
+    /// <param name="srcLat">Source Latitude</param>
+    /// <param name="srcLon">Source Longitude</param>
+    /// <param name="dstLat">Destination Latitude</param>
+    /// <param name="dstLon">Destination Longitude</param>
+    /// <returns>Distance in Kilometers</returns>
     private static double Haversine(double srcLat, double srcLon, double dstLat, double dstLon)
     {
         // Convert degrees to radians
@@ -512,4 +475,7 @@ public static class Initialization
 
         return R * c; // great-circle distance in km
     }
+
+    #endregion Helpers
+
 }

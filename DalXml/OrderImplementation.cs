@@ -3,23 +3,26 @@ using DalApi;
 using DO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 
+//==================== Order CRUD Implementation (XML) ===================\\
+
 /// <summary>
-/// Provides methods to manage orders, including creating, reading, updating, and deleting orders.
+/// Implementation of the IOrder interface for the DalXml layer.
+/// Manages Order data using XML serialization for persistent storage.
 /// </summary>
-/// <remarks>
-/// This class interacts with an XML data store to persist order information. 
-/// It ensures unique IDs and supports filtering and retrieval of orders.
-/// </remarks>
 internal class OrderImplementation : IOrder
 {
+    //==================== Create & Update ===================\\
 
-    //------------------ CRUD Order functions ------------------\\
+    #region CreateUpdate
+
     /// <summary>
     /// Creates a new order in the XML store and assigns it a unique identifier.
-    /// Throws <see cref="DalAlreadyExistsException"/> if an order with the same ID already exists.
     /// </summary>
+    /// <param name="item">The order entity to add.</param>
+    /// <exception cref="DalAlreadyExistsException">Thrown if an order with the generated ID already exists.</exception>
     public void Create(Order item)
     {
         // Load all existing orders from the XML file
@@ -40,48 +43,10 @@ internal class OrderImplementation : IOrder
     }
 
     /// <summary>
-    /// Reads an order by its identifier.
-    /// Returns the order or null if not found.
+    /// Updates an existing order record in the XML store.
     /// </summary>
-    public Order? Read(int id)
-    {
-        // Load all orders from XML
-        List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
-
-        // Return the first match or null if not found
-        return orders.FirstOrDefault(o => o.OrderId == id);
-    }
-
-    /// <summary>
-    /// Reads the first order that matches the provided predicate.
-    /// Returns the order or null if no match is found.
-    /// </summary>
-    public Order? Read(Func<Order, bool> filter)
-    {
-        // Load orders from XML
-        List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
-
-        // Apply the predicate to find a matching order
-        return orders.FirstOrDefault(filter);
-    }
-
-    /// <summary>
-    /// Reads all orders, optionally filtered by the provided predicate.
-    /// Returns an enumerable of orders.
-    /// </summary>
-    public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
-    {
-        // Load orders from XML
-        List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
-
-        // If no filter is provided, return all orders; otherwise apply the filter
-        return filter is null ? orders : orders.Where(filter);
-    }
-
-    /// <summary>
-    /// Updates an existing order record.
-    /// Throws <see cref="DalDoesNotExistException"/> if the order does not exist.
-    /// </summary>
+    /// <param name="item">The order entity with updated values.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the order to update does not exist.</exception>
     public void Update(Order item)
     {
         // Load orders from XML
@@ -98,10 +63,65 @@ internal class OrderImplementation : IOrder
         XMLTools.SaveListToXMLSerializer(orders, Config.s_orders_xml);
     }
 
+    #endregion CreateUpdate
+
+    //==================== Read Operations ===================\\
+
+    #region ReadOperations
+
+    /// <summary>
+    /// Retrieves the order with the specified identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the order to retrieve.</param>
+    /// <returns>The order entity if found, otherwise null.</returns>
+    public Order? Read(int id)
+    {
+        // Load all orders from XML
+        List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
+
+        // Return the first match or null if not found
+        return orders.FirstOrDefault(o => o.OrderId == id);
+    }
+
+    /// <summary>
+    /// Reads the first order that matches the provided predicate.
+    /// </summary>
+    /// <param name="filter">A predicate function to test each element.</param>
+    /// <returns>The first matching order, or null if no match is found.</returns>
+    public Order? Read(Func<Order, bool> filter)
+    {
+        // Load orders from XML
+        List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
+
+        // Apply the predicate to find a matching order
+        return orders.FirstOrDefault(filter);
+    }
+
+    /// <summary>
+    /// Reads all orders, optionally filtered by the provided predicate.
+    /// </summary>
+    /// <param name="filter">Optional predicate to filter the results.</param>
+    /// <returns>A collection of order entities.</returns>
+    public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
+    {
+        // Load orders from XML
+        List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
+
+        // If no filter is provided, return all orders; otherwise apply the filter
+        return filter is null ? orders : orders.Where(filter);
+    }
+
+    #endregion ReadOperations
+
+    //==================== Delete Operations ===================\\
+
+    #region DeleteOperations
+
     /// <summary>
     /// Deletes an order by its identifier.
-    /// Throws <see cref="DalDoesNotExistException"/> if the order does not exist.
     /// </summary>
+    /// <param name="id">The ID of the order to delete.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the order does not exist.</exception>
     public void Delete(int id)
     {
         // Load orders from XML
@@ -123,4 +143,7 @@ internal class OrderImplementation : IOrder
         // Overwrite the XML file with an empty list of orders
         XMLTools.SaveListToXMLSerializer(new List<Order>(), Config.s_orders_xml);
     }
+
+    #endregion DeleteOperations
+
 }

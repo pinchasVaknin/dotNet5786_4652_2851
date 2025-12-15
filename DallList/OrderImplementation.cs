@@ -1,12 +1,26 @@
 ﻿namespace Dal;
 using DalApi;
 using DO;
+using System.Collections.Generic;
+using System.Linq;
+
+//==================== Order CRUD Implementation (List) ===================\\
 
 /// <summary>
-/// CRUD on Order
+/// Implementation of the IOrder interface for the DalList layer.
+/// Manages Order data using an in-memory list storage.
 /// </summary>
 internal class OrderImplementation : IOrder
 {
+    //==================== Create & Update ===================\\
+
+    #region CreateUpdate
+
+    /// <summary>
+    /// Adds a new order to the data source.
+    /// Assigns a new unique ID automatically.
+    /// </summary>
+    /// <param name="item">The order entity to add.</param>
     public void Create(Order item)
     {
         // Generate a new running ID from the DAL config
@@ -18,54 +32,98 @@ internal class OrderImplementation : IOrder
         // Add the copy to the data source
         DataSource.Orders.Add(copy);
     }
-    public void Delete(int id)
-    {
-        // Retrieve the order with the specified ID (returns null if not found)
-        Order? temp = Read(id);
 
-        // If no matching order exists, throw an exception
-        if (temp == null)
-            throw new DalDoesNotExistException($"Order with ID={id} does not exist");
-
-        // Otherwise, remove the order from the data source
-        else DataSource.Orders.Remove(temp);
-    }
-    public void DeleteAll()
+    /// <summary>
+    /// Updates an existing order in the data source.
+    /// </summary>
+    /// <param name="item">The order entity with updated values.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the order to update does not exist.</exception>
+    public void Update(Order item)
     {
-        // Remove all orders from the data source
-        DataSource.Orders.Clear();
+        // Delete the existing Order (throws exception if not found)
+        Delete(item.OrderId);
+
+        // Add the updated Order back to the list
+        // Note: We add 'item' directly as it already contains the correct ID
+        DataSource.Orders.Add(item);
     }
+
+    #endregion CreateUpdate
+
+    //==================== Read Operations ===================\\
+
+    #region ReadOperations
+
+    /// <summary>
+    /// Retrieves an order by its unique identifier.
+    /// </summary>
+    /// <param name="id">The ID of the order to find.</param>
+    /// <returns>The order entity if found, otherwise null.</returns>
     public Order? Read(int id)
     {
         // Return the first order with the given ID (or null if not found)
-        //return DataSource.Orders.Find(same => same.orderId == id); //stage 1
-        return DataSource.Orders.FirstOrDefault(item => item.OrderId == id); //stage 2
+        return DataSource.Orders.FirstOrDefault(item => item.OrderId == id);
     }
+
+    /// <summary>
+    /// Retrieves the first order that matches the specified filter condition.
+    /// </summary>
+    /// <param name="filter">A predicate function to test each element.</param>
+    /// <returns>The first matching order, or null if no match is found.</returns>
     public Order? Read(Func<Order, bool> filter)
     {
-        foreach (var item in DataSource.Orders) { if (filter(item)) return item; } return null; //stage 2
-    }
-    public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null) //stage 2
-        => filter == null ?
-            DataSource.Orders.Select(item => item) :
-            DataSource.Orders.Where(filter);
-    public void Update(Order item)
-    {
-        int newId = item.OrderId;
-        // Remove the existing Order with the same ID (throws if it does not exist)
-        Delete(item.OrderId);
-
-        // Add the updated Order back to the collection (throws if the ID already exists)
-        // Create a copy of the object with the new ID
-        Order copy = item with { OrderId = newId };
-
-        // Add the copy to the data source
-        DataSource.Orders.Add(copy);
+        // Iterate and find the first match based on the filter
+        return DataSource.Orders.FirstOrDefault(filter);
     }
 
-    /*public List<Order> ReadAll()
+    /// <summary>
+    /// Retrieves all orders, optionally filtered by a condition.
+    /// </summary>
+    /// <param name="filter">Optional predicate to filter the results.</param>
+    /// <returns>A collection of order entities.</returns>
+    public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
     {
-        // Return a copy of the orders list
-        return new List<Order>(DataSource.Orders);
-    }*/
+        // If no filter is provided, return all items
+        if (filter == null)
+            return DataSource.Orders.Select(item => item);
+
+        // Otherwise, return only items matching the filter
+        return DataSource.Orders.Where(filter);
+    }
+
+    #endregion ReadOperations
+
+    //==================== Delete Operations ===================\\
+
+    #region DeleteOperations
+
+    /// <summary>
+    /// Deletes an order by its unique identifier.
+    /// </summary>
+    /// <param name="id">The ID of the order to delete.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the order does not exist.</exception>
+    public void Delete(int id)
+    {
+        // Retrieve the order with the specified ID
+        Order? temp = Read(id);
+
+        // If no matching order exists, throw an exception
+        if (temp is null)
+            throw new DalDoesNotExistException($"Order with ID={id} does not exist");
+
+        // Otherwise, remove the order from the data source
+        DataSource.Orders.Remove(temp);
+    }
+
+    /// <summary>
+    /// Deletes all orders from the data source.
+    /// </summary>
+    public void DeleteAll()
+    {
+        // Clear the entire list
+        DataSource.Orders.Clear();
+    }
+
+    #endregion DeleteOperations
+
 }

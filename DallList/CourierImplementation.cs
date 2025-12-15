@@ -2,64 +2,125 @@
 using DalApi;
 using DO;
 using System.Collections.Generic;
+using System.Linq;
+
+//==================== Courier CRUD Implementation (List) ===================\\
 
 /// <summary>
-/// CRUD on Courier
+/// Implementation of the ICourier interface for the DalList layer.
+/// Manages Courier data using an in-memory list storage.
 /// </summary>
 internal class CourierImplementation : ICourier
 {
+    //==================== Create & Update ===================\\
+
+    #region CreateUpdate
+
+    /// <summary>
+    /// Adds a new courier to the data source.
+    /// </summary>
+    /// <param name="item">The courier entity to add.</param>
+    /// <exception cref="DalAlreadyExistsException">Thrown if a courier with the same ID already exists.</exception>
     public void Create(Courier item)
     {
-        // if already Exists.
-        if (Read(item.CourierId) != null)
+        // Check if a courier with the same ID already exists
+        if (Read(item.CourierId) is not null)
             throw new DalAlreadyExistsException($"Courier with ID={item.CourierId} already exists");
 
-        // else add this Courier.
+        // Add the new courier to the list
         DataSource.Couriers.Add(item);
     }
-    public void Delete(int id)
-    {
-        // Retrieve the courier with the specified ID (returns null if not found)
-        Courier? temp = Read(id);
 
-        // If no matching courier exists, throw an exception
-        if (temp == null)
-            throw new DalDoesNotExistException($"Courier with ID={id} does not exist");
-
-        // Otherwise, remove the courier from the data source
-        else DataSource.Couriers.Remove(temp);
-    }
-    public void DeleteAll()
-    {
-        // Remove all couriers from the data source
-        DataSource.Couriers.Clear();
-    }
-    public Courier? Read(int id)
-    {
-        // if Exists courierId return.
-        //return DataSource.Couriers.Find(same => same.courierId == id); //stage 1
-        return DataSource.Couriers.FirstOrDefault(item => item.CourierId == id); //stage 2
-    }
-    public Courier? Read(Func<Courier, bool> filter)
-    {
-        foreach (var item in DataSource.Couriers) { if (filter(item)) return item; } return null;
-    }
-    public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null) //stage 2
-        => filter == null
-            ? DataSource.Couriers.Select(item => item)
-            : DataSource.Couriers.Where(filter);
+    /// <summary>
+    /// Updates an existing courier in the data source.
+    /// </summary>
+    /// <param name="item">The courier entity with updated values.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the courier to update does not exist.</exception>
     public void Update(Courier item)
     {
-        // Remove the existing courier with the same ID (throws if it does not exist)
+        // Delete the existing courier (throws exception if not found)
         Delete(item.CourierId);
 
-        // Add the updated courier back to the collection (throws if the ID already exists)
+        // Add the updated courier as a new entry
         Create(item);
     }
 
-/*public List<Courier> ReadAll()
+    #endregion CreateUpdate
+
+    //==================== Read Operations ===================\\
+
+    #region ReadOperations
+
+    /// <summary>
+    /// Retrieves a courier by its unique identifier.
+    /// </summary>
+    /// <param name="id">The ID of the courier to find.</param>
+    /// <returns>The courier entity if found, otherwise null.</returns>
+    public Courier? Read(int id)
     {
-        // Return a copy of the courier list
-        return new List<Courier>(DataSource.Couriers);
-    }*/
+        // Return the first courier matching the ID, or null if not found
+        return DataSource.Couriers.FirstOrDefault(item => item.CourierId == id);
+    }
+
+    /// <summary>
+    /// Retrieves the first courier that matches the specified filter condition.
+    /// </summary>
+    /// <param name="filter">A predicate function to test each element.</param>
+    /// <returns>The first matching courier, or null if no match is found.</returns>
+    public Courier? Read(Func<Courier, bool> filter)
+    {
+        // Iterate and find the first match based on the filter
+        return DataSource.Couriers.FirstOrDefault(filter);
+    }
+
+    /// <summary>
+    /// Retrieves all couriers, optionally filtered by a condition.
+    /// </summary>
+    /// <param name="filter">Optional predicate to filter the results.</param>
+    /// <returns>A collection of courier entities.</returns>
+    public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null)
+    {
+        // If no filter is provided, return all items
+        if (filter == null)
+            return DataSource.Couriers.Select(item => item);
+
+        // Otherwise, return only items matching the filter
+        return DataSource.Couriers.Where(filter);
+    }
+
+    #endregion ReadOperations
+
+    //==================== Delete Operations ===================\\
+
+    #region DeleteOperations
+
+    /// <summary>
+    /// Deletes a courier by its unique identifier.
+    /// </summary>
+    /// <param name="id">The ID of the courier to delete.</param>
+    /// <exception cref="DalDoesNotExistException">Thrown if the courier does not exist.</exception>
+    public void Delete(int id)
+    {
+        // Attempt to find the courier
+        Courier? temp = Read(id);
+
+        // If not found, throw exception
+        if (temp is null)
+            throw new DalDoesNotExistException($"Courier with ID={id} does not exist");
+
+        // Remove the courier from the list
+        DataSource.Couriers.Remove(temp);
+    }
+
+    /// <summary>
+    /// Deletes all couriers from the data source.
+    /// </summary>
+    public void DeleteAll()
+    {
+        // Clear the entire list
+        DataSource.Couriers.Clear();
+    }
+
+    #endregion DeleteOperations
+
 }

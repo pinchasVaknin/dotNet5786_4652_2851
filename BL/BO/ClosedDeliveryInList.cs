@@ -1,27 +1,54 @@
-﻿using Helpers;
+﻿namespace BO;
+using Helpers;
+using System;
 
-namespace BO;
+//==================== Closed Delivery Entity (List View) ===================\\
 
 /// <summary>
-/// Represents a closed delivery entry in a list, containing details about the delivery and its associated order.
+/// Represents a summary of a closed delivery for list display purposes.
+/// Contains details about the delivery outcome, timing, and associated order.
 /// </summary>
-/// <remarks>
-/// This class is used to encapsulate information about a delivery that has been completed, including
-/// identifiers, order type, address, shipment details, and metrics such as actual distance and total handling
-/// time.
-/// </remarks>
 public class ClosedDeliveryInList
 {
+    //==================== Data Properties ===================\\
+
+    #region DataProperties
+
+    // The unique identifier of the delivery.
     public int DeliveryId { get; init; }
+
+    // The unique identifier of the associated order.
     public int OrderId { get; init; }
 
+    // The category/type of the order (e.g., Smartphone, Laptop).
     public TypeOfOrder TypeOfOrder { get; init; }
+
+    // The destination address for the order.
     public string OrderAddress { get; init; }
 
+    // The shipment method used (e.g., Standard, Express).
     public ShipmentType ShipmentType { get; init; }
+
+    // The actual distance traveled or calculated for this delivery (in Km). Nullable if calculation failed.
     public double? ActualDistance { get; init; }
+
+    // The total time taken from delivery start to finish.
     public TimeSpan TotalHandleTime { get; init; }
+
+    // The final status of the delivery (Completed, Failed, etc.).
     public DeliveryFinishType? DeliveryFinishType { get; init; }
 
+    #endregion DataProperties
+
+    //==================== Overrides ===================\\
+
+    #region Overrides
+
+    /// <summary>
+    /// Returns a string representation of the object properties using reflection helper.
+    /// </summary>
     public override string ToString() => this.ToStringProperty();
+
+    #endregion Overrides
+
 }

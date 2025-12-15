@@ -4,49 +4,65 @@ using DalApi;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Security.Cryptography;
 
+//==================== Courier Business Logic Manager ===================\\
+
+/// <summary>
+/// Manages logical operations for Couriers.
+/// Handles authentication, data retrieval, CRUD operations, and periodic updates.
+/// </summary>
 internal static class CourierManager
 {
-    //======== Data Access Layer Instance ========\\
+    //==================== DAL Access ===================\\
+
+    #region DalAccess
 
     private static IDal s_dal = Factory.Get;
 
-    //======== Login and List Retrieval ========\\
+    #endregion DalAccess
 
-    #region Login and List Retrieval
+    //==================== Authentication & Lists ===================\\
 
+    #region AuthAndLists
+
+    /// <summary>
+    /// Authenticates a user and determines their role (Admin or Courier).
+    /// </summary>
+    /// <param name="userId">The user's ID.</param>
+    /// <param name="password">The user's password.</param>
+    /// <returns>The <see cref="BO.UserRole"/> if authentication is successful.</returns>
+    /// <exception cref="BO.BlInvalidPasswordException">Thrown if the password is incorrect.</exception>
+    /// <exception cref="BO.BlUserNotFoundException">Thrown if the user ID is not found.</exception>
+    /// <exception cref="BO.BlXMLFileLoadCreateException">Thrown if there is a data access error.</exception>
     internal static BO.UserRole GetUserRole(int userId, string password)
     {
-
         Tools.ValidatePersonId(userId);
         Tools.ValidateNotNull(password);
 
         try
         {
+            // 1. Check Admin
             var config = AdminManager.GetConfig();
-
             if (config.AdminId == userId)
             {
                 if (config.AdminPassword == password)
                     return BO.UserRole.Admin;
-
-                else throw new BO.BlInvalidPasswordException("Incorrect password for admin user");
+                else
+                    throw new BO.BlInvalidPasswordException("Incorrect password for admin user");
             }
 
+            // 2. Check Courier
             var courierUser = s_dal.Courier.Read(userId);
-
             if (courierUser is not null)
             {
                 if (courierUser.CourierPassword == password)
                     return BO.UserRole.Courier;
-
-                else throw new BO.BlInvalidPasswordException("Incorrect password for courier user");
+                else
+                    throw new BO.BlInvalidPasswordException("Incorrect password for courier user");
             }
 
+            // 3. User not found
             throw new BO.BlUserNotFoundException("User ID does not exist");
-
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
@@ -54,6 +70,13 @@ internal static class CourierManager
         }
     }
 
+    /// <summary>
+    /// Retrieves a filtered and sorted list of couriers.
+    /// </summary>
+    /// <param name="requesterId">The ID of the user requesting the list (for future permissions).</param>
+    /// <param name="isActiveFilter">Optional filter by active status.</param>
+    /// <param name="sortBy">Optional sorting criteria.</param>
+    /// <returns>A list of <see cref="BO.CourierInList"/>.</returns>
     internal static IEnumerable<BO.CourierInList> GetListOfCouriers(
         int requesterId,
         bool? isActiveFilter = null,
@@ -61,39 +84,25 @@ internal static class CourierManager
     {
         try
         {
-            var boCouriers =
-                from c in s_dal.Courier.ReadAll()
-                select GetCourierInList(c.CourierId);
+            // Get all couriers converted to BO.CourierInList
+            var boCouriers = from c in s_dal.Courier.ReadAll()
+                             select GetCourierInList(c.CourierId);
 
+            // Apply Active filter
             if (isActiveFilter is bool active)
                 boCouriers = boCouriers.Where(c => c.CourierIsActive == active);
 
-
+            // Apply Sorting
             boCouriers = sortBy switch
             {
-                BO.CourierListSortBy.CourierFullName =>
-                    boCouriers.OrderBy(c => c.CourierFullName),
-
-                BO.CourierListSortBy.CourierIsActive =>
-                    boCouriers.OrderBy(c => c.CourierIsActive),
-
-                BO.CourierListSortBy.VehicleType =>
-                    boCouriers.OrderBy(c => c.VehicleType),
-
-                BO.CourierListSortBy.StartWorkDate =>
-                    boCouriers.OrderBy(c => c.StartWorkDate),
-
-                BO.CourierListSortBy.DeliveriesInTime =>
-                    boCouriers.OrderByDescending(c => c.DeliveriesInTime),
-
-                BO.CourierListSortBy.DeliveriesOverTime =>
-                    boCouriers.OrderByDescending(c => c.DeliveriesOverTime),
-
-                BO.CourierListSortBy.OrderIdInHandle =>
-                    boCouriers.OrderBy(c => c.OrderIdInHandle),
-
-                null or BO.CourierListSortBy.CourierId or _ =>
-                    boCouriers.OrderBy(c => c.CourierId),
+                BO.CourierListSortBy.CourierFullName => boCouriers.OrderBy(c => c.CourierFullName),
+                BO.CourierListSortBy.CourierIsActive => boCouriers.OrderBy(c => c.CourierIsActive),
+                BO.CourierListSortBy.VehicleType => boCouriers.OrderBy(c => c.VehicleType),
+                BO.CourierListSortBy.StartWorkDate => boCouriers.OrderBy(c => c.StartWorkDate),
+                BO.CourierListSortBy.DeliveriesInTime => boCouriers.OrderByDescending(c => c.DeliveriesInTime),
+                BO.CourierListSortBy.DeliveriesOverTime => boCouriers.OrderByDescending(c => c.DeliveriesOverTime),
+                BO.CourierListSortBy.OrderIdInHandle => boCouriers.OrderBy(c => c.OrderIdInHandle),
+                null or BO.CourierListSortBy.CourierId or _ => boCouriers.OrderBy(c => c.CourierId),
             };
 
             return boCouriers.ToList();
@@ -105,29 +114,18 @@ internal static class CourierManager
     }
 
     /// <summary>
-    /// Retrieves a collection of couriers with their delivery statistics,
-    /// using LINQ query syntax over all couriers and deliveries.
+    /// Converts a single courier to its list representation (CourierInList).
     /// </summary>
-    /// <remarks>
-    /// For each courier, this method calculates the number of deliveries completed
-    /// within the allowed time range, the number of deliveries completed over time,
-    /// and the ID of the current order being handled (if any).
-    /// </remarks>
-    /// <returns>
-    /// An enumerable collection of <see cref="BO.CourierInList"/> objects,
-    /// each representing a courier with summary delivery information.
-    /// </returns>
-    /// <exception cref="Exception">
-    /// Thrown if the couriers list cannot be loaded or if a data access error occurs.
-    /// </exception>
-    internal static BO.CourierInList GetCourierInList(int courierId) // read all couriers - query syntax
+    /// <param name="courierId">The ID of the courier.</param>
+    /// <returns>A <see cref="BO.CourierInList"/> object.</returns>
+    internal static BO.CourierInList GetCourierInList(int courierId)
     {
         try
         {
-
             var doCourier = s_dal.Courier.Read(courierId) ??
                 throw new BO.BlDoesNotExistException($"Courier with ID={courierId} does not exist");
 
+            // Convert to full BO to reuse logic (calculations)
             var boCourier = ConvertDoToBoCourier(doCourier);
 
             return new BO.CourierInList
@@ -144,25 +142,26 @@ internal static class CourierManager
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new BO.BlXMLFileLoadCreateException("Failed to load couriers list (query syntax)", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to load courier (InList)", ex);
         }
     }
 
-    #endregion Login and List Retrieval
+    #endregion AuthAndLists
 
-    //======== Courier Operations ========\\
+    //==================== CRUD Operations ===================\\
 
-    #region CRUD Methods
+    #region CrudOperations
 
-    internal static void AddCourier(BO.Courier courier) // create or update courier
+    /// <summary>
+    /// Adds a new courier to the system.
+    /// </summary>
+    /// <param name="courier">The courier object to add.</param>
+    internal static void AddCourier(BO.Courier courier)
     {
-
         Tools.ValidateCourier(courier);
 
         if (Tools.GetLocationFromAddress(courier.CourierLocation) == null)
-        {
             throw new BO.BlInvalidStringException($"Location '{courier.CourierLocation}' is invalid.");
-        }
 
         try
         {
@@ -184,81 +183,68 @@ internal static class CourierManager
     }
 
     /// <summary>
-    /// Retrieves a courier by its unique identifier.
+    /// Retrieves detailed information about a specific courier.
     /// </summary>
-    /// <param name="id">The unique identifier of the courier to retrieve. Must be a valid, existing ID.</param>
-    /// <returns>A <see cref="BO.Courier"/> object representing the courier with the specified ID.</returns>
-    /// <exception cref="Exception">Thrown if the courier with the specified ID does not exist or if an error occurs while loading the courier.</exception>
-    internal static BO.Courier GetCourier(int id) // read courier by id
+    /// <param name="id">The courier's ID.</param>
+    /// <returns>The <see cref="BO.Courier"/> object.</returns>
+    internal static BO.Courier GetCourier(int id)
     {
-
         Tools.ValidatePersonId(id);
 
         try
         {
-            // Read the courier from the data access layer
             DO.Courier doCourier = s_dal.Courier.Read(id)
                 ?? throw new BO.BlDoesNotExistException($"Courier with ID={id} does not exist");
 
-            // Build and return the business object representation of the courier
             return ConvertDoToBoCourier(doCourier);
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            // Wrap and rethrow any exceptions that occur during the load operation
             throw new BO.BlXMLFileLoadCreateException("Failed to load courier", ex);
         }
     }
 
-    internal static void UpdateCourier(BO.Courier courier) // update courier
+    /// <summary>
+    /// Updates an existing courier's details.
+    /// </summary>
+    /// <param name="courier">The courier object with updated details.</param>
+    internal static void UpdateCourier(BO.Courier courier)
     {
-
         Tools.ValidateCourier(courier);
 
         if (Tools.GetLocationFromAddress(courier.CourierLocation) == null)
-        {
             throw new BO.BlInvalidStringException($"Location '{courier.CourierLocation}' is invalid.");
-        }
 
         try
         {
-            // Map the business object courier to a data object courier
             DO.Courier doCourier = ConvertBoToDoCourier(courier);
-
             s_dal.Courier.Update(doCourier);
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            // Wrap and rethrow any exceptions that occur during the save operation
             throw new BO.BlXMLFileLoadCreateException("Failed to update courier", ex);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            // Wrap and rethrow any exceptions that occur during the save operation
             throw new BO.BlDoesNotExistException("Failed to update courier", ex);
         }
     }
 
     /// <summary>
-    /// Deletes a courier by its ID.
+    /// Deletes a courier from the system.
     /// </summary>
     /// <param name="id">The ID of the courier to delete.</param>
-    /// <exception cref="Exception">
-    /// Thrown if the courier does not exist, has an active delivery,
-    /// or if a data-access error occurs.
-    /// </exception>
+    /// <exception cref="BO.BlCourierHasActiveDeliveryException">Thrown if the courier has an active delivery.</exception>
     internal static void DeleteCourier(int id)
     {
-
         Tools.ValidatePersonId(id);
 
         try
         {
-            // Check that courier exists
             DO.Courier? doCourier = s_dal.Courier.Read(id)
                 ?? throw new BO.BlDoesNotExistException($"Courier with ID={id} does not exist");
 
-            // Check if courier has an active delivery
+            // Check if courier has an active delivery (FinishType == None)
             bool hasActiveDelivery = s_dal.Delivery
                 .ReadAll(d => d.CourierId == id)
                 .Any(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
@@ -266,7 +252,6 @@ internal static class CourierManager
             if (hasActiveDelivery)
                 throw new BO.BlCourierHasActiveDeliveryException($"Cannot delete courier {id}: courier has an active delivery.");
 
-            // Perform deletion
             s_dal.Courier.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
@@ -277,53 +262,42 @@ internal static class CourierManager
         {
             throw new BO.BlXMLFileLoadCreateException("Failed to delete courier", ex);
         }
-
     }
 
-    #endregion CRUD Methods
+    #endregion CrudOperations
 
-    //======== Private Conversion Methods ========\\
+    //==================== Conversions (DO <-> BO) ===================\\
 
-    #region Private Conversion Methods
+    #region Conversions
 
     /// <summary>
-    /// Constructs a business object representation of a courier from the data object representation.
+    /// Converts a DO.Courier to a BO.Courier, calculating statistics and active orders.
     /// </summary>
-    /// <remarks>The method calculates the total number of on-time and late deliveries based on the courier's
-    /// completed deliveries. It also determines if there is an active delivery and constructs an order in progress if
-    /// applicable.</remarks>
-    /// <param name="doCourier">The data object representing the courier, containing details such as ID, name, and contact information.</param>
-    /// <returns>A business object <see cref="BO.Courier"/> that includes the courier's details, delivery statistics, and any
-    /// active order in progress.</returns>
-    /// <exception cref="Exception">Thrown if an active order associated with the courier cannot be found.</exception>
-    private static BO.Courier ConvertDoToBoCourier(DO.Courier doCourier) // build BO.Courier from DO.Courier
+    private static BO.Courier ConvertDoToBoCourier(DO.Courier doCourier)
     {
-        // Retrieve all deliveries associated with the courier
+        // 1. Get deliveries
         var deliveries = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.CourierId);
 
-        // Filter completed deliveries
+        // 2. Stats calculation
         var completedDeliveries = deliveries
             .Where(d => d.DeliveryFinishType == DO.DeliveryFinishType.Completed)
             .ToList();
 
-        // Maximum allowed delivery time range from configuration
         var maxRange = s_dal.Config.MaxDelTimeRnge;
-
-        // Calculate on-time and late deliveries
         int onTime = completedDeliveries.Count(d => d.DeliveryFinishDate - d.DeliveryDate <= maxRange);
-
-        // Calculate late deliveries
         int late = completedDeliveries.Count - onTime;
 
-        // Find the active delivery (if any)
+        // 3. Active Order
         var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
 
-        // Build the order in progress if there is an active delivery
-        var orderInProgress = activeDelivery is null ?
-                                null :
-                                OrderManager.BuildOrderInProgress(s_dal.Order.Read(activeDelivery.OrderId) ??
-                                throw new BO.BlDoesNotExistException($"Order {activeDelivery.OrderId} for courier {doCourier.CourierId} not found"),
-                                activeDelivery);
+        BO.OrderInProgress? orderInProgress = null;
+        if (activeDelivery is not null)
+        {
+            var ord = s_dal.Order.Read(activeDelivery.OrderId) ??
+                 throw new BO.BlDoesNotExistException($"Order {activeDelivery.OrderId} for courier {doCourier.CourierId} not found");
+
+            orderInProgress = OrderManager.BuildOrderInProgress(ord, activeDelivery);
+        }
 
         return new BO.Courier
         {
@@ -332,60 +306,48 @@ internal static class CourierManager
             CourierCellPhone = doCourier.CourierCellPhone,
             CourierEmail = doCourier.CourierEmail,
             CourierPassword = doCourier.CourierPassword,
-
             CourierIsActive = doCourier.CourierEnabled,
             CourierLocation = doCourier.CourierAddress,
             MaxCourierDistance = doCourier.MaxCourierDistance,
             VehicleType = (BO.VehicleType)doCourier.CourierVehicleType,
-
             StartWorkDate = doCourier.SeniorityOfCourier,
-
             TotalOnTimeDeliveries = onTime,
             TotalLateDeliveries = late,
-
             OrderInProgress = orderInProgress
         };
     }
 
     /// <summary>
-    /// Maps a business object courier to a data object courier.
+    /// Converts a BO.Courier to a DO.Courier.
     /// </summary>
-    /// <param name="boCourier">The business object courier.</param>
-    /// <returns>The corresponding data object courier.</returns>
     private static DO.Courier ConvertBoToDoCourier(BO.Courier boCourier) =>
         new DO.Courier(
-            CourierId: boCourier.CourierId, // 0 for new courier
+            CourierId: boCourier.CourierId,
             CourierFullName: boCourier.CourierFullName,
             CourierCellPhone: boCourier.CourierCellPhone,
             CourierEmail: boCourier.CourierEmail,
             CourierPassword: boCourier.CourierPassword,
             CourierAddress: boCourier.CourierLocation,
-            CourierEnabled: boCourier.CourierIsActive,  // bool
+            CourierEnabled: boCourier.CourierIsActive,
             MaxCourierDistance: boCourier.MaxCourierDistance,
             SeniorityOfCourier: boCourier.StartWorkDate,
-            CourierVehicleType: (DO.CourierVehicleType)boCourier.VehicleType // enum
+            CourierVehicleType: (DO.CourierVehicleType)boCourier.VehicleType
         );
 
-    #endregion Private Conversion Methods
+    #endregion Conversions
 
-    //======== Periodic Updates ========\\
+    //==================== Periodic Updates ===================\\
 
-    #region Periodic Updates
+    #region PeriodicUpdates
 
     /// <summary>
-    /// Periodic updates for couriers that depend on the logical clock.
-    /// Currently: updates CourierEnabled based on time since last closed delivery
-    /// and the UnactiveTimeRnge configuration.
+    /// Performs periodic updates for couriers (e.g., setting them inactive if idle for too long).
     /// </summary>
-    /// <param name="oldClock">Previous clock value before the update.</param>
-    /// <param name="newClock">New clock value after the update.</param>
     internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
     {
         try
         {
-            // Get all active couriers
             var activeCouriers = s_dal.Courier.ReadAll(c => c.CourierEnabled).ToList();
-
             foreach (var courier in activeCouriers)
             {
                 UpdateCourierActivityByClosedDeliveries(courier, newClock);
@@ -394,33 +356,30 @@ internal static class CourierManager
         catch (DO.DalXMLFileLoadCreateException ex)
         {
             throw new BO.BlXMLFileLoadCreateException("Failed to perform periodic courier updates", ex);
-
         }
     }
 
     /// <summary>
-    /// Updates a single courier's CourierEnabled flag according to the time that
-    /// has passed since their last closed delivery.
+    /// Checks if a courier should be deactivated based on inactivity time.
     /// </summary>
     private static void UpdateCourierActivityByClosedDeliveries(DO.Courier courier, DateTime currentClock)
     {
         try
         {
+            // Find last closed delivery
             var lastClosedDelivery = s_dal.Delivery
-            .ReadAll(d => d.CourierId == courier.CourierId &&
-                          d.DeliveryFinishType != DO.DeliveryFinishType.None)
-            .OrderByDescending(d => d.DeliveryFinishDate)
-            .FirstOrDefault();
+                .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType != DO.DeliveryFinishType.None)
+                .OrderByDescending(d => d.DeliveryFinishDate)
+                .FirstOrDefault();
 
-            if (lastClosedDelivery is null)
-                return;
+            if (lastClosedDelivery is null) return;
 
+            // Check time passed
             var config = AdminManager.GetConfig();
-
             var timePassed = currentClock - lastClosedDelivery.DeliveryFinishDate;
-
             bool stillActive = timePassed < config.UnactiveTimeRnge;
 
+            // Update if status changed
             if (courier.CourierEnabled != stillActive)
             {
                 var updatedCourier = courier with { CourierEnabled = stillActive };
@@ -437,6 +396,6 @@ internal static class CourierManager
         }
     }
 
-    #endregion Periodic Updates
+    #endregion PeriodicUpdates
 
 }

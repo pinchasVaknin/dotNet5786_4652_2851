@@ -2,20 +2,35 @@
 using DalApi;
 using System.Diagnostics;
 
+//==================== Main XML DAL Implementation ===================\\
+
 /// <summary>
 /// Provides access to data operations for couriers, orders, deliveries, and configuration settings using XML storage.
+/// Implements the IDal interface.
 /// </summary>
 sealed internal class DalXml : IDal
 {
-    // private constructor to prevent external instantiation
+    //==================== Singleton Pattern ===================\\
+
+    #region Singleton
+
+    // Private constructor to prevent external instantiation
     private DalXml() { }
 
-    //------ Lazy intialization + Thread safe ------\\
+    // Lazy initialization + Thread safe
     private static readonly Lazy<DalXml> s_instance =
         new Lazy<DalXml>(() => new DalXml(), true);
 
-    // publc access to the instance
+    /// <summary>
+    /// Gets the singleton instance of the DalXml class.
+    /// </summary>
     public static IDal Instance => s_instance.Value;
+
+    #endregion Singleton
+
+    //==================== Entity Accessors ===================\\
+
+    #region Entities
 
     /// <summary>
     /// Provides CRUD operations for couriers backed by the XML store.
@@ -32,12 +47,17 @@ sealed internal class DalXml : IDal
     /// </summary>
     public IDelivery Delivery { get; } = new DeliveryImplementation();
 
+    #endregion Entities
+
+    //==================== System & Config ===================\\
+
+    #region SystemAndConfig
+
     /// <summary>
     /// Provides access to configuration settings and utilities.
     /// </summary>
     public IConfig Config { get; } = new ConfigImplementation();
 
-    //--------------- Reset function => Courier/Order/Delivery/Config ---------------\\
     /// <summary>
     /// Removes all stored couriers, orders and deliveries, and resets configuration values to defaults.
     /// </summary>
@@ -48,4 +68,7 @@ sealed internal class DalXml : IDal
         Delivery.DeleteAll();
         Config.Reset();
     }
+
+    #endregion SystemAndConfig
+
 }

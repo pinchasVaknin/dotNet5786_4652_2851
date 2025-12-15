@@ -1,10 +1,18 @@
 ﻿namespace BlApi;
+using System.Collections.Generic;
+
+//==================== ICourier Service Contract ===================\\
 
 /// <summary>
 /// Logical service contract for courier-related operations.
+/// Includes Authentication, List Management, and CRUD operations for Couriers.
 /// </summary>
 public interface ICourier
 {
+    //==================== Authentication ===================\\
+
+    #region Authentication
+
     /// <summary>
     /// Logs a user (courier or admin) into the system using ID and password.
     /// </summary>
@@ -17,6 +25,12 @@ public interface ICourier
     /// Thrown if the user does not exist or the password is incorrect.
     /// </exception>
     BO.UserRole Login(int userId, string password);
+
+    #endregion Authentication
+
+    //==================== List Retrieval ===================\\
+
+    #region ListRetrieval
 
     /// <summary>
     /// Retrieves a list of couriers for management screens.
@@ -35,9 +49,15 @@ public interface ICourier
     /// A collection of <see cref="BO.CourierInList"/> objects.
     /// </returns>
     IEnumerable<BO.CourierInList> GetCouriers(
-        int requesterId, 
-        bool? isActiveFilter = null, 
+        int requesterId,
+        bool? isActiveFilter = null,
         BO.CourierListSortBy? sortBy = null);
+
+    #endregion ListRetrieval
+
+    //==================== CRUD Operations ===================\\
+
+    #region CRUD
 
     /// <summary>
     /// Retrieves full details of a specific courier.
@@ -80,5 +100,7 @@ public interface ICourier
     /// or are not currently handling an order, according to the logical rules.
     /// </remarks>
     void DeleteCourier(int requesterId, int courierId);
-}
 
+    #endregion CRUD
+
+}

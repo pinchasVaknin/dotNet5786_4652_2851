@@ -1,8 +1,8 @@
 ﻿namespace BO;
 
-// ============ For DAL Layer =========== \\
+//==================== Enums from DAL (Converted) ===================\\
 
-#region DAL Enums Conversion Comments
+#region DAL Enums Conversion
 
 /// <summary>
 /// Represents the logical status of an order in the system.
@@ -69,18 +69,18 @@ public enum DeliveryFinishType
     None
 }
 
-#endregion DAL Enums Conversion Comments
+#endregion DAL Enums Conversion
 
-// ============ For BL Layer ============ \\
+//==================== BL Specific Enums ===================\\
 
-#region BL Enums Comments General
+#region BL Enums General
 
-// ============ For BL Layer ICourier ============ \\
+//==================== ICourier Enums ===================\\
 
-#region BL Enums Comments ICourier
+#region ICourier Enums
 
 /// <summary>
-/// Represents the logical role of a user in the system(for login & permissions).
+/// Represents the logical role of a user in the system (for login & permissions).
 /// </summary>
 public enum UserRole
 {
@@ -103,11 +103,11 @@ public enum CourierListSortBy
     OrderIdInHandle
 }
 
-#endregion BL Enums Comments ICourier
+#endregion ICourier Enums
 
-// ============ For BL Layer IConfig ============ \\
+//==================== IConfig Enums ===================\\
 
-#region BL Enums Comments IConfig
+#region IConfig Enums
 
 /// <summary>
 /// Units of time used to advance the logical system clock.
@@ -121,6 +121,9 @@ public enum TimeUnit
     Year
 }
 
+/// <summary>
+/// Represents the configuration fields that can be updated.
+/// </summary>
 public enum ConfigFields
 {
     Clock,
@@ -139,15 +142,14 @@ public enum ConfigFields
     UnactiveTimeRnge
 }
 
-#endregion BL Enums Comments IConfig
+#endregion IConfig Enums
 
-// ============ For BL Layer IOrder ============ \\
+//==================== IOrder Enums ===================\\
 
-#region BL Enums Comments IOrder
+#region IOrder Enums
 
 /// <summary>
-/// Represents the timing status of an order or delivery
-/// relative to its required time window.
+/// Represents the timing status of an order or delivery relative to its required time window.
 /// </summary>
 public enum ScheduleStatus
 {
@@ -184,50 +186,33 @@ public enum OrderInListFilterBy
 /// </summary>
 public enum OrderInListSortBy
 {
-    /// <summary>
-    /// Sort by order ID.
-    /// </summary>
+    /// <summary>Sort by order ID.</summary>
     OrderId,
 
-    /// <summary>
-    /// Sort by logical order type (BO.TypeOfOrder).
-    /// </summary>
+    /// <summary>Sort by logical order type (BO.TypeOfOrder).</summary>
     TypeOfOrder,
 
-    /// <summary>
-    /// Sort by air distance between the order destination and the courier (if relevant).
-    /// </summary>
+    /// <summary>Sort by air distance between the order destination and the company.</summary>
     AirDistance,
 
-    /// <summary>
-    /// Sort by logical order status (BO.OrderStatus).
-    /// </summary>
+    /// <summary>Sort by logical order status (BO.OrderStatus).</summary>
     OrderStatus,
 
-    /// <summary>
-    /// Sort by schedule status (BO.ScheduleStatus).
-    /// </summary>
+    /// <summary>Sort by schedule status (BO.ScheduleStatus).</summary>
     ScheduleStatus,
 
-    /// <summary>
-    /// Sort by time left until the required finish time.
-    /// </summary>
+    /// <summary>Sort by time left until the required finish time.</summary>
     TimeLeftToFinish,
 
-    /// <summary>
-    /// Sort by total handling time of the order.
-    /// </summary>
+    /// <summary>Sort by total handling time of the order.</summary>
     TotalHandleTime,
 
-    /// <summary>
-    /// Sort by total number of deliveries associated with this order.
-    /// </summary>
+    /// <summary>Sort by total number of deliveries associated with this order.</summary>
     TotalDeliveries
 }
 
 /// <summary>
-/// Fields that can be used to sort the closed deliveries list
-/// (BO.ClosedDeliveryInList).
+/// Fields that can be used to sort the closed deliveries list (BO.ClosedDeliveryInList).
 /// </summary>
 public enum ClosedDeliverySortBy
 {
@@ -248,27 +233,18 @@ public enum ClosedDeliverySortBy
 }
 
 /// <summary>
-/// Fields that can be used to sort the open orders list
-/// for a courier (BO.OpenOrderInList).
+/// Fields that can be used to sort the open orders list for a courier (BO.OpenOrderInList).
 /// </summary>
 public enum OpenOrderSortBy
 {
     OrderId,
-
     TypeOfOrder,
-
     OrderWeight,
-
     IsFragile,
-
     OrderSize,
-
     AirDistance,
-
     ScheduleStatus,
-
     TimeLeftToFinish,
-
     MaxDeliveryTime
 }
 
@@ -295,16 +271,14 @@ public enum LogicalOrderStatus
 }
 
 /// <summary>
-/// Fields that can be used to filter the open orders list
-/// for a courier (BO.OpenOrderInList).
+/// Fields that can be used to filter the open orders list for a courier (BO.OpenOrderInList).
 /// </summary>
 public enum OpenOrderFilterBy
 {
-
     /// <summary>Filter by order type (BO.TypeOfOrder).</summary>
     TypeOfOrder
 }
 
-#endregion BL Enums Comments IOrder
+#endregion IOrder Enums
 
-#endregion BL Enums Comments General
+#endregion BL Enums General

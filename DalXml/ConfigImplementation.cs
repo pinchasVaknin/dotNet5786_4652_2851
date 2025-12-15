@@ -1,13 +1,19 @@
 ﻿namespace Dal;
 using DalApi;
+using System;
+
+//==================== Config Implementation (XML) ===================\\
 
 /// <summary>
-/// get, set and default
+/// Implementation of the IConfig interface for the DalXml layer.
+/// Acts as a wrapper around the static Config class which handles XML storage.
 /// </summary>
 internal class ConfigImplementation : IConfig
 {
+    //==================== System Clock ===================\\
 
-    //------------------ set/get Config static functions ------------------\\
+    #region SystemClock
+
     /// <summary>
     /// Gets or sets the shared application clock value from the underlying Config.
     /// </summary>
@@ -16,6 +22,12 @@ internal class ConfigImplementation : IConfig
         get => Config.Clock;
         set => Config.Clock = value;
     }
+
+    #endregion SystemClock
+
+    //==================== Admin Credentials ===================\\
+
+    #region AdminCredentials
 
     /// <summary>
     /// Gets or sets the administrator identifier stored in the underlying Config.
@@ -34,6 +46,12 @@ internal class ConfigImplementation : IConfig
         get => Config.AdminPassword;
         set => Config.AdminPassword = value;
     }
+
+    #endregion AdminCredentials
+
+    //==================== Company Location ===================\\
+
+    #region CompanyLocation
 
     /// <summary>
     /// Gets or sets the company address (nullable) from the underlying Config.
@@ -61,6 +79,12 @@ internal class ConfigImplementation : IConfig
         get => Config.Longitude;
         set => Config.Longitude = value;
     }
+
+    #endregion CompanyLocation
+
+    //==================== Operational Parameters ===================\\
+
+    #region OperationalParameters
 
     /// <summary>
     /// Gets or sets the maximum allowed air distance (nullable) from the underlying Config.
@@ -107,6 +131,12 @@ internal class ConfigImplementation : IConfig
         set => Config.AvgWalkSpeed = value;
     }
 
+    #endregion OperationalParameters
+
+    //==================== Time Policies ===================\\
+
+    #region TimePolicies
+
     /// <summary>
     /// Gets or sets the maximum delivery time range from the underlying Config.
     /// </summary>
@@ -134,8 +164,12 @@ internal class ConfigImplementation : IConfig
         set => Config.UnactiveTimeRnge = value;
     }
 
+    #endregion TimePolicies
 
-    //------------------------ Reset Config ------------------------\\
+    //==================== Management ===================\\
+
+    #region Management
+
     /// <summary>
     /// Resets all configuration values to defaults by delegating to <see cref="Config.Reset"/>.
     /// </summary>
@@ -143,4 +177,7 @@ internal class ConfigImplementation : IConfig
     {
         Config.Reset();
     }
+
+    #endregion Management
+
 }

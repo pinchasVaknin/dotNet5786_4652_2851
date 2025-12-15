@@ -1,5 +1,7 @@
 ﻿namespace Dal;
 
+//==================== XML Config (Static) ===================\\
+
 /// <summary>
 /// Provides configuration settings and utility methods for managing application-specific data.
 /// </summary>
@@ -8,12 +10,21 @@
 /// company location, and various operational parameters such as speed and time ranges.</remarks>
 internal static class Config
 {
+    //==================== File Names ===================\\
+
+    #region FileNames
+
     internal const string s_data_config_xml = "data-config.xml";
     internal const string s_orders_xml = "orders.xml";
     internal const string s_deliverys_xml = "deliverys.xml";
     internal const string s_couriers_xml = "couriers.xml";
 
-    //------------------ set/get Config static functions ------------------\\
+    #endregion FileNames
+
+    //==================== ID Generators ===================\\
+
+    #region IdGenerators
+
     /// <summary>
     /// Gets the next order identifier from the config and increments the stored value.
     /// </summary>
@@ -32,6 +43,12 @@ internal static class Config
         private set => XMLTools.SetConfigIntVal(s_data_config_xml, "NextDeliveryId", value);
     }
 
+    #endregion IdGenerators
+
+    //==================== System Clock ===================\\
+
+    #region SystemClock
+
     /// <summary>
     /// Gets or sets the application clock value stored in the config XML.
     /// </summary>
@@ -40,6 +57,12 @@ internal static class Config
         get => XMLTools.GetConfigDateVal(s_data_config_xml, "Clock");
         set => XMLTools.SetConfigDateVal(s_data_config_xml, "Clock", value);
     }
+
+    #endregion SystemClock
+
+    //==================== Admin Credentials ===================\\
+
+    #region AdminCredentials
 
     /// <summary>
     /// Gets or sets the administrator user identifier stored in the config.
@@ -58,6 +81,12 @@ internal static class Config
         get => XMLTools.GetConfigStringVal(s_data_config_xml, "AdminPassword");
         set => XMLTools.SetConfigStringVal(s_data_config_xml, "AdminPassword", value);
     }
+
+    #endregion AdminCredentials
+
+    //==================== Company Location ===================\\
+
+    #region CompanyLocation
 
     /// <summary>
     /// Gets or sets the company address (nullable) stored in the config.
@@ -85,6 +114,12 @@ internal static class Config
         get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "Longitude");
         set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "Longitude", value);
     }
+
+    #endregion CompanyLocation
+
+    //==================== Operational Parameters ===================\\
+
+    #region OperationalParameters
 
     /// <summary>
     /// Gets or sets the maximum allowed air distance (nullable) for deliveries.
@@ -131,6 +166,12 @@ internal static class Config
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "AvgWalkSpeed", value);
     }
 
+    #endregion OperationalParameters
+
+    //==================== Time Policies ===================\\
+
+    #region TimePolicies
+
     /// <summary>
     /// Gets or sets the maximum delivery time range used for scheduling.
     /// </summary>
@@ -158,8 +199,12 @@ internal static class Config
         set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "UnactiveTimeRnge", value);
     }
 
+    #endregion TimePolicies
 
-    //------------------------ Reset Config ------------------------\\
+    //==================== Management ===================\\
+
+    #region Management
+
     /// <summary>
     /// Resets all configuration values to their default states and updates the config XML.
     /// </summary>
@@ -187,4 +232,7 @@ internal static class Config
         RiskTimeRnge = TimeSpan.Zero;
         UnactiveTimeRnge = TimeSpan.Zero;
     }
+
+    #endregion Management
+
 }
