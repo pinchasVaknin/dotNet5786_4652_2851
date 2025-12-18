@@ -92,4 +92,5 @@ public class Config
     public override string ToString() => this.ToStringProperty();
 
     #endregion Overrides
+
 }

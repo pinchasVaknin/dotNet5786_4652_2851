@@ -13,6 +13,15 @@ using System.Linq;
 /// </summary>
 internal static class DeliveryManager
 {
+
+    //==================== Observer Manager (Stage 5) ===================\\
+
+    #region ObserverManager
+
+    internal static ObserverManager Observers = new(); //stage 5
+
+    #endregion ObserverManager
+
     //==================== DAL Access ===================\\
 
     #region DalAccess

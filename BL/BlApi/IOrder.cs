@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// Logical service contract for order-related operations.
 /// Includes CRUD, List Retrieval, Order Actions (Cancel, Assign, Complete), and Summaries.
 /// </summary>
-public interface IOrder
+public interface IOrder : IObservable //stage 5
 {
     //==================== Order Management (Lists & Summaries) ===================\\
 

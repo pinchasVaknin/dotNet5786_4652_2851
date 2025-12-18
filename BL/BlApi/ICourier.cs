@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// Logical service contract for courier-related operations.
 /// Includes Authentication, List Management, and CRUD operations for Couriers.
 /// </summary>
-public interface ICourier
+public interface ICourier : IObservable //stage 5
 {
     //==================== Authentication ===================\\
 

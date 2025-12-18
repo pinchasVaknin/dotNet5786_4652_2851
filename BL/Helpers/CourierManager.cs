@@ -13,6 +13,15 @@ using System.Collections.Generic;
 /// </summary>
 internal static class CourierManager
 {
+
+    //==================== Observer Manager (Stage 5) ===================\\
+
+    #region ObserverManager
+
+    internal static ObserverManager Observers = new(); //stage 5
+
+    #endregion ObserverManager
+
     //==================== DAL Access ===================\\
 
     #region DalAccess
@@ -36,8 +45,10 @@ internal static class CourierManager
     /// <exception cref="BO.BlXMLFileLoadCreateException">Thrown if there is a data access error.</exception>
     internal static BO.UserRole GetUserRole(int userId, string password)
     {
+        // Initial setup check
         var config = AdminManager.GetConfig();
 
+        // If AdminId is 0 => system not set up yet
         if (config.AdminId == 0)
         {
             if (userId == 0)
@@ -51,12 +62,13 @@ internal static class CourierManager
             }
         }
 
+        // Validate inputs
         Tools.ValidatePersonId(userId);
         Tools.ValidateNotNull(password);
 
         try
         {
-            // 1. Check Admin
+            //Check Admin
             if (config.AdminId == userId)
             {
                 if (config.AdminPassword == password)
@@ -65,7 +77,7 @@ internal static class CourierManager
                     throw new BO.BlInvalidPasswordException("Incorrect password for admin user");
             }
 
-            // 2. Check Courier
+            //Check Courier
             var courierUser = s_dal.Courier.Read(userId);
             if (courierUser is not null)
             {
@@ -75,7 +87,7 @@ internal static class CourierManager
                     throw new BO.BlInvalidPasswordException("Incorrect password for courier user");
             }
 
-            // 3. User not found
+            //User not found
             throw new BO.BlUserNotFoundException("User ID does not exist");
         }
         catch (DO.DalXMLFileLoadCreateException ex)
@@ -136,6 +148,7 @@ internal static class CourierManager
     {
         try
         {
+            // Read DO courier
             var doCourier = s_dal.Courier.Read(courierId) ??
                 throw new BO.BlDoesNotExistException($"Courier with ID={courierId} does not exist");
 
@@ -172,28 +185,30 @@ internal static class CourierManager
     /// <param name="courier">The courier object to add.</param>
     internal static void AddCourier(BO.Courier courier)
     {
+        // Validate input
         Tools.ValidateCourier(courier);
 
+        // Validate location
         if (Tools.GetLocationFromAddress(courier.CourierLocation) == null)
             throw new BO.BlInvalidStringException($"Location '{courier.CourierLocation}' is invalid.");
 
         try
         {
-            var existing = s_dal.Courier.Read(courier.CourierId);
-            if (existing is not null)
-                throw new BO.BlAlreadyExistsException($"Courier with ID={courier.CourierId} already exists.");
-
+            // Add new courier
             DO.Courier doCourier = ConvertBoToDoCourier(courier);
             s_dal.Courier.Create(doCourier);
-        }
-        catch (DO.DalAlreadyExistsException ex)
-        {
-            throw new BO.BlAlreadyExistsException("Failed to add courier", ex);
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
             throw new BO.BlXMLFileLoadCreateException("Failed to add courier", ex);
         }
+        catch (DO.DalAlreadyExistsException ex)
+        {
+            throw new BO.BlAlreadyExistsException("Failed to add courier", ex);
+        }
+
+        // Notify observers of the courier update
+        Observers.NotifyListUpdated(); //stage 5
     }
 
     /// <summary>
@@ -224,13 +239,16 @@ internal static class CourierManager
     /// <param name="courier">The courier object with updated details.</param>
     internal static void UpdateCourier(BO.Courier courier)
     {
+        // Validate input
         Tools.ValidateCourier(courier);
 
+        // Validate location
         if (Tools.GetLocationFromAddress(courier.CourierLocation) == null)
             throw new BO.BlInvalidStringException($"Location '{courier.CourierLocation}' is invalid.");
 
         try
         {
+            // Update courier
             DO.Courier doCourier = ConvertBoToDoCourier(courier);
             s_dal.Courier.Update(doCourier);
         }
@@ -242,6 +260,10 @@ internal static class CourierManager
         {
             throw new BO.BlDoesNotExistException("Failed to update courier", ex);
         }
+
+        // Notify observers of the courier update
+        Observers.NotifyListUpdated(); //stage 5
+        Observers.NotifyItemUpdated(courier.CourierId); //stage 5
     }
 
     /// <summary>
@@ -251,10 +273,12 @@ internal static class CourierManager
     /// <exception cref="BO.BlCourierHasActiveDeliveryException">Thrown if the courier has an active delivery.</exception>
     internal static void DeleteCourier(int id)
     {
+        // Validate input
         Tools.ValidatePersonId(id);
 
         try
         {
+            // Check if courier exists
             DO.Courier? doCourier = s_dal.Courier.Read(id)
                 ?? throw new BO.BlDoesNotExistException($"Courier with ID={id} does not exist");
 
@@ -263,9 +287,11 @@ internal static class CourierManager
                 .ReadAll(d => d.CourierId == id)
                 .Any(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
 
+            // Prevent deletion if active delivery exists
             if (hasActiveDelivery)
                 throw new BO.BlCourierHasActiveDeliveryException($"Cannot delete courier {id}: courier has an active delivery.");
 
+            // Delete courier
             s_dal.Courier.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
@@ -276,6 +302,10 @@ internal static class CourierManager
         {
             throw new BO.BlXMLFileLoadCreateException("Failed to delete courier", ex);
         }
+
+        // Notify observers of the courier update
+        Observers.NotifyListUpdated(); //stage 5
+        Observers.NotifyItemUpdated(id); //stage 5
     }
 
     #endregion CrudOperations
@@ -289,19 +319,20 @@ internal static class CourierManager
     /// </summary>
     private static BO.Courier ConvertDoToBoCourier(DO.Courier doCourier)
     {
-        // 1. Get deliveries
+        // Get deliveries
         var deliveries = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.CourierId);
 
-        // 2. Stats calculation
+        // Stats calculation
         var completedDeliveries = deliveries
             .Where(d => d.DeliveryFinishType == DO.DeliveryFinishType.Completed)
             .ToList();
 
+        // On-time vs Late calculation
         var maxRange = s_dal.Config.MaxDelTimeRnge;
         int onTime = completedDeliveries.Count(d => d.DeliveryFinishDate - d.DeliveryDate <= maxRange);
         int late = completedDeliveries.Count - onTime;
 
-        // 3. Active Order
+        // Active Order
         var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
 
         BO.OrderInProgress? orderInProgress = null;
@@ -361,9 +392,12 @@ internal static class CourierManager
     {
         try
         {
+            // Get all active couriers
             var activeCouriers = s_dal.Courier.ReadAll(c => c.CourierEnabled).ToList();
+            // Update each courier's activity status
             foreach (var courier in activeCouriers)
             {
+                // Update activity based on closed deliveries
                 UpdateCourierActivityByClosedDeliveries(courier, newClock);
             }
         }
@@ -398,6 +432,10 @@ internal static class CourierManager
             {
                 var updatedCourier = courier with { CourierEnabled = stillActive };
                 s_dal.Courier.Update(updatedCourier);
+
+                // Notify observers of the courier update
+                Observers.NotifyListUpdated(); //stage 5
+                Observers.NotifyItemUpdated(courier.CourierId); //stage 5
             }
         }
         catch (DO.DalXMLFileLoadCreateException ex)

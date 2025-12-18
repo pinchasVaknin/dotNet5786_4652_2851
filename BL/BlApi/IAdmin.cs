@@ -9,6 +9,18 @@ using System;
 /// </summary>
 public interface IAdmin
 {
+
+    //==================== Observers ===================\\
+
+    #region Observers
+
+    void AddConfigObserver(Action configObserver);
+    void RemoveConfigObserver(Action configObserver);
+    void AddClockObserver(Action clockObserver);
+    void RemoveClockObserver(Action clockObserver);
+
+    #endregion Observers
+
     //==================== System Clock ===================\\
 
     #region SystemClock

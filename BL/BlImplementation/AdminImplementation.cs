@@ -14,6 +14,22 @@ using System;
 /// </summary>
 internal class AdminImplementation : IAdmin
 {
+
+    //==================== Observers Management ===================\\
+
+    #region ObserversManagement
+
+    public void AddClockObserver(Action clockObserver) =>
+    AdminManager.ClockUpdatedObservers += clockObserver;
+    public void RemoveClockObserver(Action clockObserver) =>
+    AdminManager.ClockUpdatedObservers -= clockObserver;
+    public void AddConfigObserver(Action configObserver) =>
+   AdminManager.ConfigUpdatedObservers += configObserver;
+    public void RemoveConfigObserver(Action configObserver) =>
+    AdminManager.ConfigUpdatedObservers -= configObserver;
+
+    #endregion ObserversManagement
+
     //==================== System Clock ===================\\
 
     #region SystemClock
