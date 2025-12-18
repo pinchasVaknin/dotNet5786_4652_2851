@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Order"
         mc:Ignorable="d"
-        Title="OrderListWindow" Height="640" Width="800">
+        Title="OrderListWindow" Height="640" Width="800"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
 
     <!--External Grid-->
     <Grid>
@@ -22,13 +23,26 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Label" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                      FontWeight="Bold" FontSize="16" Foreground="Red"/>
+                      <!--ItemsSource="{Binding Source={StaticResource OrderStatusCollectionKey}}"-->
+                      <!--SelectedValue="{Binding OrderFilter, Mode=TwoWay}" SelectionChanged="OrderFilter_SelectionChanged"-->
 
         </Grid>
-        <DataGrid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-               AutoGenerateColumns="True" IsReadOnly="True"/>
+        <DataGrid Margin="5" Grid.Row="1" ItemsSource="{Binding OrderList}" 
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  AutoGenerateColumns="True" IsReadOnly="True"/>
 
-        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50" Width="100"/>
+        <Border Grid.Row="2" Background="#2C3E50">
+            <Button Content="Add" Grid.Row="2" 
+            HorizontalAlignment="Center" 
+            Height="50" Width="100" 
+            Background="#27AE60" 
+            Foreground="White" 
+            FontSize="16"/>
+        </Border>
     </Grid>
     
 </Window>

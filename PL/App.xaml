@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:PL"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <local:VehicleTypeCollection x:Key="VehicleTypeCollectionKey" />        <!--<local:OrderStatusCollection x:Key="OrderStatusCollectionKey" />-->
     </Application.Resources>
 </Application>

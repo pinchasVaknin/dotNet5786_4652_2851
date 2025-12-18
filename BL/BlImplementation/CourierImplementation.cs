@@ -47,10 +47,11 @@ internal class CourierImplementation : ICourier
     public IEnumerable<BO.CourierInList> GetCouriers(
         int requesterId,
         bool? isActiveFilter = null,
+        BO.VehicleType? vehicleFilter = null,
         BO.CourierListSortBy? sortBy = null)
     {
         Tools.EnsureAdmin(requesterId, nameof(GetCouriers));
-        return CourierManager.GetListOfCouriers(requesterId, isActiveFilter, sortBy);
+        return CourierManager.GetListOfCouriers(requesterId, isActiveFilter, vehicleFilter, sortBy);
     }
 
     #endregion List Retrieval

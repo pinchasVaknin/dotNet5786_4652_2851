@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Courier"
         mc:Ignorable="d"
-        Title="CourierListWindow" Height="640" Width="800">
+        Title="CourierListWindow" Height="640" Width="800"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
 
     <!--External Grid-->
     <Grid>
@@ -22,13 +25,74 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Label" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            
+            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                      FontWeight="Bold" FontSize="16" Foreground="Red" 
+                      ItemsSource="{Binding Source={StaticResource VehicleTypeCollectionKey}}" 
+                      SelectedValue="{Binding VehicleFilter, Mode=TwoWay}" SelectionChanged="CourierFilter_SelectionChanged"/>
             
         </Grid>
-        <DataGrid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  AutoGenerateColumns="True" IsReadOnly="True"/>
-        
-        <Button Content="Add" Grid.Row="2" HorizontalAlignment="Center" Height="50" Width="100"/>
+        <DataGrid Margin="5" Grid.Row="1"  
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Center"
+                  FontWeight="Bold" AutoGenerateColumns="False" IsReadOnly="True"
+                  x:Name="CourierDataGrid"
+                  ItemsSource="{Binding CourierList}"
+                  SelectedItem="{Binding SelectedCourier}"
+                  MouseDoubleClick="CourierDataGrid_MouseDoubleClick">
+            
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding CourierId}" Width="*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding CourierFullName}" Width="*"/>
+                <DataGridTextColumn Header="Vehicle" Binding="{Binding VehicleType}" Width="*"/>
+                <DataGridCheckBoxColumn Header="Active" Binding="{Binding CourierIsActive}" Width="*"/>
+                <DataGridTextColumn Header="On Time" Binding="{Binding DeliveriesInTime}" Width="*"/>
+                <DataGridTextColumn Header="Late" Binding="{Binding DeliveriesOverTime}" Width="*"/>
+                <DataGridTextColumn Header="Current Order" Binding="{Binding OrderIdInHandle}" Width="*"/>
+                <DataGridTextColumn Header="Since" Binding="{Binding StartWorkDate, StringFormat=d}" Width="*"/>
+
+                <!--Delete-->
+                <DataGridTemplateColumn Header="Delete" Width="60">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="🗑️" 
+                                    Click="BtnDelete_Click"
+                                    Background="Transparent" 
+                                    BorderThickness="0"
+                                    FontSize="16" 
+                                    Cursor="Hand" 
+                                    ToolTip="Delete Item"/> 
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+            </DataGrid.Columns>
+
+            
+
+        </DataGrid>
+
+
+        <Border Grid.Row="2" Background="#2C3E50">
+            <Button Content="Add" Grid.Row="2" 
+                    HorizontalAlignment="Center" 
+                    Height="50" Width="100" 
+                    Background="#27AE60" 
+                    Foreground="White" 
+                    FontSize="16" Click="BtnAdd_Click"/>
+        </Border>
     </Grid>
 
 </Window>

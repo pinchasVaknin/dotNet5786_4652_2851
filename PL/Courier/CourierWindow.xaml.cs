@@ -1,27 +1,154 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace PL.Courier
+namespace PL.Courier;
+
+/// <summary>
+/// Interaction logic for CourierWindow.xaml
+/// </summary>
+public partial class CourierWindow : Window
 {
+    //==================== Fields ===================\\
+
+    #region Fields
+
+    // The entry point to the BL layer (Factory pattern).
+    static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
+    #endregion Fields
+
+    //==================== Properties ===================\\
+
+    #region Properties
+
     /// <summary>
-    /// Interaction logic for CourierWindow.xaml
+    /// Gets or sets the current courier associated with the operation.
     /// </summary>
-    public partial class CourierWindow : Window
+    public BO.Courier CurrentCourier
     {
-        public CourierWindow()
+        get { return (BO.Courier)GetValue(CurrentCourierProperty); }
+        set { SetValue(CurrentCourierProperty, value); }
+    }
+    // registering the CurrentCourier dependency property
+    public static readonly DependencyProperty CurrentCourierProperty =
+        DependencyProperty.Register("CurrentCourier", typeof(BO.Courier), typeof(CourierWindow), new PropertyMetadata(null));
+
+    /// <summary>
+    /// Gets or sets the text displayed on the action button.
+    /// </summary>
+    public string ActionButtonText
+    {
+        get { return (string)GetValue(ActionButtonTextProperty); }
+        set { SetValue(ActionButtonTextProperty, value); }
+    }
+    // registering the ActionButtonText dependency property
+    public static readonly DependencyProperty ActionButtonTextProperty =
+        DependencyProperty.Register("ActionButtonText", typeof(string), typeof(CourierWindow), new PropertyMetadata("Add"));
+
+    #endregion Properties
+
+    //================== Constructors =================\\
+
+    #region Constructors
+
+    public CourierWindow()
+    {
+        InitializeComponent();
+
+        // Initialize a new courier for adding
+        CurrentCourier = new BO.Courier()
         {
-            InitializeComponent();
+            StartWorkDate = DateTime.Now
+        };
+
+        // Set the action button text to "Add"
+        ActionButtonText = "Add";
+    }
+
+    public CourierWindow(int courierId)
+    {
+        InitializeComponent();
+
+        try
+        {
+
+            int adminId = 333333333;
+
+            // Fetch the existing courier details for updating
+            CurrentCourier = s_bl.Courier.GetCourier(adminId, courierId);
+
+            // Set the action button text to "Update"
+            ActionButtonText = "Update";
+
+            // Disable editing of the Courier ID field when updating
+            if (TxtId != null) TxtId.IsEnabled = false;
+        }
+        catch
+        {
+            Close();
         }
     }
+
+    #endregion Constructors
+
+    //=================== Methods ===================\\
+
+    #region Methods
+
+    private void BtnAddUpdate_Click(object sender, RoutedEventArgs e)
+    {
+        int adminId = 333333333;
+
+        try
+        {
+            // Basic validation checks
+            if (CurrentCourier.CourierId <= 0)
+            {
+                MessageBox.Show("Invalid ID", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            // Ensure the name is not empty
+            if (string.IsNullOrEmpty(CurrentCourier.CourierFullName))
+            {
+                MessageBox.Show("Name is required", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            // Validate the courier data before proceeding
+            if (ActionButtonText == "Add")
+            {
+                s_bl.Courier.AddCourier(adminId, CurrentCourier);
+                MessageBox.Show("Courier added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            // Update existing courier
+            else
+            {
+                s_bl.Courier.UpdateCourier(adminId, CurrentCourier);
+                MessageBox.Show("Courier updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+            Close();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Operation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    // Event handler to validate numeric input in TextBox controls
+    private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+    {
+        // Regular expression to match non-numeric characters
+        Regex regex = new Regex("[^0-9]+");
+        e.Handled = regex.IsMatch(e.Text);
+    }
+
+    private void TxtId_TextChanged(object sender, TextChangedEventArgs e)
+    {
+
+    }
+
+    #endregion Methods
+
 }

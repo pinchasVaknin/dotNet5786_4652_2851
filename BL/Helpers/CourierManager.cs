@@ -106,6 +106,7 @@ internal static class CourierManager
     internal static IEnumerable<BO.CourierInList> GetListOfCouriers(
         int requesterId,
         bool? isActiveFilter = null,
+        BO.VehicleType? vehicleFilter = null,
         BO.CourierListSortBy? sortBy = null)
     {
         try
@@ -117,6 +118,11 @@ internal static class CourierManager
             // Apply Active filter
             if (isActiveFilter is bool active)
                 boCouriers = boCouriers.Where(c => c.CourierIsActive == active);
+
+            if (vehicleFilter is BO.VehicleType vType && vType != BO.VehicleType.All)
+            {
+                boCouriers = boCouriers.Where(c => c.VehicleType == vType);
+            }
 
             // Apply Sorting
             boCouriers = sortBy switch

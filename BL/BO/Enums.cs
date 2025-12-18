@@ -40,7 +40,8 @@ public enum VehicleType
     Car,
     Motorcycle,
     Bicycle,
-    Foot
+    Foot,
+    All
 }
 
 /// <summary>

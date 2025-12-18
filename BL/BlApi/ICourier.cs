@@ -51,6 +51,7 @@ public interface ICourier : IObservable //stage 5
     IEnumerable<BO.CourierInList> GetCouriers(
         int requesterId,
         bool? isActiveFilter = null,
+        BO.VehicleType? vehicleFilter = null,
         BO.CourierListSortBy? sortBy = null);
 
     #endregion ListRetrieval
