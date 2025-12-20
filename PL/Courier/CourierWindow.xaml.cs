@@ -1,9 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿namespace PL.Courier;
+
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
-namespace PL.Courier;
 
 /// <summary>
 /// Interaction logic for CourierWindow.xaml
@@ -92,6 +92,24 @@ public partial class CourierWindow : Window
     }
 
     #endregion Constructors
+
+
+    //================== Enumerables =================\\
+
+    #region Enumerables
+
+    // Provides a list of vehicle types excluding the 'All' option
+    public IEnumerable<BO.VehicleType> VehicleTypesList
+    {
+        get
+        {
+            return Enum.GetValues(typeof(BO.VehicleType))
+                       .Cast<BO.VehicleType>()
+                       .Where(v => v != BO.VehicleType.All);
+        }
+    }
+
+    #endregion Enumerables
 
     //=================== Methods ===================\\
 
