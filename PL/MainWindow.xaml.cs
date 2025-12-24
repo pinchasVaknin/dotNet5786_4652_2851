@@ -174,7 +174,15 @@ public partial class MainWindow : Window
 
     private void BtnUpdateConfig_Click(object sender, RoutedEventArgs e)
     {
-        s_bl.Admin.SetConfig(Configuration);
+        try
+        {
+            s_bl.Admin.SetConfig(Configuration);
+            MessageBox.Show("Configuration updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error updating configuration: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private void BtnShowCouriers_Click(object sender, RoutedEventArgs e)

@@ -5,5 +5,10 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <local:VehicleTypeCollection x:Key="VehicleTypeCollectionKey" />        <!--<local:OrderStatusCollection x:Key="OrderStatusCollectionKey" />-->
+        
+        <Style x:Key="NumericStyle" TargetType="TextBox">
+            <EventSetter Event="PreviewTextInput" Handler="CheckIfNumber"/>
+        </Style>
+        
     </Application.Resources>
 </Application>

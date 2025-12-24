@@ -95,7 +95,7 @@
                 <Label Grid.Row="1" Grid.Column="0" Content="ID Number:"/>
                 <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtId"
                          Text="{Binding CurrentCourier.CourierId, Mode=TwoWay}"
-                         PreviewTextInput="NumberValidationTextBox" TextChanged="TxtId_TextChanged"/>
+                         Style="{StaticResource NumericStyle}"/>
 
                 <Label Grid.Row="2" Grid.Column="0" Content="Full Name:"/>
                 <TextBox Grid.Row="2" Grid.Column="1" 
@@ -108,7 +108,7 @@
                 <Label Grid.Row="4" Grid.Column="0" Content="Cell Phone:"/>
                 <TextBox Grid.Row="4" Grid.Column="1" 
                          Text="{Binding CurrentCourier.CourierCellPhone, Mode=TwoWay}"
-                         PreviewTextInput="NumberValidationTextBox"/>
+                         Style="{StaticResource NumericStyle}"/>
 
                 <Label Grid.Row="5" Grid.Column="0" Content="Password:"/>
                 <TextBox Grid.Row="5" Grid.Column="1" 
@@ -124,7 +124,8 @@
 
                 <Label Grid.Row="9" Grid.Column="0" Content="Max Distance (km):"/>
                 <TextBox Grid.Row="9" Grid.Column="1" 
-                         Text="{Binding CurrentCourier.MaxCourierDistance, Mode=TwoWay}"/>
+                         Text="{Binding CurrentCourier.MaxCourierDistance, Mode=TwoWay}"
+                         Style="{StaticResource NumericStyle}"/>
 
                 <Label Grid.Row="10" Grid.Column="0" Content="Vehicle Type:"/>
                 <ComboBox Grid.Row="10" Grid.Column="1" Height="28" Margin="0,4"

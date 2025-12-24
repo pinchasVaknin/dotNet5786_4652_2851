@@ -176,12 +176,12 @@ public class BlUserNotFoundException : Exception
 }
 
 /// <summary>
-/// Thrown when attempting to delete a courier who has an active delivery.
+/// Thrown when attempting to delete a courier who has associated deliveries in the system.
 /// </summary>
 [Serializable]
-public class BlCourierHasActiveDeliveryException : Exception
+public class BlCourierHasDeliveriesException : Exception
 {
-    public BlCourierHasActiveDeliveryException(string? message) : base(message) { }
+    public BlCourierHasDeliveriesException(string? message) : base(message) { }
 }
 
 /// <summary>

@@ -133,6 +133,12 @@ public partial class CourierWindow : Window
                 MessageBox.Show("Name is required", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+            // Ensure the phone number is not empty
+            if (CurrentCourier.MaxCourierDistance <= 0)
+            {
+                MessageBox.Show("Max Distance must be a positive number.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             // Validate the courier data before proceeding
             if (ActionButtonText == "Add")
             {
@@ -152,19 +158,6 @@ public partial class CourierWindow : Window
         {
             MessageBox.Show(ex.Message, "Operation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-    }
-
-    // Event handler to validate numeric input in TextBox controls
-    private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
-    {
-        // Regular expression to match non-numeric characters
-        Regex regex = new Regex("[^0-9]+");
-        e.Handled = regex.IsMatch(e.Text);
-    }
-
-    private void TxtId_TextChanged(object sender, TextChangedEventArgs e)
-    {
-
     }
 
     #endregion Methods

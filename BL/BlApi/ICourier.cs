@@ -104,4 +104,12 @@ public interface ICourier : IObservable //stage 5
 
     #endregion CRUD
 
+    //==================== Additional Methods ===================\\
+
+    #region AdditionalMethods
+
+    public bool IsCourierDeletable(int courierId);
+
+    #endregion AdditionalMethods
+
 }

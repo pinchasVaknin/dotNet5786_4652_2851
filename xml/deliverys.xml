@@ -2,302 +2,302 @@
 <Deliveries>
   <Delivery>
     <DeliveryId>0</DeliveryId>
-    <OrderId>40</OrderId>
-    <CourierId>343302793</CourierId>
+    <OrderId>41</OrderId>
+    <CourierId>267997900</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-12-08T19:52:50</DeliveryDate>
-    <DeliveryFinishDate>2025-12-08T23:17:50</DeliveryFinishDate>
-    <ShipmentType>Economy</ShipmentType>
+    <DeliveryDate>2025-11-26T10:45:48</DeliveryDate>
+    <DeliveryFinishDate>2025-11-26T13:56:48</DeliveryFinishDate>
+    <ShipmentType>Standard</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>1</DeliveryId>
-    <OrderId>0</OrderId>
-    <CourierId>364188702</CourierId>
+    <OrderId>27</OrderId>
+    <CourierId>280932476</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-10-24T11:07:50</DeliveryDate>
-    <DeliveryFinishDate>2025-10-24T13:34:50</DeliveryFinishDate>
-    <ShipmentType>Economy</ShipmentType>
+    <DeliveryDate>2025-11-19T00:44:48</DeliveryDate>
+    <DeliveryFinishDate>2025-11-19T03:44:48</DeliveryFinishDate>
+    <ShipmentType>SameDay</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>2</DeliveryId>
-    <OrderId>39</OrderId>
-    <CourierId>284034837</CourierId>
+    <OrderId>4</OrderId>
+    <CourierId>283890256</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-06T18:23:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-06T19:27:50</DeliveryFinishDate>
+    <DeliveryDate>2025-10-15T21:38:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-16T00:50:48</DeliveryFinishDate>
     <ShipmentType>Standard</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>3</DeliveryId>
-    <OrderId>33</OrderId>
-    <CourierId>363320045</CourierId>
-    <DeliveryMaxDistance />
-    <DeliveryDate>2025-12-16T13:55:50</DeliveryDate>
-    <DeliveryFinishDate>2025-12-16T16:35:50</DeliveryFinishDate>
+    <OrderId>42</OrderId>
+    <CourierId>391481638</CourierId>
+    <DeliveryMaxDistance>25</DeliveryMaxDistance>
+    <DeliveryDate>2025-09-26T21:58:48</DeliveryDate>
+    <DeliveryFinishDate>2025-09-27T00:03:48</DeliveryFinishDate>
     <ShipmentType>Standard</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>4</DeliveryId>
-    <OrderId>14</OrderId>
-    <CourierId>302337011</CourierId>
+    <OrderId>20</OrderId>
+    <CourierId>339560848</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-10-06T01:17:50</DeliveryDate>
-    <DeliveryFinishDate>2025-10-06T02:06:50</DeliveryFinishDate>
-    <ShipmentType>SameDay</ShipmentType>
+    <DeliveryDate>2025-12-21T03:10:48</DeliveryDate>
+    <DeliveryFinishDate>2025-12-21T06:39:48</DeliveryFinishDate>
+    <ShipmentType>Express</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>5</DeliveryId>
-    <OrderId>35</OrderId>
-    <CourierId>368888900</CourierId>
+    <OrderId>10</OrderId>
+    <CourierId>221104907</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-10-08T17:46:50</DeliveryDate>
-    <DeliveryFinishDate>2025-10-08T21:14:50</DeliveryFinishDate>
-    <ShipmentType>Standard</ShipmentType>
+    <DeliveryDate>2025-10-29T06:12:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-29T09:01:48</DeliveryFinishDate>
+    <ShipmentType>SameDay</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>6</DeliveryId>
-    <OrderId>29</OrderId>
-    <CourierId>293763878</CourierId>
+    <OrderId>36</OrderId>
+    <CourierId>339560848</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-09T15:21:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-09T16:04:50</DeliveryFinishDate>
-    <ShipmentType>Express</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
+    <DeliveryDate>2025-12-18T04:53:48</DeliveryDate>
+    <DeliveryFinishDate>2025-12-18T07:50:48</DeliveryFinishDate>
+    <ShipmentType>Standard</ShipmentType>
+    <DeliveryFinishType>Cancelled</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>7</DeliveryId>
-    <OrderId>15</OrderId>
-    <CourierId>287058778</CourierId>
+    <OrderId>12</OrderId>
+    <CourierId>302397103</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-05T04:00:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-05T06:29:50</DeliveryFinishDate>
-    <ShipmentType>Express</ShipmentType>
+    <DeliveryDate>2025-10-09T22:03:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-09T22:33:48</DeliveryFinishDate>
+    <ShipmentType>SameDay</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>8</DeliveryId>
-    <OrderId>8</OrderId>
-    <CourierId>378254802</CourierId>
-    <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-12-01T09:53:50</DeliveryDate>
-    <DeliveryFinishDate>2025-12-01T11:19:50</DeliveryFinishDate>
-    <ShipmentType>Standard</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
+    <OrderId>7</OrderId>
+    <CourierId>237666878</CourierId>
+    <DeliveryMaxDistance />
+    <DeliveryDate>2025-09-29T06:32:48</DeliveryDate>
+    <DeliveryFinishDate>2025-09-29T08:11:48</DeliveryFinishDate>
+    <ShipmentType>Economy</ShipmentType>
+    <DeliveryFinishType>Cancelled</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>9</DeliveryId>
-    <OrderId>28</OrderId>
-    <CourierId>227493289</CourierId>
+    <OrderId>45</OrderId>
+    <CourierId>275085469</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-12-07T17:20:50</DeliveryDate>
-    <DeliveryFinishDate>2025-12-07T18:06:50</DeliveryFinishDate>
+    <DeliveryDate>2025-11-12T12:17:48</DeliveryDate>
+    <DeliveryFinishDate>2025-11-12T13:04:48</DeliveryFinishDate>
     <ShipmentType>Standard</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>10</DeliveryId>
-    <OrderId>27</OrderId>
-    <CourierId>343073863</CourierId>
+    <OrderId>6</OrderId>
+    <CourierId>229997769</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-10-09T19:32:50</DeliveryDate>
-    <DeliveryFinishDate>2025-10-09T22:22:50</DeliveryFinishDate>
+    <DeliveryDate>2025-12-02T20:28:48</DeliveryDate>
+    <DeliveryFinishDate>2025-12-02T21:08:48</DeliveryFinishDate>
     <ShipmentType>Express</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
+    <DeliveryFinishType>Failed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>11</DeliveryId>
-    <OrderId>4</OrderId>
-    <CourierId>319180363</CourierId>
+    <OrderId>9</OrderId>
+    <CourierId>393196804</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-10-30T16:00:50</DeliveryDate>
-    <DeliveryFinishDate>2025-10-30T19:45:50</DeliveryFinishDate>
+    <DeliveryDate>2025-12-13T00:00:48</DeliveryDate>
+    <DeliveryFinishDate>2025-12-13T03:45:48</DeliveryFinishDate>
     <ShipmentType>Express</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>12</DeliveryId>
-    <OrderId>37</OrderId>
-    <CourierId>363320045</CourierId>
+    <OrderId>0</OrderId>
+    <CourierId>398659236</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-10T06:16:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-10T10:03:50</DeliveryFinishDate>
-    <ShipmentType>Economy</ShipmentType>
-    <DeliveryFinishType>Returned</DeliveryFinishType>
+    <DeliveryDate>2025-11-09T04:58:48</DeliveryDate>
+    <DeliveryFinishDate>2025-11-09T08:55:48</DeliveryFinishDate>
+    <ShipmentType>Standard</ShipmentType>
+    <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>13</DeliveryId>
-    <OrderId>1</OrderId>
-    <CourierId>287058778</CourierId>
+    <OrderId>13</OrderId>
+    <CourierId>385710662</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-05T06:55:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-05T08:36:50</DeliveryFinishDate>
-    <ShipmentType>Economy</ShipmentType>
+    <DeliveryDate>2025-10-31T07:43:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-31T09:31:48</DeliveryFinishDate>
+    <ShipmentType>Express</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>14</DeliveryId>
-    <OrderId>17</OrderId>
-    <CourierId>221928556</CourierId>
+    <OrderId>33</OrderId>
+    <CourierId>227301057</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-10-22T11:50:50</DeliveryDate>
-    <DeliveryFinishDate>2025-10-22T13:57:50</DeliveryFinishDate>
-    <ShipmentType>SameDay</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
+    <DeliveryDate>2025-11-10T22:45:48</DeliveryDate>
+    <DeliveryFinishDate>2025-11-11T00:32:48</DeliveryFinishDate>
+    <ShipmentType>Economy</ShipmentType>
+    <DeliveryFinishType>Cancelled</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>15</DeliveryId>
-    <OrderId>24</OrderId>
-    <CourierId>227493289</CourierId>
+    <OrderId>26</OrderId>
+    <CourierId>273512274</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-12-19T13:22:50</DeliveryDate>
-    <DeliveryFinishDate>2025-12-19T14:42:50</DeliveryFinishDate>
-    <ShipmentType>Standard</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
+    <DeliveryDate>2025-12-18T02:10:48</DeliveryDate>
+    <DeliveryFinishDate>2025-12-18T03:54:48</DeliveryFinishDate>
+    <ShipmentType>SameDay</ShipmentType>
+    <DeliveryFinishType>Failed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>16</DeliveryId>
-    <OrderId>31</OrderId>
-    <CourierId>281628689</CourierId>
+    <OrderId>5</OrderId>
+    <CourierId>227301057</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-10-02T04:50:50</DeliveryDate>
-    <DeliveryFinishDate>2025-10-02T06:51:50</DeliveryFinishDate>
-    <ShipmentType>Standard</ShipmentType>
+    <DeliveryDate>2025-11-10T04:41:48</DeliveryDate>
+    <DeliveryFinishDate>2025-11-10T06:16:48</DeliveryFinishDate>
+    <ShipmentType>Economy</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>17</DeliveryId>
-    <OrderId>48</OrderId>
-    <CourierId>298639442</CourierId>
-    <DeliveryMaxDistance />
-    <DeliveryDate>2025-10-17T02:02:50</DeliveryDate>
-    <DeliveryFinishDate>2025-10-17T03:48:50</DeliveryFinishDate>
-    <ShipmentType>SameDay</ShipmentType>
-    <DeliveryFinishType>Cancelled</DeliveryFinishType>
+    <OrderId>28</OrderId>
+    <CourierId>398659236</CourierId>
+    <DeliveryMaxDistance>25</DeliveryMaxDistance>
+    <DeliveryDate>2025-10-28T12:41:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-28T14:23:48</DeliveryFinishDate>
+    <ShipmentType>Economy</ShipmentType>
+    <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>18</DeliveryId>
-    <OrderId>13</OrderId>
-    <CourierId>227493289</CourierId>
+    <OrderId>43</OrderId>
+    <CourierId>377871619</CourierId>
     <DeliveryMaxDistance />
-    <DeliveryDate>2025-12-13T06:40:50</DeliveryDate>
-    <DeliveryFinishDate>2025-12-13T09:03:50</DeliveryFinishDate>
-    <ShipmentType>Express</ShipmentType>
+    <DeliveryDate>2025-11-30T20:54:48</DeliveryDate>
+    <DeliveryFinishDate>2025-11-30T21:41:48</DeliveryFinishDate>
+    <ShipmentType>Economy</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>19</DeliveryId>
-    <OrderId>21</OrderId>
-    <CourierId>293763878</CourierId>
+    <OrderId>1</OrderId>
+    <CourierId>283890256</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-12T05:34:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-12T06:29:50</DeliveryFinishDate>
-    <ShipmentType>SameDay</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
-  </Delivery>
-  <Delivery>
-    <DeliveryId>20</DeliveryId>
-    <OrderId>10</OrderId>
-    <CourierId>317482540</CourierId>
-    <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-12-22T21:28:50</DeliveryDate>
-    <DeliveryFinishDate>2025-12-23T00:11:50</DeliveryFinishDate>
-    <ShipmentType>Economy</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
-  </Delivery>
-  <Delivery>
-    <DeliveryId>21</DeliveryId>
-    <OrderId>23</OrderId>
-    <CourierId>374347559</CourierId>
-    <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-12-14T09:11:50</DeliveryDate>
-    <DeliveryFinishDate>2025-12-14T11:49:50</DeliveryFinishDate>
-    <ShipmentType>Express</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
-  </Delivery>
-  <Delivery>
-    <DeliveryId>22</DeliveryId>
-    <OrderId>41</OrderId>
-    <CourierId>343073863</CourierId>
-    <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-12-01T06:28:50</DeliveryDate>
-    <DeliveryFinishDate>2025-12-01T08:00:50</DeliveryFinishDate>
+    <DeliveryDate>2025-12-02T13:15:48</DeliveryDate>
+    <DeliveryFinishDate>2025-12-02T15:06:48</DeliveryFinishDate>
     <ShipmentType>Standard</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
-    <DeliveryId>23</DeliveryId>
-    <OrderId>43</OrderId>
-    <CourierId>343302793</CourierId>
-    <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-10-24T04:44:50</DeliveryDate>
-    <DeliveryFinishDate>2025-10-24T06:29:50</DeliveryFinishDate>
+    <DeliveryId>20</DeliveryId>
+    <OrderId>46</OrderId>
+    <CourierId>290926947</CourierId>
+    <DeliveryMaxDistance />
+    <DeliveryDate>2025-10-11T23:32:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-12T02:11:48</DeliveryFinishDate>
     <ShipmentType>SameDay</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
-    <DeliveryId>24</DeliveryId>
-    <OrderId>32</OrderId>
-    <CourierId>343073863</CourierId>
+    <DeliveryId>21</DeliveryId>
+    <OrderId>38</OrderId>
+    <CourierId>280932476</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-09-28T19:12:50</DeliveryDate>
-    <DeliveryFinishDate>2025-09-28T22:41:50</DeliveryFinishDate>
+    <DeliveryDate>2025-10-25T13:19:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-25T15:53:48</DeliveryFinishDate>
     <ShipmentType>Economy</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
-    <DeliveryId>25</DeliveryId>
-    <OrderId>47</OrderId>
-    <CourierId>343073863</CourierId>
+    <DeliveryId>22</DeliveryId>
+    <OrderId>2</OrderId>
+    <CourierId>385710662</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-22T05:42:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-22T09:25:50</DeliveryFinishDate>
+    <DeliveryDate>2025-10-18T17:48:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-18T19:22:48</DeliveryFinishDate>
+    <ShipmentType>Express</ShipmentType>
+    <DeliveryFinishType>Cancelled</DeliveryFinishType>
+  </Delivery>
+  <Delivery>
+    <DeliveryId>23</DeliveryId>
+    <OrderId>29</OrderId>
+    <CourierId>274745799</CourierId>
+    <DeliveryMaxDistance>25</DeliveryMaxDistance>
+    <DeliveryDate>2025-12-07T14:46:48</DeliveryDate>
+    <DeliveryFinishDate>2025-12-07T18:02:48</DeliveryFinishDate>
     <ShipmentType>Express</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
-    <DeliveryId>26</DeliveryId>
+    <DeliveryId>24</DeliveryId>
     <OrderId>19</OrderId>
-    <CourierId>227493289</CourierId>
+    <CourierId>227576183</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-22T01:22:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-22T03:35:50</DeliveryFinishDate>
+    <DeliveryDate>2025-11-06T16:44:48</DeliveryDate>
+    <DeliveryFinishDate>2025-11-06T17:30:48</DeliveryFinishDate>
+    <ShipmentType>Standard</ShipmentType>
+    <DeliveryFinishType>Completed</DeliveryFinishType>
+  </Delivery>
+  <Delivery>
+    <DeliveryId>25</DeliveryId>
+    <OrderId>24</OrderId>
+    <CourierId>361166982</CourierId>
+    <DeliveryMaxDistance>25</DeliveryMaxDistance>
+    <DeliveryDate>2025-10-08T18:44:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-08T20:45:48</DeliveryFinishDate>
+    <ShipmentType>SameDay</ShipmentType>
+    <DeliveryFinishType>Failed</DeliveryFinishType>
+  </Delivery>
+  <Delivery>
+    <DeliveryId>26</DeliveryId>
+    <OrderId>47</OrderId>
+    <CourierId>274745799</CourierId>
+    <DeliveryMaxDistance />
+    <DeliveryDate>2025-11-07T23:29:48</DeliveryDate>
+    <DeliveryFinishDate>2025-11-08T02:28:48</DeliveryFinishDate>
     <ShipmentType>Standard</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>27</DeliveryId>
-    <OrderId>3</OrderId>
-    <CourierId>319180363</CourierId>
+    <OrderId>37</OrderId>
+    <CourierId>280932476</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-08T02:23:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-08T06:20:50</DeliveryFinishDate>
-    <ShipmentType>Economy</ShipmentType>
+    <DeliveryDate>2025-10-16T09:43:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-16T12:49:48</DeliveryFinishDate>
+    <ShipmentType>SameDay</ShipmentType>
     <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>28</DeliveryId>
-    <OrderId>16</OrderId>
-    <CourierId>378752292</CourierId>
+    <OrderId>11</OrderId>
+    <CourierId>239464707</CourierId>
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-12T02:17:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-12T03:26:50</DeliveryFinishDate>
+    <DeliveryDate>2025-09-29T16:06:48</DeliveryDate>
+    <DeliveryFinishDate>2025-09-29T17:09:48</DeliveryFinishDate>
     <ShipmentType>SameDay</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
+    <DeliveryFinishType>Cancelled</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>29</DeliveryId>
-    <OrderId>6</OrderId>
-    <CourierId>364188702</CourierId>
-    <DeliveryMaxDistance>25</DeliveryMaxDistance>
-    <DeliveryDate>2025-11-01T01:36:50</DeliveryDate>
-    <DeliveryFinishDate>2025-11-01T02:55:50</DeliveryFinishDate>
-    <ShipmentType>SameDay</ShipmentType>
-    <DeliveryFinishType>Cancelled</DeliveryFinishType>
+    <OrderId>15</OrderId>
+    <CourierId>304807706</CourierId>
+    <DeliveryMaxDistance />
+    <DeliveryDate>2025-10-30T11:34:48</DeliveryDate>
+    <DeliveryFinishDate>2025-10-30T13:22:48</DeliveryFinishDate>
+    <ShipmentType>Economy</ShipmentType>
+    <DeliveryFinishType>Completed</DeliveryFinishType>
   </Delivery>
 </Deliveries>

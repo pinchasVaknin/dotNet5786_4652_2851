@@ -273,10 +273,15 @@ internal static class CourierManager
     }
 
     /// <summary>
-    /// Deletes a courier from the system.
+    /// Deletes the courier with the specified ID.
     /// </summary>
-    /// <param name="id">The ID of the courier to delete.</param>
-    /// <exception cref="BO.BlCourierHasActiveDeliveryException">Thrown if the courier has an active delivery.</exception>
+    /// <remarks>This method removes the courier from the system if they exist and have no associated
+    /// deliveries. If the courier does not exist or cannot be deleted due to associated deliveries, an exception is
+    /// thrown.</remarks>
+    /// <param name="id">The unique identifier of the courier to delete. Must be a valid courier ID.</param>
+    /// <exception cref="BO.BlDoesNotExistException">Thrown if the courier with the specified ID does not exist.</exception>
+    /// <exception cref="BO.BlCourierHasDeliveriesException">Thrown if the courier cannot be deleted because they have associated deliveries.</exception>
+    /// <exception cref="BO.BlXMLFileLoadCreateException">Thrown if there is an error loading or creating the underlying XML file during the delete operation.</exception>
     internal static void DeleteCourier(int id)
     {
         // Validate input
@@ -288,25 +293,20 @@ internal static class CourierManager
             DO.Courier? doCourier = s_dal.Courier.Read(id)
                 ?? throw new BO.BlDoesNotExistException($"Courier with ID={id} does not exist");
 
-            // Check if courier has an active delivery (FinishType == None)
-            bool hasActiveDelivery = s_dal.Delivery
-                .ReadAll(d => d.CourierId == id)
-                .Any(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
-
-            // Prevent deletion if active delivery exists
-            if (hasActiveDelivery)
-                throw new BO.BlCourierHasActiveDeliveryException($"Cannot delete courier {id}: courier has an active delivery.");
+            // Check if can delete
+            if (!CanDelete(id)) 
+                throw new BO.BlCourierHasDeliveriesException($"Cannot delete courier->{id} because they have associated deliveries.");
 
             // Delete courier
             s_dal.Courier.Delete(id);
         }
         catch (DO.DalDoesNotExistException ex)
         {
-            throw new BO.BlDoesNotExistException("Failed to delete courier", ex);
+            throw new BO.BlDoesNotExistException("Failed to delete courier {id}", ex);
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
-            throw new BO.BlXMLFileLoadCreateException("Failed to delete courier", ex);
+            throw new BO.BlXMLFileLoadCreateException("System file error during courier deletion", ex);
         }
 
         // Notify observers of the courier update
@@ -386,6 +386,37 @@ internal static class CourierManager
         );
 
     #endregion Conversions
+
+    //==================== Deletion Check ===================\\
+
+    #region DeletionCheck
+
+    /// <summary>
+    /// Determines whether a courier can be deleted based on their delivery assignments.
+    /// </summary>
+    /// <param name="courierId">The unique identifier of the courier to check.</param>
+    /// <returns><see langword="true"/> if the courier can be deleted (i.e., they have no associated deliveries); otherwise, <see
+    /// langword="false"/>.</returns>
+    /// <exception cref="BO.BlXMLFileLoadCreateException">Thrown if an error occurs while attempting to load or access the underlying data store.</exception>
+    public static bool CanDelete(int courierId)
+    {
+        try
+        {
+            // Check if there are ANY deliveries associated with this courier
+            bool hasDeliveries = s_dal.Delivery
+                .ReadAll(d => d.CourierId == courierId) // Returns IEnumerable
+                .Any();                                 //stops at the first match
+
+            // Can delete only if no deliveries
+            return !hasDeliveries;
+        }
+        catch (DO.DalXMLFileLoadCreateException ex)
+        {
+            throw new BO.BlXMLFileLoadCreateException("Failed to validate courier deletion capability", ex);
+        }
+    }
+
+    #endregion DeletionCheck
 
     //==================== Periodic Updates ===================\\
 

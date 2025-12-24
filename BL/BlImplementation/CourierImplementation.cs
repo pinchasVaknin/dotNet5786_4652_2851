@@ -111,6 +111,24 @@ internal class CourierImplementation : ICourier
 
     #endregion CRUD Operations
 
+    //==================== Deletion Check ===================\\
+
+    #region Deletion Check
+
+    /// <summary>
+    /// Determines whether the specified courier can be deleted.
+    /// </summary>
+    /// <remarks>This method delegates the deletion check to the <see cref="CourierManager.CanDelete"/>
+    /// method. Ensure that the provided <paramref name="courierId"/> corresponds to a valid courier.</remarks>
+    /// <param name="courierId">The unique identifier of the courier to check.</param>
+    /// <returns><see langword="true"/> if the courier can be deleted; otherwise, <see langword="false"/>.</returns>
+    public bool IsCourierDeletable(int courierId)
+    {
+        return CourierManager.CanDelete(courierId);
+    }
+
+    #endregion Deletion Check
+
     //==================== Observer Implementation ===================\\
 
     #region Observer Implementation

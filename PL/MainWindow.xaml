@@ -109,23 +109,28 @@
 
                         <Label Grid.Row="1" Grid.Column="0" Content="Max Air Distance:" VerticalAlignment="Center"/>
                         <TextBox Grid.Row="1" Grid.Column="1" Margin="0,3"
-                                 Text="{Binding Configuration.MaxAirDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding Configuration.MaxAirDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource NumericStyle}"/>
 
                         <Label Grid.Row="2" Grid.Column="0" Content="Avg Car Speed (km/h):" VerticalAlignment="Center"/>
                         <TextBox Grid.Row="2" Grid.Column="1" Margin="0,3"
-                                 Text="{Binding Configuration.AvgCarSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding Configuration.AvgCarSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource NumericStyle}"/>
 
                         <Label Grid.Row="3" Grid.Column="0" Content="Avg Motorcycle Speed (km/h):" VerticalAlignment="Center"/>
                         <TextBox Grid.Row="3" Grid.Column="1" Margin="0,3"
-                                 Text="{Binding Configuration.AvgMotorcycleSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding Configuration.AvgMotorcycleSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource NumericStyle}"/>
 
                         <Label Grid.Row="4" Grid.Column="0" Content="Avg Bicycle Speed (km/h):" VerticalAlignment="Center"/>
                         <TextBox Grid.Row="4" Grid.Column="1" Margin="0,3"
-                                 Text="{Binding Configuration.AvgBicycleSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding Configuration.AvgBicycleSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource NumericStyle}"/>
 
                         <Label Grid.Row="5" Grid.Column="0" Content="Avg Walking Speed (km/h):" VerticalAlignment="Center"/>
                         <TextBox Grid.Row="5" Grid.Column="1" Margin="0,3"
-                                 Text="{Binding Configuration.AvgWalkSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding Configuration.AvgWalkSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource NumericStyle}"/>
 
                         <Label Grid.Row="6" Grid.Column="0" Content="Max Delivery Time:" VerticalAlignment="Center"/>
                         <TextBox Grid.Row="6" Grid.Column="1" Margin="0,3"

@@ -15,6 +15,7 @@
         <pl:ConvertVehicleTypeToColor x:Key="VehicleColorConverter"/>
         <pl:ConvertDeleteToColor x:Key="DeleteColorConverter"/>
         <pl:ConvertDeleteToEnabled x:Key="DeleteEnabledConverter"/>
+        
     </Window.Resources>
     
     <!--External Grid-->

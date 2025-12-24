@@ -1,8 +1,8 @@
-﻿using System;
+﻿using BlApi;
+using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
-
 namespace PL;
 
 /// <summary>
@@ -72,18 +72,22 @@ public class ConvertDeleteToColor : IValueConverter
 /// </summary>
 public class ConvertDeleteToEnabled : IValueConverter
 {
+    private static readonly IBl s_bl = Factory.Get();
+
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is BO.CourierInList courier)
         {
-            bool cannotDelete = courier.DeliveriesInTime > 0 ||
-                                courier.DeliveriesOverTime > 0 ||
-                                courier.OrderIdInHandle != null;
-
-            if (cannotDelete) return false;
+            try
+            {
+                return s_bl.Courier.IsCourierDeletable(courier.CourierId);
+            }
+            catch
+            {
+                return false;
+            }
         }
-
-        return true;
+        return false;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
