@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
   <NextOrderId>50</NextOrderId>
-  <NextDeliveryId>31</NextDeliveryId>
-  <Clock>25/12/2025 17:57:13</Clock>
+  <NextDeliveryId>30</NextDeliveryId>
+  <Clock>26/12/2025 0:11:55</Clock>
   <AdminId>333333333</AdminId>
-  <AdminPassword>ChangeMe!1234</AdminPassword>
+  <AdminPassword>ChangeMe</AdminPassword>
   <CompanyAddress>Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem</CompanyAddress>
   <Latitude>31.7479</Latitude>
   <Longitude>35.188</Longitude>

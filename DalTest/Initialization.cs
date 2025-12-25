@@ -344,11 +344,26 @@ public static class Initialization
     /// <summary>
     /// Generates and stores Delivery entities by matching Orders with Couriers.
     /// </summary>
+    /// <summary>
+    /// Initializes delivery data based on existing orders and couriers.
+    /// Creates a mix of active (in-progress) and completed deliveries.
+    /// </summary>
+    /// <summary>
+    /// Initializes delivery data based on existing orders and couriers.
+    /// Creates a mix of active (in-progress) and completed deliveries.
+    /// </summary>
+    /// <summary>
+    /// Initializes delivery data based on existing orders and couriers.
+    /// Creates a mix of active (in-progress) and completed deliveries.
+    /// </summary>
     private static void createDeliverys()
     {
         // Fetch current couriers and orders; if either is empty, there is nothing to do
         var couriers = s_dal!.Courier.ReadAll();
         var orders = s_dal.Order.ReadAll();
+
+        // Get only active couriers
+        var activeCouriers = couriers.Where(c => c.CourierEnabled).ToList();
 
         // Check if empty
         if (!couriers.Any() || !orders.Any())
@@ -371,8 +386,42 @@ public static class Initialization
             (orderIndexes[i], orderIndexes[j]) = (orderIndexes[j], orderIndexes[i]);
         }
 
-        // Create deliveries for the first `targetDeliveries` shuffled orders
-        for (int k = 0; k < targetDeliveries; k++)
+        // Create deliveries for the first `20% targetDeliveries` shuffled orders
+        for (int k = 0; k < targetDeliveries * 0.2; k++)
+        {
+            // Get the order
+            var order = orders.ElementAt(orderIndexes[k]);
+
+            // Pick a random active courier for this delivery
+            if (!activeCouriers.Any()) break;
+
+            // If no active couriers, skip
+            var courier = activeCouriers.ElementAt(s_rand.Next(activeCouriers.Count()));
+
+            // Base timestamps
+            DateTime deliveryDate = order.OrderDate.AddHours(s_rand.Next(0, 24)).AddMinutes(s_rand.Next(0, 60));
+
+            // Sample randomly from enum
+            DO.ShipmentType shipmentType = shipmentTypes[s_rand.Next(shipmentTypes.Length)];
+
+            // Max distance policy used for later checks
+            double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dal.Config.MaxAirDistance : null;
+
+            // Persist via DAL (DeliveryImplementation will assign the running deliveryId)
+            s_dal.Delivery.Create(new DO.Delivery(
+                DeliveryId: 0,                    // Next Delivery Id
+                OrderId: order.OrderId,           // link order
+                CourierId: courier.CourierId,     // link courier
+                DeliveryMaxDistance: maxDistance, // per delivery
+                DeliveryDate: deliveryDate,
+                DeliveryFinishDate: DateTime.MinValue,
+                ShipmentType: shipmentType,
+                DeliveryFinishType: DeliveryFinishType.None
+            ));
+        }
+
+        // Create deliveries for the first `80% targetDeliveries` shuffled orders
+        for (int k = (int)(targetDeliveries * 0.2); k < targetDeliveries; k++)
         {
             var order = orders.ElementAt(orderIndexes[k]);
 
@@ -411,6 +460,7 @@ public static class Initialization
         }
     }
 
+
     /// <summary>
     /// Initializes system configuration variables.
     /// </summary>
@@ -421,7 +471,7 @@ public static class Initialization
 
         // Admin credentials
         s_dal.Config.AdminId = 333333333;               // admin id
-        s_dal.Config.AdminPassword = "ChangeMe!1234";   // password
+        s_dal.Config.AdminPassword = "ChangeMe";   // password
 
         // Company address and its geo-coordinates
         s_dal.Config.CompanyAddress = "Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem"; // textual address

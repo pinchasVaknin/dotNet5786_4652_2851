@@ -52,8 +52,6 @@ internal class Program
             Console.Clear();
         }
     }
-
-
     // -------------------- Menus -------------------- \\
 
     /// <summary>

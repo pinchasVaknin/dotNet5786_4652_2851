@@ -311,7 +311,7 @@ internal static class CourierManager
                 ?? throw new BO.BlDoesNotExistException($"Courier with ID={id} does not exist");
 
             // Check if can delete
-            if (!CanDelete(id)) 
+            if (!CanDelete(id))
                 throw new BO.BlCourierHasDeliveriesException($"Cannot delete courier->{id} because they have associated deliveries.");
 
             // Delete courier
@@ -468,28 +468,48 @@ internal static class CourierManager
     {
         try
         {
-            // Find last closed delivery
+            bool hasActiveDelivery = s_dal.Delivery
+                .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType == DO.DeliveryFinishType.None)
+                .Any();
+
+            if (hasActiveDelivery)
+            {
+                if (!courier.CourierEnabled)
+                {
+                    var activeCourier = courier with { CourierEnabled = true };
+                    s_dal.Courier.Update(activeCourier);
+                    Observers.NotifyListUpdated();
+                    Observers.NotifyItemUpdated(courier.CourierId);
+                }
+                return;
+            }
+
             var lastClosedDelivery = s_dal.Delivery
                 .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType != DO.DeliveryFinishType.None)
                 .OrderByDescending(d => d.DeliveryFinishDate)
                 .FirstOrDefault();
 
-            if (lastClosedDelivery is null) return;
-
-            // Check time passed
             var config = AdminManager.GetConfig();
-            var timePassed = currentClock - lastClosedDelivery.DeliveryFinishDate;
-            bool stillActive = timePassed < config.UnactiveTimeRnge;
+            bool shouldBeActive;
 
-            // Update if status changed
-            if (courier.CourierEnabled != stillActive)
+            if (lastClosedDelivery is null)
             {
-                var updatedCourier = courier with { CourierEnabled = stillActive };
+                var timeSinceStart = currentClock - courier.SeniorityOfCourier;
+                shouldBeActive = timeSinceStart < config.UnactiveTimeRnge;
+            }
+            else
+            {
+                var timePassed = currentClock - lastClosedDelivery.DeliveryFinishDate;
+                shouldBeActive = timePassed < config.UnactiveTimeRnge;
+            }
+
+            if (courier.CourierEnabled != shouldBeActive)
+            {
+                var updatedCourier = courier with { CourierEnabled = shouldBeActive };
                 s_dal.Courier.Update(updatedCourier);
 
-                // Notify observers of the courier update
-                Observers.NotifyListUpdated(); //stage 5
-                Observers.NotifyItemUpdated(courier.CourierId); //stage 5
+                Observers.NotifyListUpdated();
+                Observers.NotifyItemUpdated(courier.CourierId);
             }
         }
         catch (DO.DalXMLFileLoadCreateException ex)
