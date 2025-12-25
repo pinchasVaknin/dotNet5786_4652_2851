@@ -159,18 +159,35 @@ internal static class CourierManager
                 throw new BO.BlDoesNotExistException($"Courier with ID={courierId} does not exist");
 
             // Convert to full BO to reuse logic (calculations)
-            var boCourier = ConvertDoToBoCourier(doCourier);
+            var deliveries = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.CourierId);
 
+            // Stats calculation
+            var completedDeliveries = deliveries
+                .Where(d => d.DeliveryFinishType == DO.DeliveryFinishType.Completed)
+                .ToList();
+
+            // On-time vs Late calculation
+            var maxRange = s_dal.Config.MaxDelTimeRnge;
+            int onTime = completedDeliveries.Count(d => d.DeliveryFinishDate - d.DeliveryDate <= maxRange);
+            int late = completedDeliveries.Count - onTime;
+
+            // Active Order
+            var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
+
+            // Get active order ID if any
+            int? activeOrderId = activeDelivery?.OrderId;
+
+            // Build and return CourierInList
             return new BO.CourierInList
             {
-                CourierId = boCourier.CourierId,
-                CourierFullName = boCourier.CourierFullName,
-                CourierIsActive = boCourier.CourierIsActive,
-                VehicleType = boCourier.VehicleType,
-                StartWorkDate = boCourier.StartWorkDate,
-                DeliveriesInTime = boCourier.TotalOnTimeDeliveries,
-                DeliveriesOverTime = boCourier.TotalLateDeliveries,
-                OrderIdInHandle = boCourier.OrderInProgress?.OrderId
+                CourierId = doCourier.CourierId,
+                CourierFullName = doCourier.CourierFullName,
+                CourierIsActive = doCourier.CourierEnabled,
+                VehicleType = (BO.VehicleType)doCourier.CourierVehicleType,
+                StartWorkDate = doCourier.SeniorityOfCourier,
+                DeliveriesInTime = onTime,
+                DeliveriesOverTime = late,
+                OrderIdInHandle = activeOrderId
             };
         }
         catch (DO.DalXMLFileLoadCreateException ex)

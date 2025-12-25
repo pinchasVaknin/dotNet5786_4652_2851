@@ -1,363 +1,315 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfCourier xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Courier>
-    <CourierId>239464707</CourierId>
+    <CourierId>245183399</CourierId>
     <CourierFullName>David Cohen</CourierFullName>
-    <CourierCellPhone>055-3202135</CourierCellPhone>
+    <CourierCellPhone>056-9567875</CourierCellPhone>
     <CourierEmail>david.cohen@courier.com</CourierEmail>
-    <CourierPassword>pw4221!Y</CourierPassword>
-    <CourierAddress>Agripas, St 145</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>1.615</MaxCourierDistance>
-    <SeniorityOfCourier>2025-09-25T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Foot</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>330037124</CourierId>
-    <CourierFullName>Tamar Avi</CourierFullName>
-    <CourierCellPhone>055-1432005</CourierCellPhone>
-    <CourierEmail>tamar.avi@courier.com</CourierEmail>
-    <CourierPassword>pw4933!E</CourierPassword>
-    <CourierAddress>Bialik, St 162</CourierAddress>
+    <CourierPassword>pw4473!B</CourierPassword>
+    <CourierAddress>King George, St 51</CourierAddress>
     <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance>10.522</MaxCourierDistance>
-    <SeniorityOfCourier>2022-05-22T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Bicycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>215478518</CourierId>
-    <CourierFullName>Avi Shapiro</CourierFullName>
-    <CourierCellPhone>056-7362072</CourierCellPhone>
-    <CourierEmail>avi.shapiro@courier.com</CourierEmail>
-    <CourierPassword>pw1602!Z</CourierPassword>
-    <CourierAddress>Jabotinsky, St 182</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>1.352</MaxCourierDistance>
-    <SeniorityOfCourier>2023-03-28T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Foot</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>398131206</CourierId>
-    <CourierFullName>Noa Ben-David</CourierFullName>
-    <CourierCellPhone>053-6955488</CourierCellPhone>
-    <CourierEmail>noa.ben-david@courier.com</CourierEmail>
-    <CourierPassword>pw8770!C</CourierPassword>
-    <CourierAddress>Agripas, St 160</CourierAddress>
-    <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance>3.298</MaxCourierDistance>
-    <SeniorityOfCourier>2023-05-25T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Foot</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>274745799</CourierId>
-    <CourierFullName>Eitan Katz</CourierFullName>
-    <CourierCellPhone>055-9937070</CourierCellPhone>
-    <CourierEmail>eitan.katz@courier.com</CourierEmail>
-    <CourierPassword>pw3400!I</CourierPassword>
-    <CourierAddress>Begin, St 125</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>10.774</MaxCourierDistance>
-    <SeniorityOfCourier>2022-02-17T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Bicycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>309765235</CourierId>
-    <CourierFullName>Dan Biton</CourierFullName>
-    <CourierCellPhone>058-7144676</CourierCellPhone>
-    <CourierEmail>dan.biton@courier.com</CourierEmail>
-    <CourierPassword>pw4264!S</CourierPassword>
-    <CourierAddress>Jabotinsky, St 189</CourierAddress>
-    <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance>18.245</MaxCourierDistance>
-    <SeniorityOfCourier>2023-08-13T00:00:00</SeniorityOfCourier>
+    <MaxCourierDistance xsi:nil="true" />
+    <SeniorityOfCourier>2023-05-27T00:00:00</SeniorityOfCourier>
     <CourierVehicleType>Car</CourierVehicleType>
   </Courier>
   <Courier>
-    <CourierId>231517263</CourierId>
-    <CourierFullName>Tal Azoulay</CourierFullName>
-    <CourierCellPhone>051-3714690</CourierCellPhone>
-    <CourierEmail>tal.azoulay@courier.com</CourierEmail>
-    <CourierPassword>pw2816!F</CourierPassword>
-    <CourierAddress>Hillel, St 148</CourierAddress>
-    <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2024-03-01T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Foot</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>203195796</CourierId>
-    <CourierFullName>Yael Gabay</CourierFullName>
-    <CourierCellPhone>051-5388113</CourierCellPhone>
-    <CourierEmail>yael.gabay@courier.com</CourierEmail>
-    <CourierPassword>pw3670!D</CourierPassword>
-    <CourierAddress>Bialik, St 66</CourierAddress>
-    <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance>1.684</MaxCourierDistance>
-    <SeniorityOfCourier>2022-04-17T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Foot</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>221104907</CourierId>
-    <CourierFullName>Gil Aharoni</CourierFullName>
-    <CourierCellPhone>057-3419929</CourierCellPhone>
-    <CourierEmail>gil.aharoni@courier.com</CourierEmail>
-    <CourierPassword>pw8933!G</CourierPassword>
-    <CourierAddress>Herzl, St 46</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2023-02-27T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Car</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>257268077</CourierId>
-    <CourierFullName>Chen Mizrahi</CourierFullName>
-    <CourierCellPhone>054-6015312</CourierCellPhone>
-    <CourierEmail>chen.mizrahi@courier.com</CourierEmail>
-    <CourierPassword>pw4103!A</CourierPassword>
-    <CourierAddress>Bialik, St 44</CourierAddress>
-    <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2022-03-21T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Foot</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>343623167</CourierId>
-    <CourierFullName>Dani Eliyahu</CourierFullName>
-    <CourierCellPhone>055-1948721</CourierCellPhone>
-    <CourierEmail>dani.eliyahu@courier.com</CourierEmail>
-    <CourierPassword>pw8795!C</CourierPassword>
-    <CourierAddress>Hillel, St 52</CourierAddress>
-    <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance>26.729</MaxCourierDistance>
-    <SeniorityOfCourier>2024-11-14T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Car</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>398659236</CourierId>
+    <CourierId>376794139</CourierId>
     <CourierFullName>Sarah Levi</CourierFullName>
-    <CourierCellPhone>057-1682858</CourierCellPhone>
+    <CourierCellPhone>058-2728721</CourierCellPhone>
     <CourierEmail>sarah.levi@courier.com</CourierEmail>
-    <CourierPassword>pw6392!S</CourierPassword>
-    <CourierAddress>Ben Yehuda, St 29</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>2.608</MaxCourierDistance>
-    <SeniorityOfCourier>2024-12-18T00:00:00</SeniorityOfCourier>
+    <CourierPassword>pw8818!V</CourierPassword>
+    <CourierAddress>Hillel, St 16</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>2.429</MaxCourierDistance>
+    <SeniorityOfCourier>2023-08-18T00:00:00</SeniorityOfCourier>
     <CourierVehicleType>Foot</CourierVehicleType>
   </Courier>
   <Courier>
-    <CourierId>302397103</CourierId>
-    <CourierFullName>Rachel Mizrachi</CourierFullName>
-    <CourierCellPhone>054-5635375</CourierCellPhone>
-    <CourierEmail>rachel.mizrachi@courier.com</CourierEmail>
-    <CourierPassword>pw7987!G</CourierPassword>
-    <CourierAddress>Jabotinsky, St 126</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2024-02-25T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Car</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>290926947</CourierId>
-    <CourierFullName>Yossi Peretz</CourierFullName>
-    <CourierCellPhone>051-2686600</CourierCellPhone>
-    <CourierEmail>yossi.peretz@courier.com</CourierEmail>
-    <CourierPassword>pw6841!X</CourierPassword>
-    <CourierAddress>Aza, St 104</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>26.778</MaxCourierDistance>
-    <SeniorityOfCourier>2022-05-09T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Car</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>227576183</CourierId>
-    <CourierFullName>Maya Friedman</CourierFullName>
-    <CourierCellPhone>053-9648606</CourierCellPhone>
-    <CourierEmail>maya.friedman@courier.com</CourierEmail>
-    <CourierPassword>pw9489!W</CourierPassword>
-    <CourierAddress>King George, St 62</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2023-07-08T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Bicycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>237666878</CourierId>
-    <CourierFullName>Ron Malka</CourierFullName>
-    <CourierCellPhone>050-9829264</CourierCellPhone>
-    <CourierEmail>ron.malka@courier.com</CourierEmail>
-    <CourierPassword>pw2086!Q</CourierPassword>
-    <CourierAddress>Bialik, St 9</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2023-02-09T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Car</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>361166982</CourierId>
-    <CourierFullName>Amir Ohana</CourierFullName>
-    <CourierCellPhone>051-9507097</CourierCellPhone>
-    <CourierEmail>amir.ohana@courier.com</CourierEmail>
-    <CourierPassword>pw2806!Q</CourierPassword>
-    <CourierAddress>Agripas, St 38</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>6.591</MaxCourierDistance>
-    <SeniorityOfCourier>2023-11-16T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Bicycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>304807706</CourierId>
-    <CourierFullName>Hadas Levy</CourierFullName>
-    <CourierCellPhone>055-9676733</CourierCellPhone>
-    <CourierEmail>hadas.levy@courier.com</CourierEmail>
-    <CourierPassword>pw2209!S</CourierPassword>
-    <CourierAddress>Bialik, St 74</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>3.921</MaxCourierDistance>
-    <SeniorityOfCourier>2022-02-25T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Foot</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>391481638</CourierId>
-    <CourierFullName>Itai Baruch</CourierFullName>
-    <CourierCellPhone>058-9504383</CourierCellPhone>
-    <CourierEmail>itai.baruch@courier.com</CourierEmail>
-    <CourierPassword>pw6692!B</CourierPassword>
-    <CourierAddress>Hillel, St 10</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>2.703</MaxCourierDistance>
-    <SeniorityOfCourier>2023-08-22T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Foot</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>385710662</CourierId>
-    <CourierFullName>Ayelet Saban</CourierFullName>
-    <CourierCellPhone>053-2608679</CourierCellPhone>
-    <CourierEmail>ayelet.saban@courier.com</CourierEmail>
-    <CourierPassword>pw6324!T</CourierPassword>
-    <CourierAddress>Agripas, St 4</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>24.257</MaxCourierDistance>
-    <SeniorityOfCourier>2022-10-23T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>275085469</CourierId>
-    <CourierFullName>Eli Goldberg</CourierFullName>
-    <CourierCellPhone>056-1309143</CourierCellPhone>
-    <CourierEmail>eli.goldberg@courier.com</CourierEmail>
-    <CourierPassword>pw4250!L</CourierPassword>
-    <CourierAddress>Ben Yehuda, St 56</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2025-10-02T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>280932476</CourierId>
-    <CourierFullName>Shira Rosenberg</CourierFullName>
-    <CourierCellPhone>050-6518814</CourierCellPhone>
-    <CourierEmail>shira.rosenberg@courier.com</CourierEmail>
-    <CourierPassword>pw8166!L</CourierPassword>
-    <CourierAddress>King George, St 185</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>10.138</MaxCourierDistance>
-    <SeniorityOfCourier>2023-12-26T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>273512274</CourierId>
-    <CourierFullName>Michal Dahan</CourierFullName>
-    <CourierCellPhone>058-8153181</CourierCellPhone>
-    <CourierEmail>michal.dahan@courier.com</CourierEmail>
-    <CourierPassword>pw8963!Y</CourierPassword>
-    <CourierAddress>Ben Yehuda, St 69</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2022-03-28T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>339560848</CourierId>
-    <CourierFullName>Nir Ben-Ami</CourierFullName>
-    <CourierCellPhone>054-4901255</CourierCellPhone>
-    <CourierEmail>nir.ben-ami@courier.com</CourierEmail>
-    <CourierPassword>pw2425!W</CourierPassword>
-    <CourierAddress>Jabotinsky, St 172</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>14.371</MaxCourierDistance>
-    <SeniorityOfCourier>2023-02-01T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>377871619</CourierId>
-    <CourierFullName>Liora Sabag</CourierFullName>
-    <CourierCellPhone>057-4166518</CourierCellPhone>
-    <CourierEmail>liora.sabag@courier.com</CourierEmail>
-    <CourierPassword>pw4139!V</CourierPassword>
-    <CourierAddress>Aza, St 10</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>16.712</MaxCourierDistance>
-    <SeniorityOfCourier>2022-06-11T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>283890256</CourierId>
-    <CourierFullName>Oren Edri</CourierFullName>
-    <CourierCellPhone>053-9256842</CourierCellPhone>
-    <CourierEmail>oren.edri@courier.com</CourierEmail>
-    <CourierPassword>pw4244!Y</CourierPassword>
-    <CourierAddress>Herzl, St 28</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>17</MaxCourierDistance>
-    <SeniorityOfCourier>2024-10-04T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>393196804</CourierId>
-    <CourierFullName>Uri Shahar</CourierFullName>
-    <CourierCellPhone>052-4281343</CourierCellPhone>
-    <CourierEmail>uri.shahar@courier.com</CourierEmail>
-    <CourierPassword>pw8944!F</CourierPassword>
-    <CourierAddress>Agripas, St 151</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>16.846</MaxCourierDistance>
-    <SeniorityOfCourier>2023-05-05T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>267997900</CourierId>
-    <CourierFullName>Roni Kadosh</CourierFullName>
-    <CourierCellPhone>058-6046012</CourierCellPhone>
-    <CourierEmail>roni.kadosh@courier.com</CourierEmail>
-    <CourierPassword>pw3028!M</CourierPassword>
-    <CourierAddress>Ben Yehuda, St 94</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2022-07-12T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Bicycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>229997769</CourierId>
-    <CourierFullName>Shani Ben-Haim</CourierFullName>
-    <CourierCellPhone>058-7171342</CourierCellPhone>
-    <CourierEmail>shani.ben-haim@courier.com</CourierEmail>
-    <CourierPassword>pw7891!G</CourierPassword>
-    <CourierAddress>Ben Yehuda, St 16</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance>20.396</MaxCourierDistance>
-    <SeniorityOfCourier>2022-07-03T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>227301057</CourierId>
+    <CourierId>255160182</CourierId>
     <CourierFullName>Moshe Israeli</CourierFullName>
-    <CourierCellPhone>057-5290494</CourierCellPhone>
+    <CourierCellPhone>057-7341152</CourierCellPhone>
     <CourierEmail>moshe.israeli@courier.com</CourierEmail>
-    <CourierPassword>pw8752!J</CourierPassword>
-    <CourierAddress>Agripas, St 30</CourierAddress>
+    <CourierPassword>pw9571!S</CourierPassword>
+    <CourierAddress>Hillel, St 199</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>19.116</MaxCourierDistance>
+    <SeniorityOfCourier>2022-08-05T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>211633526</CourierId>
+    <CourierFullName>Rachel Mizrachi</CourierFullName>
+    <CourierCellPhone>054-6359095</CourierCellPhone>
+    <CourierEmail>rachel.mizrachi@courier.com</CourierEmail>
+    <CourierPassword>pw3812!Z</CourierPassword>
+    <CourierAddress>Begin, St 70</CourierAddress>
     <CourierEnabled>true</CourierEnabled>
     <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2023-02-09T00:00:00</SeniorityOfCourier>
+    <SeniorityOfCourier>2022-07-14T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Bicycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>307445880</CourierId>
+    <CourierFullName>Noa Ben-David</CourierFullName>
+    <CourierCellPhone>052-1171861</CourierCellPhone>
+    <CourierEmail>noa.ben-david@courier.com</CourierEmail>
+    <CourierPassword>pw2555!E</CourierPassword>
+    <CourierAddress>Herzl, St 68</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>15.264</MaxCourierDistance>
+    <SeniorityOfCourier>2025-10-06T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Car</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>313702695</CourierId>
+    <CourierFullName>Eitan Katz</CourierFullName>
+    <CourierCellPhone>056-9209601</CourierCellPhone>
+    <CourierEmail>eitan.katz@courier.com</CourierEmail>
+    <CourierPassword>pw9500!W</CourierPassword>
+    <CourierAddress>Aza, St 184</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>4.844</MaxCourierDistance>
+    <SeniorityOfCourier>2025-01-23T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Bicycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>207270955</CourierId>
+    <CourierFullName>Maya Friedman</CourierFullName>
+    <CourierCellPhone>052-7759430</CourierCellPhone>
+    <CourierEmail>maya.friedman@courier.com</CourierEmail>
+    <CourierPassword>pw4336!Z</CourierPassword>
+    <CourierAddress>Agripas, St 186</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>2.69</MaxCourierDistance>
+    <SeniorityOfCourier>2023-01-10T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Foot</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>245232497</CourierId>
+    <CourierFullName>Eli Goldberg</CourierFullName>
+    <CourierCellPhone>056-7912405</CourierCellPhone>
+    <CourierEmail>eli.goldberg@courier.com</CourierEmail>
+    <CourierPassword>pw6459!Z</CourierPassword>
+    <CourierAddress>Jabotinsky, St 52</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>1.494</MaxCourierDistance>
+    <SeniorityOfCourier>2023-11-26T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Foot</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>347093345</CourierId>
+    <CourierFullName>Shira Rosenberg</CourierFullName>
+    <CourierCellPhone>054-2507915</CourierCellPhone>
+    <CourierEmail>shira.rosenberg@courier.com</CourierEmail>
+    <CourierPassword>pw4689!N</CourierPassword>
+    <CourierAddress>Begin, St 162</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>19.192</MaxCourierDistance>
+    <SeniorityOfCourier>2023-02-17T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>361664602</CourierId>
+    <CourierFullName>Dan Biton</CourierFullName>
+    <CourierCellPhone>058-4228654</CourierCellPhone>
+    <CourierEmail>dan.biton@courier.com</CourierEmail>
+    <CourierPassword>pw7319!V</CourierPassword>
+    <CourierAddress>Bialik, St 117</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>1.695</MaxCourierDistance>
+    <SeniorityOfCourier>2024-06-10T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Foot</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>309337923</CourierId>
+    <CourierFullName>Tal Azoulay</CourierFullName>
+    <CourierCellPhone>053-4936157</CourierCellPhone>
+    <CourierEmail>tal.azoulay@courier.com</CourierEmail>
+    <CourierPassword>pw3027!A</CourierPassword>
+    <CourierAddress>Agripas, St 198</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>9.286</MaxCourierDistance>
+    <SeniorityOfCourier>2024-03-11T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>267389751</CourierId>
+    <CourierFullName>Ron Malka</CourierFullName>
+    <CourierCellPhone>051-6498409</CourierCellPhone>
+    <CourierEmail>ron.malka@courier.com</CourierEmail>
+    <CourierPassword>pw5383!E</CourierPassword>
+    <CourierAddress>Aza, St 163</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>23.264</MaxCourierDistance>
+    <SeniorityOfCourier>2024-07-14T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>382076419</CourierId>
+    <CourierFullName>Michal Dahan</CourierFullName>
+    <CourierCellPhone>058-1486864</CourierCellPhone>
+    <CourierEmail>michal.dahan@courier.com</CourierEmail>
+    <CourierPassword>pw2652!T</CourierPassword>
+    <CourierAddress>Ben Yehuda, St 138</CourierAddress>
+    <CourierEnabled>false</CourierEnabled>
+    <MaxCourierDistance>10.283</MaxCourierDistance>
+    <SeniorityOfCourier>2025-03-08T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>291523634</CourierId>
+    <CourierFullName>Amir Ohana</CourierFullName>
+    <CourierCellPhone>050-5757446</CourierCellPhone>
+    <CourierEmail>amir.ohana@courier.com</CourierEmail>
+    <CourierPassword>pw6626!M</CourierPassword>
+    <CourierAddress>Aza, St 107</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>20.522</MaxCourierDistance>
+    <SeniorityOfCourier>2023-05-24T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Car</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>215841743</CourierId>
+    <CourierFullName>Yael Gabay</CourierFullName>
+    <CourierCellPhone>058-7313711</CourierCellPhone>
+    <CourierEmail>yael.gabay@courier.com</CourierEmail>
+    <CourierPassword>pw8949!Y</CourierPassword>
+    <CourierAddress>Jabotinsky, St 197</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance xsi:nil="true" />
+    <SeniorityOfCourier>2022-08-07T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>353757769</CourierId>
+    <CourierFullName>Gil Aharoni</CourierFullName>
+    <CourierCellPhone>056-6016438</CourierCellPhone>
+    <CourierEmail>gil.aharoni@courier.com</CourierEmail>
+    <CourierPassword>pw9468!J</CourierPassword>
+    <CourierAddress>Ben Yehuda, St 179</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance xsi:nil="true" />
+    <SeniorityOfCourier>2022-06-07T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Car</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>371361100</CourierId>
+    <CourierFullName>Nir Ben-Ami</CourierFullName>
+    <CourierCellPhone>053-1328036</CourierCellPhone>
+    <CourierEmail>nir.ben-ami@courier.com</CourierEmail>
+    <CourierPassword>pw1590!L</CourierPassword>
+    <CourierAddress>Bialik, St 38</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>3.031</MaxCourierDistance>
+    <SeniorityOfCourier>2024-12-13T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Foot</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>313764410</CourierId>
+    <CourierFullName>Itai Baruch</CourierFullName>
+    <CourierCellPhone>057-2715424</CourierCellPhone>
+    <CourierEmail>itai.baruch@courier.com</CourierEmail>
+    <CourierPassword>pw6621!Y</CourierPassword>
+    <CourierAddress>Jaffa, St 3</CourierAddress>
+    <CourierEnabled>false</CourierEnabled>
+    <MaxCourierDistance xsi:nil="true" />
+    <SeniorityOfCourier>2024-04-19T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Foot</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>201599792</CourierId>
+    <CourierFullName>Chen Mizrahi</CourierFullName>
+    <CourierCellPhone>055-8232643</CourierCellPhone>
+    <CourierEmail>chen.mizrahi@courier.com</CourierEmail>
+    <CourierPassword>pw8676!R</CourierPassword>
+    <CourierAddress>Aza, St 18</CourierAddress>
+    <CourierEnabled>false</CourierEnabled>
+    <MaxCourierDistance xsi:nil="true" />
+    <SeniorityOfCourier>2024-12-26T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Foot</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>347166288</CourierId>
+    <CourierFullName>Liora Sabag</CourierFullName>
+    <CourierCellPhone>051-9813195</CourierCellPhone>
+    <CourierEmail>liora.sabag@courier.com</CourierEmail>
+    <CourierPassword>pw7864!D</CourierPassword>
+    <CourierAddress>King George, St 167</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>33.424</MaxCourierDistance>
+    <SeniorityOfCourier>2025-02-10T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Car</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>208969469</CourierId>
+    <CourierFullName>Oren Edri</CourierFullName>
+    <CourierCellPhone>051-1725635</CourierCellPhone>
+    <CourierEmail>oren.edri@courier.com</CourierEmail>
+    <CourierPassword>pw8924!N</CourierPassword>
+    <CourierAddress>Bialik, St 59</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>1.953</MaxCourierDistance>
+    <SeniorityOfCourier>2022-03-17T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Foot</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>356264776</CourierId>
+    <CourierFullName>Ayelet Saban</CourierFullName>
+    <CourierCellPhone>058-1399133</CourierCellPhone>
+    <CourierEmail>ayelet.saban@courier.com</CourierEmail>
+    <CourierPassword>pw3349!G</CourierPassword>
+    <CourierAddress>Herzl, St 182</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>18.666</MaxCourierDistance>
+    <SeniorityOfCourier>2022-05-08T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>253907243</CourierId>
+    <CourierFullName>Uri Shahar</CourierFullName>
+    <CourierCellPhone>050-6039291</CourierCellPhone>
+    <CourierEmail>uri.shahar@courier.com</CourierEmail>
+    <CourierPassword>pw7188!Q</CourierPassword>
+    <CourierAddress>Bialik, St 61</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>3.247</MaxCourierDistance>
+    <SeniorityOfCourier>2024-10-11T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Foot</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>341509685</CourierId>
+    <CourierFullName>Yossi Peretz</CourierFullName>
+    <CourierCellPhone>053-3731932</CourierCellPhone>
+    <CourierEmail>yossi.peretz@courier.com</CourierEmail>
+    <CourierPassword>pw9658!O</CourierPassword>
+    <CourierAddress>Agripas, St 83</CourierAddress>
+    <CourierEnabled>false</CourierEnabled>
+    <MaxCourierDistance xsi:nil="true" />
+    <SeniorityOfCourier>2024-02-13T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>327433342</CourierId>
+    <CourierFullName>Dani Eliyahu</CourierFullName>
+    <CourierCellPhone>057-6065564</CourierCellPhone>
+    <CourierEmail>dani.eliyahu@courier.com</CourierEmail>
+    <CourierPassword>pw4735!Y</CourierPassword>
+    <CourierAddress>Ben Yehuda, St 20</CourierAddress>
+    <CourierEnabled>false</CourierEnabled>
+    <MaxCourierDistance>12.418</MaxCourierDistance>
+    <SeniorityOfCourier>2024-06-22T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>384177384</CourierId>
+    <CourierFullName>Shani Ben-Haim</CourierFullName>
+    <CourierCellPhone>058-9303600</CourierCellPhone>
+    <CourierEmail>shani.ben-haim@courier.com</CourierEmail>
+    <CourierPassword>pw4152!R</CourierPassword>
+    <CourierAddress>Agripas, St 132</CourierAddress>
+    <CourierEnabled>false</CourierEnabled>
+    <MaxCourierDistance>3.423</MaxCourierDistance>
+    <SeniorityOfCourier>2024-11-13T00:00:00</SeniorityOfCourier>
     <CourierVehicleType>Foot</CourierVehicleType>
   </Courier>
 </ArrayOfCourier>

@@ -84,7 +84,7 @@
                 <DataGridTextColumn Header="On Time" Binding="{Binding DeliveriesInTime}" Width="*"/>
                 <DataGridTextColumn Header="Late" Binding="{Binding DeliveriesOverTime}" Width="*"/>
                 <DataGridTextColumn Header="Current Order" Binding="{Binding OrderIdInHandle}" Width="*"/>
-                <DataGridTextColumn Header="Since" Binding="{Binding StartWorkDate, StringFormat=d}" Width="*"/>
+                <DataGridTextColumn Header="Since" Binding="{Binding StartWorkDate, StringFormat=dd/mm/yyyy}" Width="*"/>
 
                 <!--Delete-->
                 <DataGridTemplateColumn Header="Delete" Width="60">
