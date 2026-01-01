@@ -26,4 +26,11 @@ public partial class App : Application
         Regex regex = new Regex("[^0-9]+");
         e.Handled = regex.IsMatch(e.Text);
     }
+
+    public static IEnumerable<T> GetEnumValues<T>(params T[] exclude) where T : Enum
+    {
+        return Enum.GetValues(typeof(T))
+                   .Cast<T>()
+                   .Where(item => !exclude.Contains(item));
+    }
 }

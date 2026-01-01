@@ -81,7 +81,8 @@ internal class CourierImplementation : ICourier
     /// <returns>The <see cref="BO.Courier"/> object.</returns>
     public BO.Courier GetCourier(int requesterId, int courierId)
     {
-        Tools.EnsureAdmin(requesterId, nameof(GetCourier));
+        if(requesterId != courierId)
+            Tools.EnsureAdmin(requesterId, nameof(GetCourier));
         return CourierManager.GetCourier(courierId);
     }
 
@@ -93,7 +94,8 @@ internal class CourierImplementation : ICourier
     /// <param name="courier">The courier details to update.</param>
     public void UpdateCourier(int requesterId, BO.Courier courier)
     {
-        Tools.EnsureAdmin(requesterId, nameof(UpdateCourier));
+        if (requesterId != courier.CourierId)
+            Tools.EnsureAdmin(requesterId, nameof(UpdateCourier));
         CourierManager.UpdateCourier(courier);
     }
 

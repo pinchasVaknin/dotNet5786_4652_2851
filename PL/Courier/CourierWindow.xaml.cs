@@ -103,9 +103,7 @@ public partial class CourierWindow : Window
     {
         get
         {
-            return Enum.GetValues(typeof(BO.VehicleType))
-                       .Cast<BO.VehicleType>()
-                       .Where(v => v != BO.VehicleType.All);
+            return App.GetEnumValues(BO.VehicleType.All);
         }
     }
 
