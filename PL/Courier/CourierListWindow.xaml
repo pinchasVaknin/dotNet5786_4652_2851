@@ -10,15 +10,13 @@
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
         Loaded="Window_Loaded"
         Closed="Window_Closed">
-    
+
     <Window.Resources>
         <pl:ConvertVehicleTypeToColor x:Key="VehicleColorConverter"/>
         <pl:ConvertDeleteToColor x:Key="DeleteColorConverter"/>
         <pl:ConvertDeleteToEnabled x:Key="DeleteEnabledConverter"/>
-        
     </Window.Resources>
-    
-    <!--External Grid-->
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
@@ -26,46 +24,33 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!--Internal, Upper Grid-->
-        <Border Grid.Row="0" Background="LightGray" BorderThickness="0,0,0,1">
-            <Grid HorizontalAlignment="Stretch" Height="auto" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
+        <Border Grid.Row="0" Background="{StaticResource DarkBlueBrush}" 
+        BorderThickness="0,0,0,1" BorderBrush="LightGray">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Couriers Filter ->" Grid.Column="0" FontSize="26"
-                       Foreground="White" FontWeight="Bold"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                      FontWeight="Bold" FontSize="16" Foreground="Red" 
-                      ItemsSource="{Binding Source={StaticResource VehicleTypeCollectionKey}}" 
-                      SelectedValue="{Binding VehicleFilter, Mode=TwoWay}" SelectionChanged="CourierFilter_SelectionChanged"/>
+                <Label Content="Couriers Filter ->" Grid.Column="0" 
+                       Style="{StaticResource StandardLabel}"/>
 
+                <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                  Margin="0" Height="30"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                  FontWeight="Bold" FontSize="16" Foreground="Red" 
+                  ItemsSource="{Binding Source={StaticResource VehicleTypeCollectionKey}}" 
+                  SelectedValue="{Binding VehicleFilter, Mode=TwoWay}" 
+                  SelectionChanged="CourierFilter_SelectionChanged"/>
             </Grid>
         </Border>
-        <DataGrid Margin="5" Grid.Row="1"  
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  HorizontalContentAlignment="Center"
-                  FontWeight="Bold" AutoGenerateColumns="False" IsReadOnly="True"
+
+        <DataGrid Grid.Row="1"
                   x:Name="CourierDataGrid"
                   ItemsSource="{Binding CourierList}"
                   SelectedItem="{Binding SelectedCourier}"
+                  Style="{StaticResource StandardDataGridStyle}"
                   MouseDoubleClick="CourierDataGrid_MouseDoubleClick">
-
-            <!--Align to the center of the data-->
-            <DataGrid.Resources>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                </Style>
-
-                <!--Align to the center of the title-->
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                </Style>
-            </DataGrid.Resources>
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding CourierId}" Width="*"/>
@@ -84,9 +69,9 @@
                 <DataGridTextColumn Header="On Time" Binding="{Binding DeliveriesInTime}" Width="*"/>
                 <DataGridTextColumn Header="Late" Binding="{Binding DeliveriesOverTime}" Width="*"/>
                 <DataGridTextColumn Header="Current Order" Binding="{Binding OrderIdInHandle}" Width="*"/>
-                <DataGridTextColumn Header="Since" Binding="{Binding StartWorkDate, StringFormat=dd/mm/yyyy}" Width="*"/>
 
-                <!--Delete-->
+                <DataGridTextColumn Header="Since" Binding="{Binding StartWorkDate, StringFormat=dd/MM/yyyy}" Width="*"/>
+
                 <DataGridTemplateColumn Header="Delete" Width="60">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -102,22 +87,15 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
             </DataGrid.Columns>
-
-            
-
         </DataGrid>
 
-
-        <Border Grid.Row="2" Background="#2C3E50">
-            <Button Content="Add" Grid.Row="2" 
-                    HorizontalAlignment="Center" 
-                    Height="50" Width="100" 
-                    Background="#27AE60" 
-                    Foreground="White" 
-                    FontSize="16" Click="BtnAdd_Click"/>
+        <Border Grid.Row="2" Background="{StaticResource DarkBlueBrush}">
+            <Button Content="Add" Grid.Row="2"
+                    Style="{StaticResource ActionButtonStyle}"
+                    FontSize="16" Click="BtnAdd_Click"
+                    Margin="0"/>
         </Border>
     </Grid>
-
 </Window>

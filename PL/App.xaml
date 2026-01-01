@@ -5,10 +5,107 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <local:VehicleTypeCollection x:Key="VehicleTypeCollectionKey" />        <!--<local:OrderStatusCollection x:Key="OrderStatusCollectionKey" />-->
-        
-        <Style x:Key="NumericStyle" TargetType="TextBox">
+
+        <!--Color Brushes-->
+        <SolidColorBrush x:Key="DarkBlueBrush" Color="#2C3E50"/>
+        <SolidColorBrush x:Key="LightBlueBrush" Color="#3498DB"/>
+        <SolidColorBrush x:Key="GreenBrush" Color="#27AE60"/>
+        <SolidColorBrush x:Key="LightGreenBrush" Color="#FF1CED74"/>
+        <SolidColorBrush x:Key="RedBrush" Color="#E74C3C"/>
+
+        <!--ButtonStyle for Elephant Font-->
+        <Style x:Key="ElephantButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="Elephant"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <!--ButtonStyle for Menu Buttons-->
+        <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource ElephantButtonStyle}">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="10,5"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <!--Standard Label Style-->
+        <Style x:Key="StandardLabel" TargetType="Label">
+            <Setter Property="FontFamily" Value="Bold"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="26"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!--Label and TextBox Styles for Configuration Window-->
+        <Style x:Key="ConfigLabelStyle" TargetType="Label">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontFamily" Value="Segoe UI Variable Display Semibold"/>
+        </Style>
+
+        <!--TextBox Style for Configuration Window-->
+        <Style x:Key="ConfigTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="FontFamily" Value="Segoe UI Variable Display Semibold"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Height" Value="25"/>
+        </Style>
+
+        <!--Numeric TextBox Style for Configuration Window-->
+        <Style x:Key="NumericStyle" TargetType="TextBox" BasedOn="{StaticResource ConfigTextBoxStyle}">
             <EventSetter Event="PreviewTextInput" Handler="CheckIfNumber"/>
         </Style>
-        
+
+        <!--ComboBox Style for Configuration Window-->
+        <Style x:Key="ConfigComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="FontFamily" Value="Segoe UI Variable Display Semibold"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Height" Value="25"/>
+        </Style>
+
+        <!--Action Button Style-->
+        <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource ElephantButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource GreenBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="50"/>
+        </Style>
+
+        <!--DataGrid Cell Style-->
+        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!--DataGrid Header Style-->
+        <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="ExtraBold"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Background" Value="#ECF0F1"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="5,0"/>
+        </Style>
+
+        <!--Standard DataGrid Style-->
+        <Style x:Key="StandardDataGridStyle" TargetType="DataGrid">
+            <Setter Property="CellStyle" Value="{StaticResource DataGridCellStyle}"/>
+            <Setter Property="ColumnHeaderStyle" Value="{StaticResource DataGridHeaderStyle}"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+
     </Application.Resources>
 </Application>
