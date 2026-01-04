@@ -57,4 +57,9 @@ public partial class OrderListWindow : Window
             s_bl.Order.GetOrders(adminId) :
             s_bl.Order.GetOrders(adminId, OrderFilter);
     }
+
+    private void CourierFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+
+    }
 }
