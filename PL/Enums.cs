@@ -10,6 +10,14 @@ internal class VehicleTypeCollection : IEnumerable
 
     public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
 }
+internal class OrderInListFilterByCollection : IEnumerable
+{
+    // We retrieve all values from the BO.OrderInListFilterBy Enum
+    static readonly IEnumerable<BO.OrderInListFilterBy> s_enums =
+        (Enum.GetValues(typeof(BO.OrderInListFilterBy)) as IEnumerable<BO.OrderInListFilterBy>)!;
+    public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+}
+
 
 
 //internal class OrderStatusCollection : IEnumerable

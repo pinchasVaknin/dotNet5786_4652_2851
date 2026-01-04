@@ -461,10 +461,7 @@ internal static class OrderManager
             {
                 switch (filterField.Value)
                 {
-                    case BO.OrderInListFilterBy.OrderId:
-                        if (int.TryParse(Convert.ToString(filterValue), out var id))
-                            list = list.Where(x => x.OrderId == id).ToList();
-                        break;
+                    
                     case BO.OrderInListFilterBy.TypeOfOrder:
                         if (Tools.TryConvertEnum(filterValue, out BO.TypeOfOrder typeVal))
                             list = list.Where(x => x.TypeOfOrder == typeVal).ToList();

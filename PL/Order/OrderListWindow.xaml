@@ -21,14 +21,24 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Label" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            <ComboBox Grid.Column="1" VerticalAlignment="Center" Height="30"
                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                      FontWeight="Bold" FontSize="16" Foreground="Red"/>
+                      FontWeight="Bold" FontSize="16" Foreground="Red" 
+                      ItemsSource="{Binding Source={StaticResource VehicleTypeCollectionKey}}" 
+                      SelectedValue="{Binding VehicleFilter, Mode=TwoWay}" 
+                      SelectionChanged="CourierFilter_SelectionChanged" Grid.ColumnSpan="2"/>
                       <!--ItemsSource="{Binding Source={StaticResource OrderStatusCollectionKey}}"-->
                       <!--SelectedValue="{Binding OrderFilter, Mode=TwoWay}" SelectionChanged="OrderFilter_SelectionChanged"-->
+            <ComboBox Grid.Column="2" VerticalAlignment="Center" Height="30"
+                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                      FontWeight="Bold" FontSize="16" Foreground="Red" 
+                      ItemsSource="{Binding Source={StaticResource VehicleTypeCollectionKey}}" 
+                      SelectedValue="{Binding VehicleFilter, Mode=TwoWay}" 
+                      SelectionChanged="CourierFilter_SelectionChanged" Grid.ColumnSpan="2"/>   
 
         </Grid>
         <DataGrid Margin="5" Grid.Row="1" ItemsSource="{Binding OrderList}" 

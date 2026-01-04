@@ -164,7 +164,6 @@ public enum ScheduleStatus
 /// </summary>
 public enum OrderInListFilterBy
 {
-    OrderId,
 
     /// <summary>
     /// Filter by logical order type (BO.TypeOfOrder).
@@ -179,7 +178,12 @@ public enum OrderInListFilterBy
     /// <summary>
     /// Filter by schedule status (BO.ScheduleStatus - OnTime / InRisk / Late).
     /// </summary>
-    ScheduleStatus
+    ScheduleStatus,
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    All
 }
 
 /// <summary>

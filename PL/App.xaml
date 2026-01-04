@@ -5,7 +5,7 @@
              StartupUri="Login/LoginWindow.xaml">
     
     <Application.Resources>
-        <local:VehicleTypeCollection x:Key="VehicleTypeCollectionKey" />        <!--<local:OrderStatusCollection x:Key="OrderStatusCollectionKey" />-->
+        <local:VehicleTypeCollection x:Key="VehicleTypeCollectionKey" />        <local:OrderInListFilterByCollection x:Key="OrderInListFilterByCollectionKey" />               <!--<local:OrderStatusCollection x:Key="OrderStatusCollectionKey" />-->
 
         <!--Color Brushes-->
         <SolidColorBrush x:Key="DarkBlueBrush" Color="#2C3E50"/>
