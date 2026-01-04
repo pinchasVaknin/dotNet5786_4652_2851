@@ -107,6 +107,10 @@ public partial class CourierListWindow : Window
 
     private void BtnDelete_Click(object sender, RoutedEventArgs e)
     {
+
+        // Show wait cursor
+        Mouse.OverrideCursor = Cursors.Wait;
+
         // Confirm deletion
         if (sender is Button btn && btn.DataContext is BO.CourierInList courierToDelete)
         {
@@ -136,18 +140,26 @@ public partial class CourierListWindow : Window
             {
                 MessageBox.Show($"Deletion failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            finally
+            {
+                // Restore default cursor
+                Mouse.OverrideCursor = null;
+            }
         }
+    }
+
+    private void BtnBack_Click(object sender, RoutedEventArgs e)
+    {
+        MainWindow? mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+
+        if (mainWindow == null || !mainWindow.IsLoaded)
+        {
+            mainWindow = new MainWindow();
+        }
+        mainWindow.Show();
+        Close();
     }
 
     #endregion Event Handlers
 
 }
-//private void CourierFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
-//    {
-//        // TODO: Replace with real user ID after Login implementation
-//        int adminId = 333333333;
-
-//        CourierList = (VehicleFilter == BO.VehicleType.All) ?
-//            s_bl.Courier.GetCouriers(adminId) :
-//            s_bl.Courier.GetCouriers(adminId, null, VehicleFilter);
-//    }

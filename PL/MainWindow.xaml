@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
-        Title="MainWindow" Height="640" Width="850"
+        Title="MainWindow"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Style="{StaticResource StandardWindow}"
+        WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded"
         Closed="Window_Closed">
 
@@ -22,6 +24,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" Content="Delivery System"
@@ -33,7 +36,9 @@
                     <Button Content="Orders List" Click="BtnShowOrders_Click" Style="{StaticResource MenuButtonStyle}" FontSize="15"/>
                 </StackPanel>
 
-                <StackPanel Grid.Row="2" Margin="0,0,0,20">
+                <Button Grid.Row="3" Style="{StaticResource BtnLogout}" Width="200" Height="40" Margin="5, 0, 5, 10" Click="BtnLogout_Click"/>
+
+                <StackPanel Grid.Row="2" Margin="0,0,0,10">
                     <Label Content="Database Actions:" Foreground="LightGray" Margin="10,0"/>
 
                     <Button Content="Init DB" Background="{StaticResource LightBlueBrush}" Foreground="White" 

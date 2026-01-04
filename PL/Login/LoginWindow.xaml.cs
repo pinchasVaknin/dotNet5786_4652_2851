@@ -1,6 +1,4 @@
-﻿using BO;
-using PL;
-using PL.Courier;
+﻿using PL.Courier;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,21 +30,16 @@ public partial class LoginWindow : Window
     }
 
     /// <summary>
-    /// Handles the custom close button (X) click.
-    /// </summary>
-    private void BtnClose_Click(object sender, RoutedEventArgs e)
-    {
-        // Closes the entire application
-        Application.Current.Shutdown(); 
-    }
-
-    /// <summary>
     /// Validates input and attempts to log in via BL.
     /// </summary>
     private void BtnLogin_Click(object sender, RoutedEventArgs e)
     {
         try
         {
+
+            // Show wait cursor
+            Mouse.OverrideCursor = Cursors.Wait;
+
             // Input Validation
             if (string.IsNullOrWhiteSpace(txtUserId.Text))
             {
@@ -63,16 +56,16 @@ public partial class LoginWindow : Window
             string password = txtPassword.Password;
 
             // BL Login Call
-            UserRole role = s_bl.Courier.Login(userId, password);
+            BO.UserRole role = s_bl.Courier.Login(userId, password);
 
             // Navigation Switch
             switch (role)
             {
-                case UserRole.Admin:
+                case BO.UserRole.Admin:
                     new MainWindow().Show(); // Opens Admin Dashboard
                     break;
 
-                case UserRole.Courier:
+                case BO.UserRole.Courier:
                     new CourierDirectWindow(userId).Show(); // Opens Courier Dashboard with ID
                     break;
 
@@ -87,6 +80,11 @@ public partial class LoginWindow : Window
         {
             // Handles "User not found" or "Wrong password" from BL
             MessageBox.Show($"Login Failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            // Restore default cursor
+            Mouse.OverrideCursor = null;
         }
     }
 }

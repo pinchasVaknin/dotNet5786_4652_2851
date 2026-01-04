@@ -1,10 +1,11 @@
 ﻿namespace PL.Courier;
 
-using System;
-using System.Windows;
-using System.Windows.Media;
 using BlApi;
 using BO;
+using System;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
 public partial class CourierDirectWindow : Window
 {
@@ -111,25 +112,46 @@ public partial class CourierDirectWindow : Window
 
     private void BtnUpdate_Click(object sender, RoutedEventArgs e)
     {
+
+        // Show wait cursor
+        Mouse.OverrideCursor = Cursors.Wait;
+
         try
         {
             s_bl.Courier.UpdateCourier(CurrentCourier.CourierId, CurrentCourier);
             MessageBox.Show("Profile updated!");
             RefreshData();
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message); }
+        catch (Exception ex) 
+        { 
+            MessageBox.Show(ex.Message); 
+        }
+        finally
+        {
+            // Restore default cursor
+            Mouse.OverrideCursor = null;
+        }
     }
 
     private void BtnPickOrder_Click(object sender, RoutedEventArgs e)
     {
+        // Show wait cursor
+        Mouse.OverrideCursor = Cursors.Wait;
+
         // Open window to pick order
         MessageBox.Show("Opening Order Selector...");
         // new OrderSelectionWindow(_courierId).ShowDialog();
         RefreshData();
+
+        // Restore default cursor
+        Mouse.OverrideCursor = null;
     }
 
     private void BtnFinishOrder_Click(object sender, RoutedEventArgs e)
     {
+        // Show wait cursor
+        Mouse.OverrideCursor = Cursors.Wait;
+
         try
         {
             if (CurrentCourier.OrderInProgress != null)
@@ -140,7 +162,15 @@ public partial class CourierDirectWindow : Window
                 RefreshData();
             }
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message); }
+        catch (Exception ex) 
+        { 
+            MessageBox.Show(ex.Message); 
+        }
+        finally
+        {
+            // Restore default cursor
+            Mouse.OverrideCursor = null;
+        }
     }
 
     private void BtnLogout_Click(object sender, RoutedEventArgs e)

@@ -3,9 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Delivery System - Login" 
         Height="500" Width="700"
-        WindowStartupLocation="CenterScreen" 
-        ResizeMode="NoResize"
-        WindowStyle="None"
+        Style="{StaticResource StandardWindow}"
+        WindowStartupLocation="CenterScreen"
         BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1">
 
     <Grid>
@@ -33,10 +32,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Button Content="X" HorizontalAlignment="Right" Margin="10" 
-                    Width="30" Height="30" Background="Transparent" BorderThickness="0" 
-                    FontWeight="Bold" Foreground="Gray" Cursor="Hand"
-                    Click="BtnClose_Click"/>
+            <Button Style="{StaticResource BtnExit}"/>
 
             <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="40,0">
 

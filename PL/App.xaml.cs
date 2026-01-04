@@ -2,6 +2,7 @@
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace PL;
@@ -27,10 +28,47 @@ public partial class App : Application
         e.Handled = regex.IsMatch(e.Text);
     }
 
+    /// <summary>
+    /// Retrieves all values of the specified enumeration type, excluding any specified values.
+    /// </summary>
+    /// <remarks>This method returns all values of the enumeration type <typeparamref name="T"/> as defined in
+    /// the enumeration,  except for those explicitly provided in the <paramref name="exclude"/> parameter.  The order
+    /// of the returned values matches the order in which they are defined in the enumeration.</remarks>
+    /// <typeparam name="T">The enumeration type to retrieve values from. Must be a valid enumeration.</typeparam>
+    /// <param name="exclude">An optional array of enumeration values to exclude from the result.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> containing all values of the enumeration type <typeparamref name="T"/>,
+    /// excluding the specified values.</returns>
     public static IEnumerable<T> GetEnumValues<T>(params T[] exclude) where T : Enum
     {
         return Enum.GetValues(typeof(T))
                    .Cast<T>()
                    .Where(item => !exclude.Contains(item));
     }
+
+    /// <summary>
+    /// Handles the custom close button (X) click.
+    /// </summary>
+    public void BtnCloseProgram_Global_Click(object sender, RoutedEventArgs e)
+    {
+        // Closes the entire application
+        Application.Current.Shutdown();
+    }
+
+    /// <summary>
+    /// Handles the custom close button (X) click.
+    /// </summary>
+    public void BtnCloseWindow_Global_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn)
+        {
+            // Find the window that contains this button
+            Window parentWindow = Window.GetWindow(btn);
+
+            // Close that specific window safely
+            parentWindow?.Close();
+        }
+    }
+
+
+
 }

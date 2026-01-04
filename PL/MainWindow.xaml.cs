@@ -187,12 +187,20 @@ public partial class MainWindow : Window
 
     private void BtnShowCouriers_Click(object sender, RoutedEventArgs e)
     {
-        new CourierListWindow().Show(); 
+        new CourierListWindow().Show();
+        Close();
     }
 
     private void BtnShowOrders_Click(object sender, RoutedEventArgs e)
     {
         //new OrderListWindow().Show();
+        Close();
+    }
+
+    private void BtnLogout_Click(object sender, RoutedEventArgs e)
+    {
+        new Login.LoginWindow().Show();
+        Close();
     }
 
     #endregion Button Click Handlers

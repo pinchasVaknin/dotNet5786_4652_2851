@@ -6,8 +6,10 @@
         xmlns:local="clr-namespace:PL.Courier"
         xmlns:pl="clr-namespace:PL"
         mc:Ignorable="d"
-        Title="CourierListWindow" Height="640" Width="800"
+        Title="CourierListWindow"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Style="{StaticResource StandardWindow}"
+        WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded"
         Closed="Window_Closed">
 
@@ -19,33 +21,47 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="500*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="{StaticResource DarkBlueBrush}" 
-        BorderThickness="0,0,0,1" BorderBrush="LightGray">
-            <Grid>
+        <Border Grid.Row="0" Background="{StaticResource DarkBlueBrush}">
+
+            <Grid HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Label Content="Couriers Filter ->" Grid.Column="0" 
+                <Button Grid.Column="0" Style="{StaticResource BtnExitProgram}"/>
+                <Button Grid.Column="1" Style="{StaticResource BtnBack}" Click="BtnBack_Click"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Background="{StaticResource DarkBlueBrush}" 
+                BorderThickness="0,0,0,1" BorderBrush="LightGray">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="425*"/>
+                    <ColumnDefinition Width="314*"/>
+                    <ColumnDefinition Width="111*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Couriers Filter ->" 
                        Style="{StaticResource StandardLabel}"/>
 
-                <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                  Margin="0" Height="30"
+                <ComboBox Grid.Column="1" VerticalAlignment="Center" Height="30"
                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                   FontWeight="Bold" FontSize="16" Foreground="Red" 
                   ItemsSource="{Binding Source={StaticResource VehicleTypeCollectionKey}}" 
                   SelectedValue="{Binding VehicleFilter, Mode=TwoWay}" 
-                  SelectionChanged="CourierFilter_SelectionChanged"/>
+                  SelectionChanged="CourierFilter_SelectionChanged" Grid.ColumnSpan="2"/>
             </Grid>
         </Border>
 
-        <DataGrid Grid.Row="1"
+        <DataGrid Grid.Row="2"
                   x:Name="CourierDataGrid"
                   ItemsSource="{Binding CourierList}"
                   SelectedItem="{Binding SelectedCourier}"
@@ -91,8 +107,8 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Border Grid.Row="2" Background="{StaticResource DarkBlueBrush}">
-            <Button Content="Add" Grid.Row="2"
+        <Border Grid.Row="3" Background="{StaticResource DarkBlueBrush}">
+            <Button Content="Add" Grid.Row="3"
                     Style="{StaticResource ActionButtonStyle}"
                     FontSize="16" Click="BtnAdd_Click"
                     Margin="0"/>

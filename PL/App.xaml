@@ -14,6 +14,54 @@
         <SolidColorBrush x:Key="LightGreenBrush" Color="#FF1CED74"/>
         <SolidColorBrush x:Key="RedBrush" Color="#E74C3C"/>
 
+        <!--Standard Window Style-->
+        <Style x:Key="StandardWindow" TargetType="Window">
+            <Setter Property="WindowStyle" Value="None"/>
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="Height" Value="640"/>
+            <Setter Property="Width" Value="850"/>
+        </Style>
+
+        <!--Exit Button Style-->
+        <Style x:Key="BtnExit" TargetType="Button">
+            <Setter Property="Content" Value="X"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <!--Exit Program Button Style-->
+        <Style x:Key="BtnExitProgram" TargetType="Button" BasedOn="{StaticResource BtnExit}">
+            <EventSetter Event="Click" Handler="BtnCloseProgram_Global_Click"/>
+        </Style>
+
+        <!--Exit Window Button Style-->
+        <Style x:Key="BtnExitWindow" TargetType="Button" BasedOn="{StaticResource BtnExit}">
+            <EventSetter Event="Click" Handler="BtnCloseWindow_Global_Click"/>
+        </Style>
+
+        <!--Back Button Style-->
+        <Style x:Key="BtnBack" TargetType="Button">
+            <Setter Property="Content" Value="🡢"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
         <!--ButtonStyle for Elephant Font-->
         <Style x:Key="ElephantButtonStyle" TargetType="Button">
             <Setter Property="FontFamily" Value="Elephant"/>
@@ -106,6 +154,16 @@
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+
+        <!--Logout Button Style-->
+            <Style x:Key="BtnLogout" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+            <Setter Property="Content" Value="Logout"/>
+            <Setter Property="Background" Value="{StaticResource RedBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="50"/>
         </Style>
 
     </Application.Resources>

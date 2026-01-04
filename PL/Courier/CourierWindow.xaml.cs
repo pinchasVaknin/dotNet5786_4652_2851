@@ -115,6 +115,9 @@ public partial class CourierWindow : Window
 
     private void BtnAddUpdate_Click(object sender, RoutedEventArgs e)
     {
+        // Show wait cursor
+        Mouse.OverrideCursor = Cursors.Wait;
+
         int adminId = 333333333;
 
         try
@@ -156,8 +159,13 @@ public partial class CourierWindow : Window
         {
             MessageBox.Show(ex.Message, "Operation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        finally
+        {
+            // Restore default cursor
+            Mouse.OverrideCursor = null;
+        }
     }
 
     #endregion Methods
-
+    
 }

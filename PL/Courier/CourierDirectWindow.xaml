@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="Courier Dashboard" Height="700" Width="1000"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Style="{StaticResource StandardWindow}"
         WindowStartupLocation="CenterScreen">
 
     <Grid>
@@ -36,8 +37,8 @@
                     </Border>
                 </StackPanel>
 
-                <Button Grid.Row="2" Content="Logout" Style="{StaticResource ActionButtonStyle}" 
-                        Background="#E74C3C" Margin="20" Click="BtnLogout_Click"/>
+                <Button Grid.Row="2" Style="{StaticResource BtnLogout}"
+                        Margin="20" Click="BtnLogout_Click"/>
             </Grid>
         </Border>
 
