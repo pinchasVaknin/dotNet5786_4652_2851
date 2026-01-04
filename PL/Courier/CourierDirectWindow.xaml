@@ -174,10 +174,10 @@
                                 <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding CurrentCourier.OrderInProgress.OrderStatus, Mode=OneWay}" IsReadOnly="True" Foreground="Blue" Style="{StaticResource ConfigTextBoxStyle}"/>
 
                                 <Label Grid.Row="0" Grid.Column="3" Content="Air Distance:" FontWeight="Bold"/>
-                                <TextBox Grid.Row="0" Grid.Column="4" Text="{Binding CurrentCourier.OrderInProgress.AirDistance, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource NumericStyle}"/>
+                                <TextBox Grid.Row="0" Grid.Column="4" Text="{Binding CurrentCourier.OrderInProgress.AirDistance, Mode=OneWay, StringFormat={}{0:F3}}" IsReadOnly="True" Style="{StaticResource NumericStyle}"/>
 
                                 <Label Grid.Row="1" Grid.Column="3" Content="Actual Distance:" FontWeight="Bold"/>
-                                <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding CurrentCourier.OrderInProgress.ActualDistance, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource NumericStyle}"/>
+                                <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding CurrentCourier.OrderInProgress.ActualDistance, Mode=OneWay, StringFormat={}{0:F3}}" IsReadOnly="True" Style="{StaticResource NumericStyle}"/>
 
                                 <Label Grid.Row="2" Grid.Column="3" Content="Open Time:" FontWeight="Bold"/>
                                 <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding CurrentCourier.OrderInProgress.OrderOpenTime, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource ConfigTextBoxStyle}"/>
@@ -192,7 +192,7 @@
                                 <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding CurrentCourier.OrderInProgress.MaxDeliveryTime, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource ConfigTextBoxStyle}"/>
 
                                 <Label Grid.Row="6" Grid.Column="3" Content="Time Left:" FontWeight="Bold"/>
-                                <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding CurrentCourier.OrderInProgress.TimeLeftToFinish, Mode=OneWay}" IsReadOnly="True" Foreground="Red" Style="{StaticResource ConfigTextBoxStyle}"/>
+                                <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding CurrentCourier.OrderInProgress.TimeLeftToFinish, Mode=OneWay, StringFormat=\{0:dd\\.hh\\:mm\\:ss\}}" IsReadOnly="True" Foreground="Red" Style="{StaticResource ConfigTextBoxStyle}"/>
 
                                 <Label Grid.Row="7" Grid.Column="3" Content="Schedule:" FontWeight="Bold"/>
                                 <TextBox Grid.Row="7" Grid.Column="4" Text="{Binding CurrentCourier.OrderInProgress.ScheduleStatus, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource ConfigTextBoxStyle}"/>

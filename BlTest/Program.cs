@@ -10,39 +10,6 @@ using System.Collections.Generic;
 /// </summary>
 internal class Program
 {
-    static void CheckForBugs()
-    {
-        var dal = DalApi.Factory.Get;
-        var deliveries = dal.Delivery.ReadAll();
-
-        Console.WriteLine("--- מתחיל חקירת נתונים ---");
-        bool found = false;
-
-        foreach (var d in deliveries)
-        {
-            // אם המשלוח פעיל (ללא תאריך סיום)
-            if (d.DeliveryFinishType == DO.DeliveryFinishType.None)
-            {
-                var c = dal.Courier.Read(d.CourierId);
-
-                // תפוס אותו: משלוח פעיל אצל שליח לא פעיל
-                if (c != null && !c.CourierEnabled)
-                {
-                    found = true;
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"!!! נתפס באג !!!");
-                    Console.WriteLine($"משלוח מס' {d.DeliveryId} (פעיל)");
-                    Console.WriteLine($"שייך לשליח מס' {c.CourierId} בשם '{c.CourierFullName}'");
-                    Console.WriteLine($"סטטוס השליח בקובץ: {(c.CourierEnabled ? "פעיל" : "לא פעיל")}");
-                    Console.WriteLine($"---------------------------------------------");
-                    Console.ResetColor();
-                }
-            }
-        }
-
-        if (!found) Console.WriteLine("הנתונים נקיים. הכל תקין.");
-        Console.WriteLine("--- סיום חקירה ---");
-    }
 
     //==================== Fields ===================\\
 

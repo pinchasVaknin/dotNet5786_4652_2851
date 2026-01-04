@@ -1,6 +1,5 @@
 ﻿namespace DalTest;
 using DalApi;
-using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -288,8 +287,17 @@ public static class Initialization
             string customer = customers[s_rand.Next(customers.Length)];
             string phone = "05" + s_rand.Next(0, 9) + "-" + s_rand.Next(1000000, 9999999);
 
-            // Order date: sometime in the last ~90 days relative to the system clock
-            DateTime orderDate = clock.AddDays(-s_rand.Next(0, 90)).AddMinutes(-s_rand.Next(0, 12 * 60));
+            // Order date based on status
+            DateTime orderDate;
+            if (statusTag == "OPEN")
+                // Recent orders (last 3 hours)
+                orderDate = clock.AddMinutes(-s_rand.Next(0, 3 * 60));
+            else if (statusTag == "IN_PROGRESS")
+                // Mid-age orders (last 12 hours)
+                orderDate = clock.AddMinutes(-s_rand.Next(0, 12 * 60));
+            else
+                // Older orders (last 90 days)
+                orderDate = clock.AddDays(-s_rand.Next(0, 90)).AddMinutes(-s_rand.Next(0, 12 * 60));
 
             // Size/weight profile per category (min/max + fragility probability)
             (double weightMin, double weightMax, double sizeMin, double sizeMax, bool fragP) pack = kind switch
@@ -359,8 +367,8 @@ public static class Initialization
     private static void createDeliverys()
     {
         // Fetch current couriers and orders; if either is empty, there is nothing to do
-        var couriers = s_dal!.Courier.ReadAll();
-        var orders = s_dal.Order.ReadAll();
+        var couriers = s_dal!.Courier.ReadAll().ToList();
+        var orders = s_dal.Order.ReadAll().ToList();
 
         // Get only active couriers
         var activeCouriers = couriers.Where(c => c.CourierEnabled).ToList();
@@ -369,37 +377,24 @@ public static class Initialization
         if (!couriers.Any() || !orders.Any())
             return;
 
-        // Create deliveries for a subset of orders (e.g., ~60%).
-        int total = orders.Count();
-        int targetDeliveries = Math.Max(1, (int)(total * 0.6));
-
         // Get enum values for random sampling
         var shipmentTypes = Enum.GetValues<DO.ShipmentType>();
         var finishTypes = Enum.GetValues<DO.DeliveryFinishType>();
 
-        // Shuffle orders lightly by sampling indexes
-        var orderIndexes = new List<int>(total);
-        for (int i = 0; i < total; i++) orderIndexes.Add(i);
-        for (int i = 0; i < orderIndexes.Count; i++)
+        foreach (var order in orders.Where(o => o.OrderStatus != null && o.OrderStatus.Contains("IN_PROGRESS")))
         {
-            int j = s_rand.Next(i, orderIndexes.Count);
-            (orderIndexes[i], orderIndexes[j]) = (orderIndexes[j], orderIndexes[i]);
-        }
-
-        // Create deliveries for the first `20% targetDeliveries` shuffled orders
-        for (int k = 0; k < targetDeliveries * 0.2; k++)
-        {
-            // Get the order
-            var order = orders.ElementAt(orderIndexes[k]);
 
             // Pick a random active courier for this delivery
             if (!activeCouriers.Any()) break;
 
             // If no active couriers, skip
-            var courier = activeCouriers.ElementAt(s_rand.Next(activeCouriers.Count()));
+            var courier = activeCouriers.ElementAt(s_rand.Next(activeCouriers.Count));
 
-            // Base timestamps
-            DateTime deliveryDate = order.OrderDate.AddHours(s_rand.Next(0, 24)).AddMinutes(s_rand.Next(0, 60));
+            // Calculate time since order was placed
+            TimeSpan timeSinceOrder = s_dal.Config.Clock - order.OrderDate;
+            // Random wait time (up to the current time)
+            double minutesToWait = timeSinceOrder.TotalMinutes > 1 ? s_rand.NextDouble() * timeSinceOrder.TotalMinutes : 0;
+            DateTime deliveryDate = order.OrderDate.AddMinutes(minutesToWait);
 
             // Sample randomly from enum
             DO.ShipmentType shipmentType = shipmentTypes[s_rand.Next(shipmentTypes.Length)];
@@ -416,21 +411,29 @@ public static class Initialization
                 DeliveryDate: deliveryDate,
                 DeliveryFinishDate: DateTime.MinValue,
                 ShipmentType: shipmentType,
-                DeliveryFinishType: DeliveryFinishType.None
+                DeliveryFinishType: DO.DeliveryFinishType.None
             ));
         }
 
-        // Create deliveries for the first `80% targetDeliveries` shuffled orders
-        for (int k = (int)(targetDeliveries * 0.2); k < targetDeliveries; k++)
+        foreach (var order in orders.Where(o => o.OrderStatus != null && o.OrderStatus.Contains("CLOSED")))
         {
-            var order = orders.ElementAt(orderIndexes[k]);
 
             // Pick a random courier for this delivery
-            var courier = couriers.ElementAt(s_rand.Next(couriers.Count()));
+            var courier = couriers.ElementAt(s_rand.Next(couriers.Count));
 
-            // Base timestamps
-            DateTime deliveryDate = order.OrderDate.AddHours(s_rand.Next(0, 24)).AddMinutes(s_rand.Next(0, 60));
+            TimeSpan timeSinceOrder = s_dal.Config.Clock - order.OrderDate;
+
+            // Start delivery somewhere within 80% of the time window (leaving room for it to finish)
+            double maxWaitMinutes = timeSinceOrder.TotalMinutes * 0.8;
+            double minutesToWait = maxWaitMinutes > 1 ? s_rand.NextDouble() * maxWaitMinutes : 0;
+            DateTime deliveryDate = order.OrderDate.AddMinutes(minutesToWait);
+
+            // Finish delivery
             DateTime deliveryFinishDate = deliveryDate.AddMinutes(s_rand.Next(30, 240));
+
+            // Ensure finish date does not exceed current clock
+            if (deliveryFinishDate > s_dal.Config.Clock)
+                deliveryFinishDate = s_dal.Config.Clock;
 
             // Sample randomly from enum
             DO.ShipmentType shipmentType = shipmentTypes[s_rand.Next(shipmentTypes.Length)];
