@@ -25,7 +25,7 @@
             </Grid.ColumnDefinitions>
             <Label Content="Label" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-            <ComboBox Grid.Column="1" VerticalAlignment="Center" Height="30"
+            <ComboBox x:Name="FilterBy" Grid.Column="1" VerticalAlignment="Center" Height="30"
                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                       FontWeight="Bold" FontSize="16" Foreground="Red" 
                       ItemsSource="{Binding Source={StaticResource OrderInListFilterByCollectionKey}}"
@@ -34,11 +34,11 @@
                       />
             <!--ItemsSource="{Binding Source={StaticResource OrderStatusCollectionKey}}"-->
                       <!--SelectedValue="{Binding OrderFilter, Mode=TwoWay}" SelectionChanged="OrderFilter_SelectionChanged"-->
-            <!--ComboBox Grid.Column="2" VerticalAlignment="Center" Height="30"
+            <ComboBox Grid.Column="2" VerticalAlignment="Center" Height="30"
                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                       FontWeight="Bold" FontSize="16" Foreground="Red"
                       
-                      />-->
+                      />
 
 
         </Grid>

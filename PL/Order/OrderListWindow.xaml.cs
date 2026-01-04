@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,13 +54,18 @@ public partial class OrderListWindow : Window
         // TODO: Replace with real user ID after Login implementation
         int adminId = 333333333;
 
-        OrderList = (OrderFilter == BO.OrderInListFilterBy.All) ?
-            s_bl.Order.GetOrders(adminId) :
-            s_bl.Order.GetOrders(adminId, OrderFilter);
-    }
+        try
+        {
+            var oldList = s_bl?.Order.GetOrders(adminId);
 
-    private void CourierFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
+            if (oldList == null) return;
 
+            if (OrderFilter == BO.OrderInListFilterBy.All)
+                OrderList = oldList;
+            else
+                OrderList = oldList.Where(c => c.OrderInListFilterBy == OrderFilter);
+        }
+        catch { }
     }
+  
 }

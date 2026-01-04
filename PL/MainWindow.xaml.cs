@@ -1,8 +1,10 @@
 ﻿namespace PL;
 
 using PL.Courier;
+using PL.Order;
 using System.Windows;
 using System.Windows.Input;
+//ChangeMe
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -193,7 +195,7 @@ public partial class MainWindow : Window
 
     private void BtnShowOrders_Click(object sender, RoutedEventArgs e)
     {
-        //new OrderListWindow().Show();
+        new OrderListWindow().Show();
         Close();
     }
 
