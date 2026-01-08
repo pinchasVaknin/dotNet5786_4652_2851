@@ -65,7 +65,21 @@
                 <DataGridTextColumn Header="TimeLeftToFinish" Binding="{Binding TimeLeftToFinish, StringFormat=dd/MM/yyyy}" Width="Auto"/>
                 <DataGridTextColumn Header="TotalHandleTime" Binding="{Binding TotalHandleTime, StringFormat=dd/MM/yyyy}" Width="Auto"/>
                 <DataGridTextColumn Header="TotalDeliveries" Binding="{Binding TotalDeliveries}" Width="Auto"/>
-
+                
+                <DataGridTemplateColumn Header="Cancel" Width="60">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="X" 
+                    Click="BtnCancel_Click"
+                    Background="Transparent" 
+                    BorderThickness="0"
+                    FontSize="16" 
+                    Cursor="Hand" 
+                    ToolTip="Cancel Order"
+                    IsEnabled="{Binding Converter={StaticResource ConvertCancelToEnabled}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 

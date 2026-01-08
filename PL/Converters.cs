@@ -175,5 +175,33 @@ public class ConvertDeleteToEnabled : IValueConverter
     {
         throw new NotImplementedException();
     }
+
 }
 
+
+public class ConvertCancelToEnabled : IValueConverter
+{
+    private static readonly IBl s_bl = Factory.Get();
+
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is BO.OrderInList order)
+        {
+            try
+            {
+                return (order.OrderStatus == OrderStatus.Open || order.OrderStatus == OrderStatus.InProgress);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+
+}
