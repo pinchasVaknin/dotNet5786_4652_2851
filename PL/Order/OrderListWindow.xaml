@@ -62,10 +62,11 @@
                 <DataGridTextColumn Header="ScheduleStatus" Binding="{Binding ScheduleStatus}" CellStyle="{StaticResource EnumDataGridCellStyle}" Width="*"/>
 
                 <DataGridTextColumn Header="DeliveryId" Binding="{Binding DeliveryId}" Width="*"/>
-                <DataGridTextColumn Header="TimeLeftToFinish" Binding="{Binding TimeLeftToFinish, StringFormat=dd/MM/yyyy}" Width="Auto"/>
-                <DataGridTextColumn Header="TotalHandleTime" Binding="{Binding TotalHandleTime, StringFormat=dd/MM/yyyy}" Width="Auto"/>
+                <DataGridTextColumn Header="TimeLeftToFinish" Binding="{Binding TimeLeftToFinish, StringFormat=\{0:dd\\.hh\\:mm\\:ss\}}" Width="Auto"/>
+                <DataGridTextColumn Header="TotalHandleTime" Binding="{Binding TotalHandleTime, StringFormat=\{0:dd\\.hh\\:mm\\:ss\}}" Width="Auto"/>
                 <DataGridTextColumn Header="TotalDeliveries" Binding="{Binding TotalDeliveries}" Width="Auto"/>
 
+                <DataGridTextColumn Header="Cancel" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 
