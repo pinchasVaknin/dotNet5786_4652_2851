@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BO;
+using PL.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using PL.Tools;
 
 namespace PL.Order;
 
@@ -156,6 +157,45 @@ public partial class OrderListWindow : Window
         }
     }
 
+    private void BtnCancel_Click(object sender, RoutedEventArgs e)
+    {
+        // Show wait cursor
+        Mouse.OverrideCursor = Cursors.Wait;
+
+        // Confirm deletion
+        if (sender is Button btn && btn.DataContext is BO.OrderInList orderToCancel)
+        {
+            // Show confirmation dialog
+            MessageBoxResult result = MessageBox.Show(
+                $"Are you sure you want to Cancel order: {orderToCancel.OrderId}?",
+                "Cancel Confirmation",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            // If user selects No, cancel deletion
+            if (result == MessageBoxResult.No) return;
+
+            try
+            {
+                // Perform deletion
+                
+                s_bl.Order.CancelOrder(UserData.s_UserId, orderToCancel.OrderId);
+
+                // Notify user of successful deletion
+                MessageBox.Show("Canceld successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Deletion failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                // Restore default cursor
+                Mouse.OverrideCursor = null;
+            }
+        }
+    }
     private void OrderDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
         // Get the selected order from the DataContext of the DataGrid

@@ -89,8 +89,8 @@ internal static class Tools
         var maxRangeWithoutRisk = maxRange - config.RiskTimeRnge;
 
         // Calculate how much time has passed since the order started
-        // If delivery isn't finished, calculate against current system clock
-        TimeSpan handleTime = (lastDeliveryFinishDate is null)
+        // If delivery isn't finished (null or DateTime.MinValue), calculate against current system clock
+        TimeSpan handleTime = (lastDeliveryFinishDate is null || lastDeliveryFinishDate.Value == DateTime.MinValue)
                 ? AdminManager.Now - orderDate
                 : lastDeliveryFinishDate.Value - orderDate;
 
