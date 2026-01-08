@@ -57,7 +57,7 @@
     <DeliveryMaxDistance>25</DeliveryMaxDistance>
     <DeliveryDate>2026-01-08T06:58:30.3431445</DeliveryDate>
     <DeliveryFinishDate>0001-01-01T00:00:00</DeliveryFinishDate>
-    <ShipmentType>SameDay</ShipmentType>
+    <ShipmentType>Standard</ShipmentType>
     <DeliveryFinishType>None</DeliveryFinishType>
   </Delivery>
   <Delivery>
@@ -178,7 +178,7 @@
     <DeliveryDate>2025-11-26T06:09:54.8404351</DeliveryDate>
     <DeliveryFinishDate>2025-11-26T08:40:54.8404351</DeliveryFinishDate>
     <ShipmentType>SameDay</ShipmentType>
-    <DeliveryFinishType>Completed</DeliveryFinishType>
+    <DeliveryFinishType>Returned</DeliveryFinishType>
   </Delivery>
   <Delivery>
     <DeliveryId>18</DeliveryId>

@@ -116,6 +116,18 @@
     <CourierPassword>pw3781!R</CourierPassword>
     <CourierAddress>Bialik, St 5</CourierAddress>
     <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance>18.713</MaxCourierDistance>
+    <SeniorityOfCourier>2025-12-04T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Car</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>389562457</CourierId>
+    <CourierFullName>Yael Gabay</CourierFullName>
+    <CourierCellPhone>055-9517873</CourierCellPhone>
+    <CourierEmail>yael.gabay@courier.com</CourierEmail>
+    <CourierPassword>pw3639!N</CourierPassword>
+    <CourierAddress>Aza, St 6</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
     <MaxCourierDistance xsi:nil="true" />
     <SeniorityOfCourier>2024-09-21T00:00:00</SeniorityOfCourier>
     <CourierVehicleType>Foot</CourierVehicleType>

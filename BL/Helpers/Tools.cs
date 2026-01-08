@@ -77,6 +77,10 @@ internal static class Tools
     /// <returns>A <see cref="BO.ScheduleStatus"/> enum value.</returns>
     internal static BO.ScheduleStatus CalcScheduleStatus(DateTime orderDate, DateTime? lastDeliveryFinishDate)
     {
+        // Normalize MinValue to null
+        if (lastDeliveryFinishDate.HasValue && lastDeliveryFinishDate.Value == DateTime.MinValue)
+            lastDeliveryFinishDate = null;
+
         // Fetch time configuration
         var config = AdminManager.GetConfig();
         var maxRange = config.MaxDelTimeRnge;
