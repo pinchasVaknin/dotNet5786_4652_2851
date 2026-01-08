@@ -58,10 +58,20 @@ public partial class CourierListWindow : Window
 
     private void CourierFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        // Update the selected filter category based on user selection
+        if (CmbFilterCategory.SelectedItem is BO.CourierInListFilterBy selectedCategory)
+        {
+            CourierCategoryFilter = selectedCategory;
+        }
+
+        // Reset the filter value ComboBox
         if (CmbFilterValue != null)
         {
             CmbFilterValue.ItemsSource = null;
+            CmbFilterValue.SelectedItem = null;
         }
+
+        //  Refresh the order list based on the new filter category
         RefreshCourierList();
     }
 

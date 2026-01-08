@@ -3,10 +3,127 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PL.Order"
+        xmlns:Controls="clr-namespace:PL.Controls"
         mc:Ignorable="d"
-        Title="OrderWindow" Height="450" Width="800">
+        Title="Courier Details"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Style="{StaticResource StandardWindow}"
+        WindowStartupLocation="CenterScreen">
+    
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#2C3E50">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="0,40,0,0">
+                    <Label Content="ORDER" Style="{StaticResource StandardLabel}" Foreground="#BDC3C7"/>
+                    <Label Content="PROFILE" Style="{StaticResource StandardLabel}"/>
+                </StackPanel>
+
+                <Button Grid.Row="2" 
+                Content="{Binding ActionButtonText}" 
+                Style="{StaticResource ActionButtonStyle}"
+                Width="200"
+                Margin="20" FontSize="18"
+                Click="BtnAddUpdate_Click"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Controls:TopBarControl Grid.Row="0" BackButtonVisibility="Collapsed" Title="Order Details"/>
+
+            <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                <Grid Margin="30">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" BorderBrush="#BDC3C7" BorderThickness="0,0,0,1" Padding="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="Order Profile" Foreground="#3498DB" FontWeight="Bold" FontSize="18" Margin="0,0,0,15"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+
+                                    <Controls:LabeledTextBox Label="Order ID:" 
+                                                             Text="{Binding CurrentOrder.OrderId, Mode=TwoWay}"
+                                                             InputStyle="{StaticResource NumericStyle}"/>
+
+                                    <Controls:LabeledTextBox Label="Type of Order:" 
+                                                             Text="{Binding CurrentOrder.TypeOfOrder, Mode=TwoWay}"
+                                                             InputStyle="{StaticResource EnumTextBoxStyle}"/>
+
+                                    <Controls:LabeledTextBox Label="OrderAddress:"
+                                                             Text="{Binding CurrentOrder.OrderAddress, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="AirDistance"
+                                                             Text="{Binding CurrentOrder.AirDistance, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="CustomerFullName"
+                                                             Text="{Binding CurrentOrder.CustomerFullName, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="CustomerPhone"
+                                                             Text="{Binding CurrentOrder.CustomerPhone, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="OrderWeight"
+                                                             Text="{Binding CurrentOrder.OrderWeight, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="OrderSize"
+                                                             Text="{Binding CurrentOrder.OrderSize, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="IsFragile"
+                                                             Text="{Binding CurrentOrder.IsFragile, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="OrderOpenTime"
+                                                             Text="{Binding CurrentOrder.OrderOpenTime, Mode=OneWay}"
+                                                             IsReadOnly="True"/>
+
+                                    <Controls:LabeledTextBox Label="ExpectedDeliveryTime"
+                                                             Text="{Binding CurrentOrder.ExpectedDeliveryTime, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="MaxDeliveryTime"
+                                                             Text="{Binding CurrentOrder.MaxDeliveryTime, Mode=TwoWay}"/>
+
+
+                                    <Controls:LabeledTextBox Label="TimeRemaining"
+                                                             Text="{Binding CurrentOrder.TimeRemaining, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="OrderStatus"
+                                                             Text="{Binding CurrentOrder.OrderStatus, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="ScheduleStatus"
+                                                             Text="{Binding CurrentOrder.ScheduleStatus, Mode=TwoWay}"/>
+
+                                    <Controls:LabeledTextBox Label="OrderDetail"
+                                                             Text="{Binding CurrentOrder.OrderDetail, Mode=TwoWay}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>

@@ -62,7 +62,7 @@
 
                     <Border Grid.Row="0" BorderBrush="#BDC3C7" BorderThickness="0,0,0,1" Padding="0,0,0,20">
                         <StackPanel>
-                            <TextBlock Text="My Profile &amp; Statistics" Foreground="#3498DB" FontWeight="Bold" FontSize="18" Margin="0,0,0,15"/>
+                            <TextBlock Text="My Profile &amp; Statistics" Foreground="#3498DB" FontWeight="Bold" FontSize="18" Margin="0,0,0,15" />
 
                             <Grid>
                                 <Grid.ColumnDefinitions>

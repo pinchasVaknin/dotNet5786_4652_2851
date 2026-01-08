@@ -66,10 +66,20 @@ public partial class OrderListWindow : Window
 
     private void CmbCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        // Update the selected filter category based on user selection
+        if (CmbFilterCategory.SelectedItem is BO.OrderInListFilterBy selectedCategory)
+        {
+            OrderCategoryFilter = selectedCategory;
+        }
+
+        // Reset the filter value ComboBox
         if (CmbFilterValue != null)
         {
             CmbFilterValue.ItemsSource = null;
+            CmbFilterValue.SelectedItem = null;
         }
+
+        //  Refresh the order list based on the new filter category
         RefreshOrderList();
     }
 
@@ -100,21 +110,23 @@ public partial class OrderListWindow : Window
                 if (CmbFilterValue == null) return;
 
                 CmbFilterValue.IsEnabled = true;
-                CmbFilterValue.ItemsSource = null;
 
-                switch (OrderCategoryFilter)
+                if (CmbFilterValue.ItemsSource == null)
                 {
-                    case BO.OrderInListFilterBy.OrderStatus:
-                        CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.OrderStatus));
-                        break;
+                    switch (OrderCategoryFilter)
+                    {
+                        case BO.OrderInListFilterBy.OrderStatus:
+                            CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.OrderStatus));
+                            break;
 
-                    case BO.OrderInListFilterBy.TypeOfOrder:
-                        CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.TypeOfOrder));
-                        break;
+                        case BO.OrderInListFilterBy.TypeOfOrder:
+                            CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.TypeOfOrder));
+                            break;
 
-                    case BO.OrderInListFilterBy.ScheduleStatus:
-                        CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.ScheduleStatus));
-                        break;
+                        case BO.OrderInListFilterBy.ScheduleStatus:
+                            CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.ScheduleStatus));
+                            break;
+                    }
                 }
 
                 if (CmbFilterCategory.SelectedItem == null || CmbFilterValue.SelectedItem == null) return;
@@ -166,7 +178,7 @@ public partial class OrderListWindow : Window
     #region Observers
 
     private void OrderListObserver()
-                    => RefreshOrderList();
+                    => Dispatcher.BeginInvoke(new Action(RefreshOrderList));
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
                     => s_bl.Order.AddObserver(OrderListObserver);

@@ -10,7 +10,9 @@
         Title="Order List"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
         Style="{StaticResource StandardWindow}"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
 
     <Grid>
         <Grid.RowDefinitions>
