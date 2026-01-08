@@ -1,5 +1,6 @@
 ﻿namespace PL.Courier;
 
+using Tools;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,11 +74,8 @@ public partial class CourierWindow : Window
 
         try
         {
-
-            int adminId = 333333333;
-
             // Fetch the existing courier details for updating
-            CurrentCourier = s_bl.Courier.GetCourier(adminId, courierId);
+            CurrentCourier = s_bl.Courier.GetCourier(UserData.s_UserId, courierId);
 
             // Set the action button text to "Update"
             ActionButtonText = "Update";
@@ -92,7 +90,6 @@ public partial class CourierWindow : Window
     }
 
     #endregion Constructors
-
 
     //================== Enumerables =================\\
 
@@ -118,8 +115,6 @@ public partial class CourierWindow : Window
         // Show wait cursor
         Mouse.OverrideCursor = Cursors.Wait;
 
-        int adminId = 333333333;
-
         try
         {
             // Basic validation checks
@@ -143,13 +138,13 @@ public partial class CourierWindow : Window
             // Validate the courier data before proceeding
             if (ActionButtonText == "Add")
             {
-                s_bl.Courier.AddCourier(adminId, CurrentCourier);
+                s_bl.Courier.AddCourier(UserData.s_UserId, CurrentCourier);
                 MessageBox.Show("Courier added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             // Update existing courier
             else
             {
-                s_bl.Courier.UpdateCourier(adminId, CurrentCourier);
+                s_bl.Courier.UpdateCourier(UserData.s_UserId, CurrentCourier);
                 MessageBox.Show("Courier updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 

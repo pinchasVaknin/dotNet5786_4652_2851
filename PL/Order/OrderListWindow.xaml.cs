@@ -1,5 +1,4 @@
-﻿using BO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PL.Tools;
 
 namespace PL.Order;
 
@@ -23,11 +23,19 @@ public partial class OrderListWindow : Window
 
     //==================== Fields ===================\\
 
+    #region Fields
+
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-    public BO.OrderInListFilterBy OrderFilter { get; set; } = BO.OrderInListFilterBy.All;
+    public BO.OrderInListFilterBy OrderCategoryFilter { get; set; } = BO.OrderInListFilterBy.All;
+
+    public BO.OrderInList? SelectedOrder { get; set; }
+
+    #endregion Fields
 
     //================ OrderList Property =================\\
+
+    #region OrderList Property
 
     public IEnumerable<BO.OrderInList> OrderList
     {
@@ -39,33 +47,135 @@ public partial class OrderListWindow : Window
     public static readonly DependencyProperty OrderListProperty =
         DependencyProperty.Register("OrderList", typeof(IEnumerable<BO.OrderInList>), typeof(OrderListWindow), new PropertyMetadata(null));
 
-
-
+    #endregion OrderList Property
 
     //================== Constructor =================\\
+
+    #region Constructor
 
     public OrderListWindow()
     {
         InitializeComponent();
     }
 
-    private void OrderFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        // TODO: Replace with real user ID after Login implementation
-        int adminId = 333333333;
+    #endregion Constructor
 
+    //==================== Methods ===================\\
+
+    #region Methods
+
+    private void CmbCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (CmbFilterValue != null)
+        {
+            CmbFilterValue.ItemsSource = null;
+        }
+        RefreshOrderList();
+    }
+
+    private void CmbFilterValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        RefreshOrderList();
+    }
+
+    private void RefreshOrderList()
+    {
         try
         {
-            var oldList = s_bl?.Order.GetOrders(adminId);
+            // If no filter is applied, retrieve all orders
+            if (OrderCategoryFilter == BO.OrderInListFilterBy.All)
+            {
+                // Retrieve all orders for the user
+                OrderList = s_bl?.Order.GetOrders(UserData.s_UserId) ?? Enumerable.Empty<BO.OrderInList>();
 
-            if (oldList == null) return;
-
-            if (OrderFilter == BO.OrderInListFilterBy.All)
-                OrderList = oldList;
+                if (CmbFilterValue != null)
+                {
+                    CmbFilterValue.ItemsSource = null;
+                    CmbFilterValue.IsEnabled = false;
+                }
+            }
             else
-                OrderList = oldList.Where(c => c.OrderInListFilterBy == OrderFilter);
+            {
+
+                if (CmbFilterValue == null) return;
+
+                CmbFilterValue.IsEnabled = true;
+                CmbFilterValue.ItemsSource = null;
+
+                switch (OrderCategoryFilter)
+                {
+                    case BO.OrderInListFilterBy.OrderStatus:
+                        CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.OrderStatus));
+                        break;
+
+                    case BO.OrderInListFilterBy.TypeOfOrder:
+                        CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.TypeOfOrder));
+                        break;
+
+                    case BO.OrderInListFilterBy.ScheduleStatus:
+                        CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.ScheduleStatus));
+                        break;
+                }
+
+                if (CmbFilterCategory.SelectedItem == null || CmbFilterValue.SelectedItem == null) return;
+                var category = (BO.OrderInListFilterBy)CmbFilterCategory.SelectedItem;
+
+                switch (category)
+                {
+                    case BO.OrderInListFilterBy.OrderStatus:
+                        var status = (BO.OrderStatus)CmbFilterValue.SelectedItem;
+                        OrderList = s_bl?.Order.GetOrders(UserData.s_UserId, category, status);
+                        break;
+                    case BO.OrderInListFilterBy.TypeOfOrder:
+                        var type = (BO.TypeOfOrder)CmbFilterValue.SelectedItem;
+                        OrderList = s_bl?.Order.GetOrders(UserData.s_UserId, category, type);
+                        break;
+                    case BO.OrderInListFilterBy.ScheduleStatus:
+                        var scheduleStatus = (BO.ScheduleStatus)CmbFilterValue.SelectedItem;
+                        OrderList = s_bl?.Order.GetOrders(UserData.s_UserId, category, scheduleStatus);
+                        break;
+                }
+            }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+        }
     }
-  
+
+    private void OrderDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        // Get the selected order from the DataContext of the DataGrid
+    }
+
+    private void BtnAdd_Click(object sender, RoutedEventArgs e)
+    {
+        // Open a new window to add a new order
+    }
+
+    private void BtnDelete_Click(object sender, RoutedEventArgs e)
+    {
+        // Get the selected order from the DataContext of the button
+    }
+
+    #endregion Methods
+
+    //==================== Observers ===================\\
+
+    #region Observers
+
+    private void OrderListObserver()
+    {
+        Dispatcher.Invoke(() => RefreshOrderList());
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+                    => s_bl.Order.AddObserver(OrderListObserver);
+
+    private void Window_Closed(object sender, EventArgs e)
+                    => s_bl.Order.RemoveObserver(OrderListObserver);
+
+    #endregion Observers
+
 }

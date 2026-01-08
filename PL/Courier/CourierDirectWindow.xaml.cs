@@ -81,7 +81,7 @@ public partial class CourierDirectWindow : Window
                 pnlNoOrder.Visibility = Visibility.Collapsed;
                 pnlHasOrder.Visibility = Visibility.Visible;
 
-                cmbVehicle.IsEnabled = false; // Cannot change vehicle during mission
+                cmbVehicle.IsReadOnly = true; // Disable vehicle change when busy
 
                 txtStatus.Text = "BUSY";
                 StatusBadge.Background = Brushes.OrangeRed;
@@ -92,7 +92,7 @@ public partial class CourierDirectWindow : Window
                 pnlNoOrder.Visibility = Visibility.Visible;
                 pnlHasOrder.Visibility = Visibility.Collapsed;
 
-                cmbVehicle.IsEnabled = true;
+                cmbVehicle.IsReadOnly = false; // Enable vehicle change when idle
 
                 txtStatus.Text = "AVAILABLE";
                 StatusBadge.Background = Brushes.SeaGreen;

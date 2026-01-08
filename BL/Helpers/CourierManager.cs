@@ -99,15 +99,16 @@ internal static class CourierManager
     /// <summary>
     /// Retrieves a filtered and sorted list of couriers.
     /// </summary>
-    /// <param name="requesterId">The ID of the user requesting the list (for future permissions).</param>
-    /// <param name="isActiveFilter">Optional filter by active status.</param>
-    /// <param name="sortBy">Optional sorting criteria.</param>
-    /// <returns>A list of <see cref="BO.CourierInList"/>.</returns>
+    /// <param name="requesterId">The ID of the requester (must be an admin).</param>
+    /// <param name="filterBy">The filtering criteria.</param>
+    /// <param name="filterValue">The value to filter by.</param>
+    /// <param name="sortBy">The sorting criteria.</param>
+    /// <returns>A list of <see cref="BO.CourierInList"/> objects.</returns>
+    /// <exception cref="BO.BlXMLFileLoadCreateException">Thrown if there is a data access error.</exception>
     internal static IEnumerable<BO.CourierInList> GetListOfCouriers(
-        int requesterId,
-        bool? isActiveFilter = null,
-        BO.VehicleType? vehicleFilter = null,
-        BO.CourierListSortBy? sortBy = null)
+        BO.CourierInListFilterBy? filterBy = null,
+        object? filterValue = null,
+        BO.CourierInListSortBy? sortBy = null)
     {
         try
         {
@@ -115,26 +116,45 @@ internal static class CourierManager
             var boCouriers = from c in s_dal.Courier.ReadAll()
                              select GetCourierInList(c.CourierId);
 
-            // Apply Active filter
-            if (isActiveFilter is bool active)
-                boCouriers = boCouriers.Where(c => c.CourierIsActive == active);
-
-            if (vehicleFilter is BO.VehicleType vType && vType != BO.VehicleType.All)
+            // Apply Filtering
+            if (filterBy.HasValue && filterValue is not null)
             {
-                boCouriers = boCouriers.Where(c => c.VehicleType == vType);
+                switch (filterBy.Value)
+                {
+
+                    case BO.CourierInListFilterBy.CourierIsActive:
+                        if (bool.TryParse(filterValue.ToString(), out bool isActiveVal))
+                            boCouriers = boCouriers.Where(x => x.CourierIsActive == isActiveVal);
+                        break;
+
+                    case BO.CourierInListFilterBy.VehicleType:
+                        if (Tools.TryConvertEnum(filterValue, out BO.VehicleType vehicleVal))
+                            boCouriers = boCouriers.Where(x => x.VehicleType == vehicleVal);
+                        break;
+
+                    case BO.CourierInListFilterBy.OrderIdInHandle:
+                        if (bool.TryParse(filterValue.ToString(), out bool hasOrder))
+                        {
+                            if (hasOrder)
+                                boCouriers = boCouriers.Where(x => x.OrderIdInHandle != null && x.OrderIdInHandle != 0);
+                            else
+                                boCouriers = boCouriers.Where(x => x.OrderIdInHandle == null || x.OrderIdInHandle == 0);
+                        }
+                        break;
+                }
             }
 
             // Apply Sorting
             boCouriers = sortBy switch
             {
-                BO.CourierListSortBy.CourierFullName => boCouriers.OrderBy(c => c.CourierFullName),
-                BO.CourierListSortBy.CourierIsActive => boCouriers.OrderBy(c => c.CourierIsActive),
-                BO.CourierListSortBy.VehicleType => boCouriers.OrderBy(c => c.VehicleType),
-                BO.CourierListSortBy.StartWorkDate => boCouriers.OrderBy(c => c.StartWorkDate),
-                BO.CourierListSortBy.DeliveriesInTime => boCouriers.OrderByDescending(c => c.DeliveriesInTime),
-                BO.CourierListSortBy.DeliveriesOverTime => boCouriers.OrderByDescending(c => c.DeliveriesOverTime),
-                BO.CourierListSortBy.OrderIdInHandle => boCouriers.OrderBy(c => c.OrderIdInHandle),
-                null or BO.CourierListSortBy.CourierId or _ => boCouriers.OrderBy(c => c.CourierId),
+                BO.CourierInListSortBy.CourierFullName => boCouriers.OrderBy(c => c.CourierFullName),
+                BO.CourierInListSortBy.CourierIsActive => boCouriers.OrderBy(c => c.CourierIsActive),
+                BO.CourierInListSortBy.VehicleType => boCouriers.OrderBy(c => c.VehicleType),
+                BO.CourierInListSortBy.StartWorkDate => boCouriers.OrderBy(c => c.StartWorkDate),
+                BO.CourierInListSortBy.DeliveriesInTime => boCouriers.OrderByDescending(c => c.DeliveriesInTime),
+                BO.CourierInListSortBy.DeliveriesOverTime => boCouriers.OrderByDescending(c => c.DeliveriesOverTime),
+                BO.CourierInListSortBy.OrderIdInHandle => boCouriers.OrderBy(c => c.OrderIdInHandle),
+                null or BO.CourierInListSortBy.CourierId or _ => boCouriers.OrderBy(c => c.CourierId),
             };
 
             return boCouriers.ToList();

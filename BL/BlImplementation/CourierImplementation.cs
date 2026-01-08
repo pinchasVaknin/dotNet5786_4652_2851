@@ -46,12 +46,12 @@ internal class CourierImplementation : ICourier
     /// <returns>A list of <see cref="BO.CourierInList"/>.</returns>
     public IEnumerable<BO.CourierInList> GetCouriers(
         int requesterId,
-        bool? isActiveFilter = null,
-        BO.VehicleType? vehicleFilter = null,
-        BO.CourierListSortBy? sortBy = null)
+        BO.CourierInListFilterBy? filterBy = null,
+        object? filterValue = null,
+        BO.CourierInListSortBy? sortBy = null)
     {
         Tools.EnsureAdmin(requesterId, nameof(GetCouriers));
-        return CourierManager.GetListOfCouriers(requesterId, isActiveFilter, vehicleFilter, sortBy);
+        return CourierManager.GetListOfCouriers(filterBy, filterValue, sortBy);
     }
 
     #endregion List Retrieval

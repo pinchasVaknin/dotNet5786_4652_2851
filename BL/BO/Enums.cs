@@ -13,7 +13,7 @@ public enum OrderStatus
     InProgress,
     Supplied,
     Refused,
-    Canceled
+    Cancelled
 }
 
 /// <summary>
@@ -92,7 +92,7 @@ public enum UserRole
 /// <summary>
 /// Sorting options for the courier list view (BO.CourierInList).
 /// </summary>
-public enum CourierListSortBy
+public enum CourierInListSortBy
 {
     CourierId,
     CourierFullName,
@@ -102,6 +102,27 @@ public enum CourierListSortBy
     DeliveriesInTime,
     DeliveriesOverTime,
     OrderIdInHandle
+}
+
+/// <summary>
+/// Specifies the criteria for filtering a list of couriers.
+/// </summary>
+/// <remarks>This enumeration provides options to filter couriers based on their active status, vehicle type, 
+/// current order handling status, or to include all couriers without applying any filters.</remarks>
+public enum CourierInListFilterBy
+{
+
+    // Filter by active status of the courier.
+    CourierIsActive,
+
+    // Filter by vehicle type used by the courier.
+    VehicleType,
+
+    // Filter by whether the courier is currently handling an order.
+    OrderIdInHandle,
+
+    // No filtering; include
+    All
 }
 
 #endregion ICourier Enums
@@ -179,9 +200,9 @@ public enum OrderInListFilterBy
     /// Filter by schedule status (BO.ScheduleStatus - OnTime / InRisk / Late).
     /// </summary>
     ScheduleStatus,
-    
+
     /// <summary>
-    /// 
+    /// No filtering; include all orders.
     /// </summary>
     All
 }

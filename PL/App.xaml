@@ -2,169 +2,41 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:PL"
+             xmlns:converters="clr-namespace:PL.Converters"
              StartupUri="Login/LoginWindow.xaml">
-    
-    <Application.Resources>
-        <local:VehicleTypeCollection x:Key="VehicleTypeCollectionKey" />        <local:OrderInListFilterByCollection x:Key="OrderInListFilterByCollectionKey" />               <!--<local:OrderStatusCollection x:Key="OrderStatusCollectionKey" />-->
 
-        <!--Color Brushes-->
-        <SolidColorBrush x:Key="DarkBlueBrush" Color="#2C3E50"/>
-        <SolidColorBrush x:Key="LightBlueBrush" Color="#3498DB"/>
-        <SolidColorBrush x:Key="GreenBrush" Color="#27AE60"/>
-        <SolidColorBrush x:Key="LightGreenBrush" Color="#FF1CED74"/>
-        <SolidColorBrush x:Key="RedBrush" Color="#E74C3C"/>
+    <Application.Resources>        <ResourceDictionary>                                    <!--Merged Dictionaries-->            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Colors.xaml"/>
+                <ResourceDictionary Source="Styles/Buttons.xaml"/>
+                <ResourceDictionary Source="Styles/Labels.xaml"/>
+                <ResourceDictionary Source="Styles/TextBoxes.xaml"/>
+                <ResourceDictionary Source="Styles/DataGrids.xaml"/>
+                <ResourceDictionary Source="Styles/ComboBoxes.xaml"/>
+            </ResourceDictionary.MergedDictionaries>            <!--Converters-->            <converters:EnumToColorConverter x:Key="EnumToColorConverter"/>
+            <converters:ConvertDeleteToColor x:Key="ConvertDeleteToColor"/>
+            <converters:ConvertDeleteToEnabled x:Key="ConvertDeleteToEnabled"/>            <!---Filter Collections-->            <local:OrderInListFilterByCollection x:Key="OrderInListFilterByCollectionKey" />
+            <local:CourierInListFilterByCollection x:Key="CourierInListFilterByCollectionKey" />
 
-        <!--Standard Window Style-->
-        <Style x:Key="StandardWindow" TargetType="Window">
-            <Setter Property="WindowStyle" Value="None"/>
-            <Setter Property="ResizeMode" Value="NoResize"/>
-            <Setter Property="Height" Value="640"/>
-            <Setter Property="Width" Value="850"/>
-        </Style>
+            <!--Standard Window Style-->
+            <Style x:Key="StandardWindow" TargetType="Window">
+                <Setter Property="WindowStyle" Value="None"/>
+                <Setter Property="ResizeMode" Value="NoResize"/>
+                <Setter Property="Height" Value="640"/>
+                <Setter Property="Width" Value="850"/>
+            </Style>
 
-        <!--Exit Button Style-->
-        <Style x:Key="BtnExit" TargetType="Button">
-            <Setter Property="Content" Value="X"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Width" Value="30"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="Gray"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
+            <!-- Exit Program Button Style -->
+            <Style x:Key="BtnExitProgram" TargetType="Button" BasedOn="{StaticResource BtnExit}">
+                <EventSetter Event="Click" Handler="BtnCloseProgram_Global_Click"/>
+            </Style>
 
-        <!--Exit Program Button Style-->
-        <Style x:Key="BtnExitProgram" TargetType="Button" BasedOn="{StaticResource BtnExit}">
-            <EventSetter Event="Click" Handler="BtnCloseProgram_Global_Click"/>
-        </Style>
+            <!--Numeric TextBox Style for Configuration Window-->
+            <Style x:Key="NumericStyle" TargetType="TextBox" BasedOn="{StaticResource ConfigTextBoxStyle}">
+                <EventSetter Event="PreviewTextInput" Handler="CheckIfNumber"/>
+            </Style>
 
-        <!--Exit Window Button Style-->
-        <Style x:Key="BtnExitWindow" TargetType="Button" BasedOn="{StaticResource BtnExit}">
-            <EventSetter Event="Click" Handler="BtnCloseWindow_Global_Click"/>
-        </Style>
+            
 
-        <!--Back Button Style-->
-        <Style x:Key="BtnBack" TargetType="Button">
-            <Setter Property="Content" Value="🡢"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Width" Value="30"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="Gray"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-
-        <!--ButtonStyle for Elephant Font-->
-        <Style x:Key="ElephantButtonStyle" TargetType="Button">
-            <Setter Property="FontFamily" Value="Elephant"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Cursor" Value="Hand"/>
-        </Style>
-
-        <!--ButtonStyle for Menu Buttons-->
-        <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource ElephantButtonStyle}">
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Margin" Value="10,5"/>
-            <Setter Property="Background" Value="White"/>
-        </Style>
-
-        <!--Standard Label Style-->
-        <Style x:Key="StandardLabel" TargetType="Label">
-            <Setter Property="FontFamily" Value="Bold"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="26"/>
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
-
-        <!--Label and TextBox Styles for Configuration Window-->
-        <Style x:Key="ConfigLabelStyle" TargetType="Label">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontFamily" Value="Segoe UI Variable Display Semibold"/>
-        </Style>
-
-        <!--TextBox Style for Configuration Window-->
-        <Style x:Key="ConfigTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Margin" Value="0,3"/>
-            <Setter Property="FontFamily" Value="Segoe UI Variable Display Semibold"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Height" Value="25"/>
-        </Style>
-
-        <!--Numeric TextBox Style for Configuration Window-->
-        <Style x:Key="NumericStyle" TargetType="TextBox" BasedOn="{StaticResource ConfigTextBoxStyle}">
-            <EventSetter Event="PreviewTextInput" Handler="CheckIfNumber"/>
-        </Style>
-
-        <!--ComboBox Style for Configuration Window-->
-        <Style x:Key="ConfigComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Margin" Value="0,3"/>
-            <Setter Property="FontFamily" Value="Segoe UI Variable Display Semibold"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Height" Value="25"/>
-        </Style>
-
-        <!--Action Button Style-->
-        <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource ElephantButtonStyle}">
-            <Setter Property="Background" Value="{StaticResource GreenBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Width" Value="150"/>
-            <Setter Property="Height" Value="50"/>
-        </Style>
-
-        <!--DataGrid Cell Style-->
-        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
-            <Setter Property="TextBlock.TextAlignment" Value="Center"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        </Style>
-
-        <!--DataGrid Header Style-->
-        <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="FontWeight" Value="ExtraBold"/>
-            <Setter Property="Height" Value="28"/>
-            <Setter Property="Background" Value="#ECF0F1"/>
-            <Setter Property="Foreground" Value="#2C3E50"/>
-            <Setter Property="BorderBrush" Value="Gray"/>
-            <Setter Property="BorderThickness" Value="0,0,1,1"/>
-            <Setter Property="Padding" Value="5,0"/>
-        </Style>
-
-        <!--Standard DataGrid Style-->
-        <Style x:Key="StandardDataGridStyle" TargetType="DataGrid">
-            <Setter Property="CellStyle" Value="{StaticResource DataGridCellStyle}"/>
-            <Setter Property="ColumnHeaderStyle" Value="{StaticResource DataGridHeaderStyle}"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="AutoGenerateColumns" Value="False"/>
-            <Setter Property="IsReadOnly" Value="True"/>
-        </Style>
-
-        <!--Logout Button Style-->
-            <Style x:Key="BtnLogout" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Content" Value="Logout"/>
-            <Setter Property="Background" Value="{StaticResource RedBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Width" Value="150"/>
-            <Setter Property="Height" Value="50"/>
-        </Style>
-
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

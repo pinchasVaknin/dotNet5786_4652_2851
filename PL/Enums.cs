@@ -1,6 +1,17 @@
 ﻿namespace PL;
 using System.Collections;
 
+//==================== Courier Filters ===================\\
+
+#region CourierFilters
+
+internal class CourierInListFilterByCollection : IEnumerable
+{
+    // We retrieve all values from the BO.CourierInListFilterBy Enum
+    static readonly IEnumerable<BO.CourierInListFilterBy> s_enums =
+        (Enum.GetValues(typeof(BO.CourierInListFilterBy)) as IEnumerable<BO.CourierInListFilterBy>)!;
+    public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
+}
 
 internal class VehicleTypeCollection : IEnumerable
 {
@@ -10,6 +21,13 @@ internal class VehicleTypeCollection : IEnumerable
 
     public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
 }
+
+#endregion CourierFilters
+
+//==================== Order Filters ===================\\
+
+#region OrderFilters
+
 internal class OrderInListFilterByCollection : IEnumerable
 {
     // We retrieve all values from the BO.OrderInListFilterBy Enum
@@ -42,14 +60,4 @@ internal class ScheduleStatusCollection : IEnumerable
     public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
 }
 
-
-
-
-//internal class OrderStatusCollection : IEnumerable
-//{
-//    // We retrieve all values from the BO.OrderInListFilterBy Enum
-//    static readonly IEnumerable<BO.OrderInListFilterBy> s_enums =
-//        (Enum.GetValues(typeof(BO.OrderInListFilterBy)) as IEnumerable<BO.OrderInListFilterBy>)!;
-
-//    public IEnumerator GetEnumerator() => s_enums.GetEnumerator();
-//}
+#endregion OrderFilters

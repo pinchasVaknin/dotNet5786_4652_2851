@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Courier"
+        xmlns:Controls="clr-namespace:PL.Controls"
         xmlns:pl="clr-namespace:PL"
         mc:Ignorable="d"
         Title="CourierListWindow"
@@ -13,12 +14,6 @@
         Loaded="Window_Loaded"
         Closed="Window_Closed">
 
-    <Window.Resources>
-        <pl:ConvertVehicleTypeToColor x:Key="VehicleColorConverter"/>
-        <pl:ConvertDeleteToColor x:Key="DeleteColorConverter"/>
-        <pl:ConvertDeleteToEnabled x:Key="DeleteEnabledConverter"/>
-    </Window.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -27,37 +22,33 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="{StaticResource DarkBlueBrush}">
-
-            <Grid HorizontalAlignment="Right">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <Button Grid.Column="0" Style="{StaticResource BtnExitProgram}"/>
-                <Button Grid.Column="1" Style="{StaticResource BtnBack}" Click="BtnBack_Click"/>
-            </Grid>
-        </Border>
+        <Controls:TopBarControl Grid.Row="0" Title="Courier List"/>
 
         <Border Grid.Row="1" Background="{StaticResource DarkBlueBrush}" 
                 BorderThickness="0,0,0,1" BorderBrush="LightGray">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="425*"/>
-                    <ColumnDefinition Width="314*"/>
-                    <ColumnDefinition Width="111*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Label Content="Couriers Filter ->" 
                        Style="{StaticResource StandardLabel}"/>
 
-                <ComboBox Grid.Column="1" VerticalAlignment="Center" Height="30"
-                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                  FontWeight="Bold" FontSize="16" Foreground="Red" 
-                  ItemsSource="{Binding Source={StaticResource VehicleTypeCollectionKey}}" 
-                  SelectedValue="{Binding VehicleFilter, Mode=TwoWay}" 
-                  SelectionChanged="CourierFilter_SelectionChanged" Grid.ColumnSpan="2"/>
+                <ComboBox x:Name="CmbFilterCategory"
+                          Grid.Column="1" 
+                          Style="{StaticResource StandardComboBoxStyle}"
+                          ItemsSource="{Binding Source={StaticResource CourierInListFilterByCollectionKey}}" 
+                          SelectedValue="{Binding CourierCategoryFilter, Mode=TwoWay}" 
+                          SelectionChanged="CourierFilter_SelectionChanged"/>
+
+                <ComboBox x:Name="CmbFilterValue" 
+                          Grid.Column="2"
+                          Style="{StaticResource StandardComboBoxStyle}"
+                          IsEnabled="False"
+                          SelectionChanged="CmbFilterValue_SelectionChanged"/>
+                
             </Grid>
         </Border>
 
@@ -75,7 +66,7 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="Background" 
-                            Value="{Binding VehicleType, Converter={StaticResource VehicleColorConverter}}"/>
+                            Value="{Binding VehicleType, Converter={StaticResource EnumToColorConverter}}"/>
                             <Setter Property="TextBlock.TextAlignment" Value="Center"/>
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         </Style>
@@ -85,7 +76,6 @@
                 <DataGridTextColumn Header="On Time" Binding="{Binding DeliveriesInTime}" Width="*"/>
                 <DataGridTextColumn Header="Late" Binding="{Binding DeliveriesOverTime}" Width="*"/>
                 <DataGridTextColumn Header="Current Order" Binding="{Binding OrderIdInHandle}" Width="*"/>
-
                 <DataGridTextColumn Header="Since" Binding="{Binding StartWorkDate, StringFormat=dd/MM/yyyy}" Width="*"/>
 
                 <DataGridTemplateColumn Header="Delete" Width="60">
@@ -97,9 +87,9 @@
                                     BorderThickness="0"
                                     FontSize="16" 
                                     Cursor="Hand" 
-                                    ToolTip="Delete Item"
-                                    Foreground="{Binding Converter={StaticResource DeleteColorConverter}}"
-                                    IsEnabled="{Binding Converter={StaticResource DeleteEnabledConverter}}"/>
+                                    ToolTip="Delete Courier"
+                                    Foreground="{Binding Converter={StaticResource ConvertDeleteToColor}}"
+                                    IsEnabled="{Binding Converter={StaticResource ConvertDeleteToEnabled}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

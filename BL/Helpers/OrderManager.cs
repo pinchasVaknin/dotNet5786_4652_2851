@@ -387,7 +387,7 @@ internal static class OrderManager
     /// Performs complex calculations (Status, Schedule, Timings) for each order.
     /// </summary>
     internal static IEnumerable<BO.OrderInList> GetOrders(
-            BO.OrderInListFilterBy? filterField = null,
+            BO.OrderInListFilterBy? filterBy = null,
             object? filterValue = null,
             BO.OrderInListSortBy? sortBy = null)
     {
@@ -417,7 +417,7 @@ internal static class OrderManager
                     lastDelivery is null ? BO.OrderStatus.Open :
                     lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.None ? BO.OrderStatus.InProgress :
                     lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Completed ? BO.OrderStatus.Supplied :
-                    lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Cancelled ? BO.OrderStatus.Canceled :
+                    lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Cancelled ? BO.OrderStatus.Cancelled :
                     BO.OrderStatus.Refused
 
                 // Calculate Schedule Status
@@ -457,19 +457,21 @@ internal static class OrderManager
             var list = query.ToList();
 
             // Apply Filters
-            if (filterField.HasValue && filterValue is not null)
+            if (filterBy.HasValue && filterValue is not null)
             {
-                switch (filterField.Value)
+                switch (filterBy.Value)
                 {
                     
                     case BO.OrderInListFilterBy.TypeOfOrder:
                         if (Tools.TryConvertEnum(filterValue, out BO.TypeOfOrder typeVal))
                             list = list.Where(x => x.TypeOfOrder == typeVal).ToList();
                         break;
+
                     case BO.OrderInListFilterBy.OrderStatus:
                         if (Tools.TryConvertEnum(filterValue, out BO.OrderStatus statusVal))
                             list = list.Where(x => x.OrderStatus == statusVal).ToList();
                         break;
+
                     case BO.OrderInListFilterBy.ScheduleStatus:
                         if (Tools.TryConvertEnum(filterValue, out BO.ScheduleStatus schedVal))
                             list = list.Where(x => x.ScheduleStatus == schedVal).ToList();
@@ -726,7 +728,7 @@ internal static class OrderManager
         return lastDelivery.DeliveryFinishType switch
         {
             DO.DeliveryFinishType.Completed => BO.OrderStatus.Supplied,
-            DO.DeliveryFinishType.Cancelled => BO.OrderStatus.Canceled,
+            DO.DeliveryFinishType.Cancelled => BO.OrderStatus.Cancelled,
             DO.DeliveryFinishType.Failed or DO.DeliveryFinishType.Returned => BO.OrderStatus.Refused,
             _ => throw new BO.BlInvalidDeliveryStatusException($"Unknown delivery finish type: {lastDelivery.DeliveryFinishType}")
         };
@@ -852,7 +854,7 @@ internal static class OrderManager
             enumOrderStatus = lastDelivery.DeliveryFinishType switch
             {
                 DO.DeliveryFinishType.Completed => BO.OrderStatus.Supplied,
-                DO.DeliveryFinishType.Cancelled => BO.OrderStatus.Canceled,
+                DO.DeliveryFinishType.Cancelled => BO.OrderStatus.Cancelled,
                 DO.DeliveryFinishType.Failed or DO.DeliveryFinishType.Returned => BO.OrderStatus.Refused,
                 _ => throw new BO.BlInvalidDeliveryStatusException($"Unknown delivery finish type: {lastDelivery.DeliveryFinishType}")
             };

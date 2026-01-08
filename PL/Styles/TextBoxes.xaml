@@ -1,0 +1,48 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:PL.Converters">
+
+    <converters:EnumToColorConverter x:Key="EnumToColorConverter"/>
+
+    <!--TextBox Style for Configuration Window-->
+    <Style x:Key="ConfigTextBoxStyle" TargetType="TextBox">
+        <Setter Property="Margin" Value="0,3"/>
+        <Setter Property="FontFamily" Value="Segoe UI Variable Display Semibold"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Foreground" 
+            Value="{Binding TextForeground, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+        
+        <Style.Triggers>
+            <Trigger Property="IsReadOnly" Value="True">
+                <Setter Property="Background" Value="#EEEEEE"/>
+                <Setter Property="Foreground" Value="#555555"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="EnumTextBoxStyle" TargetType="TextBox">
+
+        <Setter Property="Margin" Value="0,3"/>
+        <Setter Property="FontFamily" Value="Segoe UI Variable Display Semibold"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Height" Value="25"/>
+
+        <Setter Property="Foreground" 
+                Value="{Binding Text, RelativeSource={RelativeSource Self}, Converter={StaticResource EnumToColorConverter}}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+
+        <Setter Property="Foreground" 
+            Value="{Binding Text, RelativeSource={RelativeSource Self}, Converter={StaticResource EnumToColorConverter}}"/>
+
+        <Style.Triggers>
+            <Trigger Property="IsReadOnly" Value="True">
+                <Setter Property="Background" Value="#EEEEEE"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--Numeric TextBox Style for Configuration Window-->
+    <!-- This style is found in App.xaml to be accessible globally -->
+
+</ResourceDictionary>

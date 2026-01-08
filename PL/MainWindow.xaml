@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL"
+        xmlns:Controls="clr-namespace:PL.Controls"
         mc:Ignorable="d"
         Title="MainWindow"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
@@ -32,31 +33,34 @@
                        FontSize="22" Margin="0,20,0,30"/>
 
                 <StackPanel Grid.Row="1">
-                    <Button Content="Couriers List" Click="BtnShowCouriers_Click" Style="{StaticResource MenuButtonStyle}" FontSize="15"/>
-                    <Button Content="Orders List" Click="BtnShowOrders_Click" Style="{StaticResource MenuButtonStyle}" FontSize="15"/>
+                    <Button Content="Couriers List" Click="BtnShowCouriers_Click" Style="{StaticResource ActionButtonBaseStyle}" FontSize="15"/>
+                    <Button Content="Orders List" Click="BtnShowOrders_Click" Style="{StaticResource ActionButtonBaseStyle}" FontSize="15"/>
                 </StackPanel>
 
-                <Button Grid.Row="3" Style="{StaticResource BtnLogout}" Width="200" Height="40" Margin="5, 0, 5, 10" Click="BtnLogout_Click"/>
+                <Button Grid.Row="3" Style="{StaticResource BtnLogout}" Click="BtnLogout_Click"/>
 
                 <StackPanel Grid.Row="2" Margin="0,0,0,10">
                     <Label Content="Database Actions:" Foreground="LightGray" Margin="10,0"/>
 
                     <Button Content="Init DB" Background="{StaticResource LightBlueBrush}" Foreground="White" 
-                            Click="BtnInitDB_Click" Style="{StaticResource ElephantButtonStyle}"/>
+                            Click="BtnInitDB_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
 
                     <Button Content="Reset DB" Background="{StaticResource RedBrush}" Foreground="White" 
-                            Click="BtnResetDB_Click" Style="{StaticResource ElephantButtonStyle}"/>
+                            Click="BtnResetDB_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
                 </StackPanel>
             </Grid>
         </Border>
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="80"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Background="#ECF0F1" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+            <Controls:TopBarControl Grid.Row="0" IsExitProgram="True" BackButtonVisibility="Collapsed"/>
+
+            <Border Grid.Row="1" Background="#ECF0F1" BorderBrush="LightGray" BorderThickness="0,0,0,1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -72,15 +76,15 @@
 
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,20,0">
                         <Label Content="Advance:" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                        <Button Content="+Min" Width="50" Click="BtnAddMinute_Click" Style="{StaticResource ElephantButtonStyle}"/>
-                        <Button Content="+Hour" Width="50" Click="BtnAddHour_Click" Style="{StaticResource ElephantButtonStyle}"/>
-                        <Button Content="+Day" Width="50" Click="BtnAddDay_Click" Style="{StaticResource ElephantButtonStyle}"/>
-                        <Button Content="+Year" Width="50" Click="BtnAddYear_Click" Style="{StaticResource ElephantButtonStyle}"/>
+                        <Button Content="+Min" Width="50" Height="35" Click="BtnAddMinute_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
+                        <Button Content="+Hour" Width="50" Height="35" Click="BtnAddHour_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
+                        <Button Content="+Day" Width="50" Height="35" Click="BtnAddDay_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
+                        <Button Content="+Year" Width="50" Height="35" Click="BtnAddYear_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="1" Margin="30">
+            <Grid Grid.Row="2" Margin="30">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -98,10 +102,6 @@
 
                 <StackPanel Grid.Row="1">
                     <Grid Margin="0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"/>
-                            <ColumnDefinition Width="150"/>
-                        </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -116,52 +116,51 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <Label Grid.Row="0" Grid.Column="0" Content="Company Address:" Style="{StaticResource ConfigLabelStyle}"/>
-                        <TextBox Grid.Row="0" Grid.Column="1" 
-                                 Text="{Binding Configuration.CompanyAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                 Style="{StaticResource ConfigTextBoxStyle}"/>
+                        <Controls:LabeledTextBox Grid.Row="0" 
+                                                 Label="Company Address:" 
+                                                 Text="{Binding Configuration.CompanyAddress}"/>
 
-                        <Label Grid.Row="1" Grid.Column="0" Content="Max Air Distance:" Style="{StaticResource ConfigLabelStyle}"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" 
-                                 Text="{Binding Configuration.MaxAirDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource NumericStyle}"/>
+                        <Controls:LabeledTextBox Grid.Row="1" 
+                                                 Label="Max Air Distance:"
+                                                 Text="{Binding Configuration.MaxAirDistance}"
+                                                 InputStyle="{StaticResource NumericStyle}"/>
 
-                        <Label Grid.Row="2" Grid.Column="0" Content="Avg Car Speed (km/h):" Style="{StaticResource ConfigLabelStyle}"/>
-                        <TextBox Grid.Row="2" Grid.Column="1" 
-                                 Text="{Binding Configuration.AvgCarSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource NumericStyle}"/>
+                        <Controls:LabeledTextBox Grid.Row="2"
+                                                 Label="Avg Car Speed (km/h):"
+                                                 Text="{Binding Configuration.AvgCarSpeed}"
+                                                 InputStyle="{StaticResource NumericStyle}"/>
 
-                        <Label Grid.Row="3" Grid.Column="0" Content="Avg Motorcycle Speed (km/h):" Style="{StaticResource ConfigLabelStyle}"/>
-                        <TextBox Grid.Row="3" Grid.Column="1" 
-                                 Text="{Binding Configuration.AvgMotorcycleSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource NumericStyle}"/>
+                        <Controls:LabeledTextBox Grid.Row="3"
+                                                 Label="Avg Motorcycle Speed (km/h):"
+                                                 Text="{Binding Configuration.AvgMotorcycleSpeed}"
+                                                 InputStyle="{StaticResource NumericStyle}"/>
 
-                        <Label Grid.Row="4" Grid.Column="0" Content="Avg Bicycle Speed (km/h):" Style="{StaticResource ConfigLabelStyle}"/>
-                        <TextBox Grid.Row="4" Grid.Column="1" 
-                                 Text="{Binding Configuration.AvgBicycleSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource NumericStyle}"/>
+                        <Controls:LabeledTextBox Grid.Row="4"
+                                                 Label="Avg Bicycle Speed (km/h):"
+                                                 Text="{Binding Configuration.AvgBicycleSpeed}"
+                                                 InputStyle="{StaticResource NumericStyle}"/>
 
-                        <Label Grid.Row="5" Grid.Column="0" Content="Avg Walking Speed (km/h):" Style="{StaticResource ConfigLabelStyle}"/>
-                        <TextBox Grid.Row="5" Grid.Column="1" 
-                                 Text="{Binding Configuration.AvgWalkSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource NumericStyle}"/>
+                        <Controls:LabeledTextBox Grid.Row="5"
+                                                 Label="Avg Walking Speed (km/h):"
+                                                 Text="{Binding Configuration.AvgWalkSpeed}"
+                                                 InputStyle="{StaticResource NumericStyle}"/>
 
-                        <Label Grid.Row="6" Grid.Column="0" Content="Max Delivery Time:" Style="{StaticResource ConfigLabelStyle}"/>
-                        <TextBox Grid.Row="6" Grid.Column="1" 
-                                 Text="{Binding Configuration.MaxDelTimeRnge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                 Style="{StaticResource NumericStyle}"/>
+                        <Controls:LabeledTextBox Grid.Row="6"
+                                                 Label="Max Delivery Time:"
+                                                 Text="{Binding Configuration.MaxDelTimeRnge}"
+                                                 InputStyle="{StaticResource NumericStyle}"/>
 
-                        <Label Grid.Row="7" Grid.Column="0" Content="Risk Time Range:" Style="{StaticResource ConfigLabelStyle}"/>
-                        <TextBox Grid.Row="7" Grid.Column="1" 
-                                 Text="{Binding Configuration.RiskTimeRnge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                 Style="{StaticResource NumericStyle}"/>
+                        <Controls:LabeledTextBox Grid.Row="7"
+                                                 Label="Risk Time Range:"
+                                                 Text="{Binding Configuration.RiskTimeRnge}"
+                                                 InputStyle="{StaticResource NumericStyle}"/>
 
-                        <Label Grid.Row="8" Grid.Column="0" Content="Inactive Time Range:" Style="{StaticResource ConfigLabelStyle}"/>
-                        <TextBox Grid.Row="8" Grid.Column="1" 
-                                 Text="{Binding Configuration.UnactiveTimeRnge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                 Style="{StaticResource NumericStyle}"/>
+                        <Controls:LabeledTextBox Grid.Row="8"
+                                                 Label="Inactive Time Range:"
+                                                 Text="{Binding Configuration.UnactiveTimeRnge}"
+                                                 InputStyle="{StaticResource NumericStyle}"/>
 
-                        <Button Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2"
+                        <Button Grid.Row="9"
                                 Content="Save Configuration" 
                                 HorizontalAlignment="Left" Height="35" Margin="0,20,0,0" 
                                 Style="{StaticResource ActionButtonStyle}"

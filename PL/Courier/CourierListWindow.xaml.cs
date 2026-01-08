@@ -1,5 +1,7 @@
 ﻿namespace PL.Courier;
 
+using BO;
+using PL.Tools;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,7 +18,7 @@ public partial class CourierListWindow : Window
 
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
-    public BO.VehicleType VehicleFilter { get; set; } = BO.VehicleType.All;
+    public BO.CourierInListFilterBy CourierCategoryFilter { get; set; } = BO.CourierInListFilterBy.All;
 
     public BO.CourierInList? SelectedCourier { get; set; }
 
@@ -56,26 +58,88 @@ public partial class CourierListWindow : Window
 
     private void CourierFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (CmbFilterValue != null)
+        {
+            CmbFilterValue.ItemsSource = null;
+        }
+        RefreshCourierList();
+    }
+
+    private void CmbFilterValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
         RefreshCourierList();
     }
 
     private void RefreshCourierList()
     {
-        // TODO: Replace with real user ID after Login implementation
-        int adminId = 333333333;
         try
         {
-            var oldList = s_bl?.Courier.GetCouriers(adminId);
+            // Retrieve and filter couriers based on the selected filter criteria
+            if (CourierCategoryFilter == BO.CourierInListFilterBy.All)
+            {
+                // No filter applied, get all couriers
+                CourierList = s_bl?.Courier.GetCouriers(UserData.s_UserId) ?? Enumerable.Empty<BO.CourierInList>();
 
-            if (oldList == null) return;
-
-            if (VehicleFilter == BO.VehicleType.All)
-                CourierList = oldList;
+                if (CmbFilterValue != null)
+                {
+                    CmbFilterValue.ItemsSource = null;
+                    CmbFilterValue.IsEnabled = false;
+                }
+            }
             else
-                CourierList = oldList.Where(c => c.VehicleType == VehicleFilter);
+            {
+                if (CmbFilterValue == null) return;
+
+                CmbFilterValue.IsEnabled = true;
+
+                if (CmbFilterValue.ItemsSource == null)
+                {
+                    switch (CourierCategoryFilter)
+                    {
+                        case BO.CourierInListFilterBy.CourierIsActive:
+                            CmbFilterValue.ItemsSource = new List<object> { true, false };
+                            break;
+
+                        case BO.CourierInListFilterBy.VehicleType:
+                            CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.VehicleType));
+                            break;
+
+                        case BO.CourierInListFilterBy.OrderIdInHandle:
+                            CmbFilterValue.ItemsSource = new List<object> { true, false };
+                            break;
+                    }
+                }
+
+                if (CmbFilterValue.SelectedItem == null) return;
+
+                switch (CourierCategoryFilter)
+                {
+                    case BO.CourierInListFilterBy.CourierIsActive:
+                        var status = (bool)CmbFilterValue.SelectedItem;
+                        CourierList = s_bl?.Courier.GetCouriers(UserData.s_UserId, CourierCategoryFilter, status);
+                        break;
+                    case BO.CourierInListFilterBy.VehicleType:
+                        var type = (BO.VehicleType)CmbFilterValue.SelectedItem;
+                        CourierList = s_bl?.Courier.GetCouriers(UserData.s_UserId, CourierCategoryFilter, type);
+                        break;
+                    case BO.CourierInListFilterBy.OrderIdInHandle:
+                        var scheduleStatus = (bool)CmbFilterValue.SelectedItem;
+                        CourierList = s_bl?.Courier.GetCouriers(UserData.s_UserId, CourierCategoryFilter, scheduleStatus);
+                        break;
+                }
+            }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
+
+    #endregion Methods
+
+    //==================== Observers ===================\\
+
+    #region Observers
 
     private void CourierListObserver()
                     => RefreshCourierList();
@@ -86,7 +150,7 @@ public partial class CourierListWindow : Window
     private void Window_Closed(object sender, EventArgs e)
                     => s_bl.Courier.RemoveObserver(CourierListObserver);
 
-    #endregion Methods
+    #endregion Observers
 
     //================== Event Handlers =================\\
 
@@ -126,11 +190,8 @@ public partial class CourierListWindow : Window
 
             try
             {
-                
-                int adminId = 333333333;
-
                 // Perform deletion
-                s_bl.Courier.DeleteCourier(adminId, courierToDelete.CourierId);
+                s_bl.Courier.DeleteCourier(UserData.s_UserId, courierToDelete.CourierId);
 
                 // Notify user of successful deletion
                 MessageBox.Show("Deleted successfully.");
@@ -146,18 +207,6 @@ public partial class CourierListWindow : Window
                 Mouse.OverrideCursor = null;
             }
         }
-    }
-
-    private void BtnBack_Click(object sender, RoutedEventArgs e)
-    {
-        MainWindow? mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-
-        if (mainWindow == null || !mainWindow.IsLoaded)
-        {
-            mainWindow = new MainWindow();
-        }
-        mainWindow.Show();
-        Close();
     }
 
     #endregion Event Handlers

@@ -2,6 +2,7 @@
 
 using PL.Courier;
 using PL.Order;
+using PL.Login;
 using System.Windows;
 using System.Windows.Input;
 //ChangeMe
@@ -189,19 +190,37 @@ public partial class MainWindow : Window
 
     private void BtnShowCouriers_Click(object sender, RoutedEventArgs e)
     {
-        new CourierListWindow().Show();
-        Close();
-    }
+        CourierListWindow? courierListWindow = App.Current.Windows.OfType<CourierListWindow>().FirstOrDefault();
 
+        if (courierListWindow == null)
+        {
+            courierListWindow = new CourierListWindow();
+            courierListWindow.Show();
+        }
+        else
+        {
+            courierListWindow.Activate();
+        }
+    }
+    
     private void BtnShowOrders_Click(object sender, RoutedEventArgs e)
     {
-        new OrderListWindow().Show();
-        Close();
+        OrderListWindow? orderListWindow = App.Current.Windows.OfType<OrderListWindow>().FirstOrDefault();
+
+        if (orderListWindow == null)
+        {
+            orderListWindow = new OrderListWindow();
+            orderListWindow.Show();
+        }
+        else
+        {
+            orderListWindow.Activate();
+        }
     }
 
     private void BtnLogout_Click(object sender, RoutedEventArgs e)
     {
-        new Login.LoginWindow().Show();
+        new LoginWindow().Show();
         Close();
     }
 

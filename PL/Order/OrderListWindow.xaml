@@ -4,56 +4,78 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.Order"
+        xmlns:Controls="clr-namespace:PL.Controls"
+        xmlns:pl="clr-namespace:PL"
         mc:Ignorable="d"
-        Title="OrderListWindow" Height="640" Width="800"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+        Title="Order List"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Style="{StaticResource StandardWindow}"
+        WindowStartupLocation="CenterScreen">
 
-    <!--External Grid-->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40*"/>
-            <RowDefinition Height="500*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!--Internal, Upper Grid-->
-        <Grid HorizontalAlignment="Stretch" Height="auto" Grid.Row="0" VerticalAlignment="Stretch" Width="auto">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Content="Label" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Controls:TopBarControl Grid.Row="0"/>
 
-            <ComboBox x:Name="FilterBy" Grid.Column="1" VerticalAlignment="Center" Height="30"
-                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                      FontWeight="Bold" FontSize="16" Foreground="Red" 
-                      ItemsSource="{Binding Source={StaticResource OrderInListFilterByCollectionKey}}"
-                      SelectedValue="{Binding OrderFilter, Mode=TwoWay}"
-                      SelectionChanged="OrderFilter_SelectionChanged"
-                      />
-            <!--ItemsSource="{Binding Source={StaticResource OrderStatusCollectionKey}}"-->
-                      <!--SelectedValue="{Binding OrderFilter, Mode=TwoWay}" SelectionChanged="OrderFilter_SelectionChanged"-->
-            <ComboBox Grid.Column="2" VerticalAlignment="Center" Height="30"
-                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                      FontWeight="Bold" FontSize="16" Foreground="Red"
-                      
-                      />
+        <Border Grid.Row="1" Background="{StaticResource DarkBlueBrush}" 
+                BorderThickness="0,0,0,1" BorderBrush="LightGray">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
+                <Label Content="Filter Orders ->" Style="{StaticResource StandardLabel}"/>
 
-        </Grid>
-        <DataGrid Margin="5" Grid.Row="1" ItemsSource="{Binding OrderList}" 
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  AutoGenerateColumns="True" IsReadOnly="True"/>
+                <ComboBox x:Name="CmbFilterCategory" 
+                          Grid.Column="1"
+                          Style="{StaticResource StandardComboBoxStyle}"
+                          ItemsSource="{Binding Source={StaticResource OrderInListFilterByCollectionKey}}"
+                          SelectedValue="{Binding OrderCategoryFilter, Mode=TwoWay}" 
+                          SelectionChanged="CmbCategory_SelectionChanged"/>
 
-        <Border Grid.Row="2" Background="#2C3E50">
-            <Button Content="Add" Grid.Row="2" 
-            HorizontalAlignment="Center" 
-            Height="50" Width="100" 
-            Background="#27AE60" 
-            Foreground="White" 
-            FontSize="16"/>
+                <ComboBox x:Name="CmbFilterValue" 
+                          Grid.Column="2"
+                          Style="{StaticResource StandardComboBoxStyle}"
+                          IsEnabled="False"
+                          SelectionChanged="CmbFilterValue_SelectionChanged"/>
+            </Grid>
         </Border>
+
+        <DataGrid Grid.Row="2"
+                  x:Name="OrderDataGrid"
+                  ItemsSource="{Binding OrderList}"
+                  Style="{StaticResource StandardDataGridStyle}"
+                  MouseDoubleClick="OrderDataGrid_MouseDoubleClick">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="OrderId" Binding="{Binding OrderId}" Width="*"/>
+                <DataGridTextColumn Header="OrderStatus" Binding="{Binding OrderStatus}" CellStyle="{StaticResource EnumDataGridCellStyle}" Width="*"/>
+                <DataGridTextColumn Header="TypeOfOrder" Binding="{Binding TypeOfOrder}" CellStyle="{StaticResource EnumDataGridCellStyle}" Width="*"/>
+                <DataGridTextColumn Header="AirDistance" Binding="{Binding AirDistance, StringFormat={}{0:N1}}" Width="*"/>
+                <DataGridTextColumn Header="ScheduleStatus" Binding="{Binding ScheduleStatus}" CellStyle="{StaticResource EnumDataGridCellStyle}" Width="*"/>
+
+                <DataGridTextColumn Header="DeliveryId" Binding="{Binding DeliveryId}" Width="*"/>
+                <DataGridTextColumn Header="TimeLeftToFinish" Binding="{Binding TimeLeftToFinish, StringFormat=dd/MM/yyyy}" Width="Auto"/>
+                <DataGridTextColumn Header="TotalHandleTime" Binding="{Binding TotalHandleTime, StringFormat=dd/MM/yyyy}" Width="Auto"/>
+                <DataGridTextColumn Header="TotalDeliveries" Binding="{Binding TotalDeliveries}" Width="Auto"/>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.Row="3" Background="{StaticResource DarkBlueBrush}">
+            <Button Content="Add New Order" 
+                    Style="{StaticResource ActionButtonStyle}"
+                    FontSize="16" Width="200"
+                    Click="BtnAdd_Click"
+                    Margin="10"/>
+        </Border>
+
     </Grid>
-    
 </Window>

@@ -5,7 +5,8 @@
         Height="500" Width="700"
         Style="{StaticResource StandardWindow}"
         WindowStartupLocation="CenterScreen"
-        BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1">
+        BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1"
+        >
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -32,22 +33,36 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Button Style="{StaticResource BtnExit}"/>
+            <Button Style="{StaticResource BtnExitProgram}"/>
 
             <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="40,0">
 
                 <Label Content="Welcome" FontSize="28" FontWeight="Bold" 
                        Foreground="{StaticResource DarkBlueBrush}" 
-                       FontFamily="Elephant" Margin="0,0,0,20" HorizontalAlignment="Center"/>
+                       FontFamily="Elephant" Margin="0,0,0,20" 
+                       HorizontalAlignment="Center"/>
 
                 <Label Content="User ID:" Style="{StaticResource ConfigLabelStyle}"/>
-                <TextBox x:Name="txtUserId" Style="{StaticResource NumericStyle}"/>
+                <TextBox x:Name="txtUserId" 
+                         Style="{StaticResource NumericStyle}" 
+                         TextChanged="ClearError_TextChanged"/>
+                
+                <TextBlock x:Name="ErrId" 
+                           Text="Invalid User ID" 
+                           Foreground="Red" FontSize="12" 
+                           Visibility="Collapsed" Margin="2,0,0,0"/>
+
 
                 <Label Content="Password:" Style="{StaticResource ConfigLabelStyle}" Margin="0,10,0,0"/>
                 <PasswordBox x:Name="txtPassword" Height="25" 
                              VerticalContentAlignment="Center" 
-                             FontFamily="Segoe UI Variable Display Semibold"
-                             Margin="0,3"/>
+                             Margin="0,3"
+                             PasswordChanged="ClearError_PasswordChanged"/> 
+                
+                <TextBlock x:Name="ErrPass" 
+                           Text="Password is required" 
+                           Foreground="Red" FontSize="12" 
+                           Visibility="Collapsed" Margin="2,0,0,0"/>
 
                 <Button x:Name="btnLogin" Content="LOGIN" 
                         Style="{StaticResource ActionButtonStyle}" 
