@@ -476,4 +476,21 @@ public partial class OrderWindow : Window
 
     #endregion Event Handlers
 
+    //==================== Observers ===================\\
+
+    #region Observers
+
+    private void OrderObserver()
+    {
+
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+                    => s_bl.Order.AddObserver(OrderObserver);
+
+    private void Window_Closed(object sender, EventArgs e)
+                    => s_bl.Order.RemoveObserver(OrderObserver);
+
+    #endregion Observers
+
 }

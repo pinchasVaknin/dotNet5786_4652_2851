@@ -243,7 +243,7 @@ public partial class OrderListWindow : Window
     #region Observers
 
     private void OrderListObserver()
-                    => Dispatcher.BeginInvoke(new Action(RefreshOrderList));
+                    => RefreshOrderList();
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
                     => s_bl.Order.AddObserver(OrderListObserver);

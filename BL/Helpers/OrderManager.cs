@@ -400,6 +400,9 @@ internal static class OrderManager
             var allOrders = s_dal.Order.ReadAll();
             var allDeliveries = s_dal.Delivery.ReadAll();
 
+            var baseLatitude = s_dal.Config.Latitude ?? 31.7479;
+            var baseLongitude = s_dal.Config.Longitude ?? 35.188;
+
             // Join Orders with Deliveries Group
             var query =
                 from o in allOrders
@@ -409,8 +412,8 @@ internal static class OrderManager
                 // Get last delivery for status calculations
                 let lastDelivery = deliveriesGroup.OrderByDescending(del => del.DeliveryDate).FirstOrDefault()
 
-                // Calculate Air Distance from central point (31.7479, 35.188)
-                let AirDistance = Tools.DistanceKm(o.OrderLatitude, o.OrderLongitude, 31.7479, 35.188)
+                // Calculate Air Distance from base to order location
+                let AirDistance = Tools.DistanceKm(o.OrderLatitude, o.OrderLongitude, baseLatitude, baseLongitude)
 
                 // Determine Order Status based on last delivery
                 let OrderStatus =
@@ -423,11 +426,17 @@ internal static class OrderManager
                 // Calculate Schedule Status
                 let ScheduleStatus = Tools.CalcScheduleStatus(o.OrderDate, lastDelivery?.DeliveryFinishDate)
 
+                // Calculate max allowed time
+                let maxTime = o.OrderDate + maxRange
+
+                // Get current clock
+                let clock = s_dal.Config.Clock
+
                 // Calculate Time Left to Finish
                 let TimeLeftToFinish =
-                    ((o.OrderDate + maxRange) < s_dal.Config.Clock) ?
-                        TimeSpan.Zero :
-                    (o.OrderDate + maxRange) - s_dal.Config.Clock
+                (OrderStatus == BO.OrderStatus.Supplied || OrderStatus == BO.OrderStatus.Cancelled || OrderStatus == BO.OrderStatus.Refused) ?
+                    TimeSpan.Zero :
+                (maxTime <= clock ? TimeSpan.Zero : maxTime - clock)
 
                 // Calculate Total Handle Time from completed deliveries
                 let TotalHandleTime =
@@ -593,10 +602,12 @@ internal static class OrderManager
             if (typeFilter.HasValue)
                 query = query.Where(o => o.TypeOfOrder == typeFilter.Value);
 
+            DO.Courier thisCourier = s_dal.Courier.Read(courierId) ??
+                throw new DO.DalDoesNotExistException($"Courier {courierId} not found");
+
             // Project to OpenOrderInList with additional calculations
             var resultQuery =
                 from o in query
-                let thisCourier = s_dal.Courier.Read(courierId)
                 let fullOrder = GetOrder(o.OrderId)
                 let courierVehicleType = thisCourier.CourierVehicleType
 
@@ -1079,6 +1090,16 @@ internal static class OrderManager
 
     #endregion HelpersAndConverters
 
+    //==================== Periodic Updates ===================\\
+
+    #region PeriodicUpdates
+
+    /// <summary>
+    /// Performs periodic updates on active orders to sync their statuses based on delivery history.
+    /// </summary>
+    /// <param name="oldClock">The current clock time.</param>
+    /// <param name="newClock">The previous clock time.</param>
+    /// <exception cref="BO.BlXMLFileLoadCreateException">Thrown when there is an error during the update process.</exception>
     internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
         try
@@ -1102,6 +1123,12 @@ internal static class OrderManager
         }
     }
 
+    /// <summary>
+    /// Synchronizes the status of a single order based on its delivery history.
+    /// </summary>
+    /// <param name="order">The order to synchronize.</param>
+    /// <param name="newClock">The new clock time.</param>
+    /// <exception cref="BO.BlInvalidDeliveryStatusException">Thrown when an unknown delivery finish type is encountered.</exception>
     private static void SyncOrderStatus(DO.Order order, DateTime newClock)
     {
         // Fetch all deliveries for the order
@@ -1142,5 +1169,7 @@ internal static class OrderManager
             Observers.NotifyItemUpdated(order.OrderId);
         }
     }
+
+    #endregion PeriodicUpdates
 
 }
