@@ -253,60 +253,12 @@
     <CourierVehicleType>Foot</CourierVehicleType>
   </Courier>
   <Courier>
-    <CourierId>221045684</CourierId>
-    <CourierFullName>Uri Shahar</CourierFullName>
-    <CourierCellPhone>058-8744785</CourierCellPhone>
-    <CourierEmail>uri.shahar@courier.com</CourierEmail>
-    <CourierPassword>pw8641!W</CourierPassword>
-    <CourierAddress>King George, St 108</CourierAddress>
-    <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance>2.87</MaxCourierDistance>
-    <SeniorityOfCourier>2023-05-26T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Foot</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>346901684</CourierId>
-    <CourierFullName>Roni Kadosh</CourierFullName>
-    <CourierCellPhone>054-1661106</CourierCellPhone>
-    <CourierEmail>roni.kadosh@courier.com</CourierEmail>
-    <CourierPassword>pw8194!D</CourierPassword>
-    <CourierAddress>Bialik, St 122</CourierAddress>
-    <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance>9.309</MaxCourierDistance>
-    <SeniorityOfCourier>2025-07-02T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Bicycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>239389978</CourierId>
+    <CourierId>330458891</CourierId>
     <CourierFullName>Dani Eliyahu</CourierFullName>
-    <CourierCellPhone>055-5060584</CourierCellPhone>
+    <CourierCellPhone>054-5485729</CourierCellPhone>
     <CourierEmail>dani.eliyahu@courier.com</CourierEmail>
-    <CourierPassword>pw5170!E</CourierPassword>
-    <CourierAddress>Jaffa, St 40</CourierAddress>
-    <CourierEnabled>true</CourierEnabled>
-    <MaxCourierDistance>8.134</MaxCourierDistance>
-    <SeniorityOfCourier>2025-08-26T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Motorcycle</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>281295285</CourierId>
-    <CourierFullName>Eitan Katz</CourierFullName>
-    <CourierCellPhone>058-2141465</CourierCellPhone>
-    <CourierEmail>eitan.katz@courier.com</CourierEmail>
-    <CourierPassword>pw6871!B</CourierPassword>
-    <CourierAddress>Begin, St 131</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2023-07-22T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Car</CourierVehicleType>
-  </Courier>
-  <Courier>
-    <CourierId>204373593</CourierId>
-    <CourierFullName>Ron Malka</CourierFullName>
-    <CourierCellPhone>051-4177069</CourierCellPhone>
-    <CourierEmail>ron.malka@courier.com</CourierEmail>
-    <CourierPassword>pw7241!J</CourierPassword>
-    <CourierAddress>Jabotinsky, St 157</CourierAddress>
+    <CourierPassword>pw1367!X</CourierPassword>
+    <CourierAddress>Jabotinsky, St 62</CourierAddress>
     <CourierEnabled>false</CourierEnabled>
     <MaxCourierDistance>11.93</MaxCourierDistance>
     <SeniorityOfCourier>2025-10-22T00:00:00</SeniorityOfCourier>
@@ -359,5 +311,17 @@
     <MaxCourierDistance>17.07</MaxCourierDistance>
     <SeniorityOfCourier>2025-10-26T00:00:00</SeniorityOfCourier>
     <CourierVehicleType>Motorcycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>279781848</CourierId>
+    <CourierFullName>Uri Shahar</CourierFullName>
+    <CourierCellPhone>053-2302446</CourierCellPhone>
+    <CourierEmail>uri.shahar@courier.com</CourierEmail>
+    <CourierPassword>pw3733!Y</CourierPassword>
+    <CourierAddress>Jabotinsky, St 169</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance xsi:nil="true" />
+    <SeniorityOfCourier>2024-06-28T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Car</CourierVehicleType>
   </Courier>
 </ArrayOfCourier>

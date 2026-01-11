@@ -14,7 +14,7 @@
                 <ResourceDictionary Source="Styles/ComboBoxes.xaml"/>
             </ResourceDictionary.MergedDictionaries>            <!--Converters-->            <converters:EnumToColorConverter x:Key="EnumToColorConverter"/>
             <converters:ConvertDeleteToColor x:Key="ConvertDeleteToColor"/>
-            <converters:ConvertDeleteToEnabled x:Key="ConvertDeleteToEnabled"/>            <converters:ConvertCancelToEnabled x:Key="ConvertCancelToEnabled"/>            <!---Filter Collections-->            <local:OrderInListFilterByCollection x:Key="OrderInListFilterByCollectionKey" />
+            <converters:ConvertDeleteToEnabled x:Key="ConvertDeleteToEnabled"/>            <converters:ConvertCancelToEnabled x:Key="ConvertCancelToEnabled"/>                                    <!---Filter Collections-->            <local:OrderInListFilterByCollection x:Key="OrderInListFilterByCollectionKey" />
             <local:CourierInListFilterByCollection x:Key="CourierInListFilterByCollectionKey" />
 
             <!--Standard Window Style-->
