@@ -64,7 +64,7 @@ public class EnumToColorConverter : IValueConverter
             switch (status)
             {
                 case OrderStatus.Open: return Brushes.DarkGreen;
-                case OrderStatus.InProgress: return Brushes.Green;
+                case OrderStatus.InProgress: return Brushes.Orange;
                 case OrderStatus.Supplied: return Brushes.Blue;
                 case OrderStatus.Cancelled: return Brushes.Red;
                 case OrderStatus.Refused: return Brushes.Gray;

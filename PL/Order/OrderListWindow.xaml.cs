@@ -27,9 +27,7 @@ public partial class OrderListWindow : Window
     #region Fields
 
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
-
     public BO.OrderInListFilterBy OrderCategoryFilter { get; set; } = BO.OrderInListFilterBy.All;
-
     public BO.OrderInList? SelectedOrder { get; set; }
 
     #endregion Fields
@@ -65,6 +63,11 @@ public partial class OrderListWindow : Window
 
     #region Methods
 
+    /// <summary>
+    /// Handles the selection change event for the order category ComboBox.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The event data.</param>
     private void CmbCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         // Update the selected filter category based on user selection
@@ -84,11 +87,19 @@ public partial class OrderListWindow : Window
         RefreshOrderList();
     }
 
+    /// <summary>
+    /// Handles the selection change event for the order filter value ComboBox.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The event data.</param>
     private void CmbFilterValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         RefreshOrderList();
     }
 
+    /// <summary>
+    /// Refreshes the list of orders based on the selected filter criteria.
+    /// </summary>
     private void RefreshOrderList()
     {
         try
@@ -157,6 +168,11 @@ public partial class OrderListWindow : Window
         }
     }
 
+    /// <summary>
+    /// Handles the click event for the Cancel button to cancel an order.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The event data.</param>
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
     {
         // Show wait cursor
@@ -196,19 +212,28 @@ public partial class OrderListWindow : Window
             }
         }
     }
+
+    /// <summary>
+    /// Handles the mouse double-click event on the order data grid to open the order details window.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The event data.</param>
     private void OrderDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        // Get the selected order from the DataContext of the DataGrid
+        if (OrderDataGrid.SelectedItem is BO.OrderInList selectedOrder)
+        {
+            new OrderWindow(selectedOrder.OrderId).Show();
+        }
     }
 
+    /// <summary>
+    /// Handles the click event for the Add button to open a new order window.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The event data.</param>
     private void BtnAdd_Click(object sender, RoutedEventArgs e)
     {
-        // Open a new window to add a new order
-    }
-
-    private void BtnDelete_Click(object sender, RoutedEventArgs e)
-    {
-        // Get the selected order from the DataContext of the button
+        new OrderWindow().Show();
     }
 
     #endregion Methods

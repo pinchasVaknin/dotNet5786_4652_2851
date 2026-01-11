@@ -21,6 +21,8 @@
         </Style.Triggers>
     </Style>
 
+    
+    <!--Enum TextBox Style for Configuration Window-->
     <Style x:Key="EnumTextBoxStyle" TargetType="TextBox">
 
         <Setter Property="Margin" Value="0,3"/>
@@ -43,6 +45,6 @@
     </Style>
 
     <!--Numeric TextBox Style for Configuration Window-->
-    <!-- This style is found in App.xaml to be accessible globally -->
+    <!-- NumericStyle is found in App.xaml to be accessible globally -->
 
 </ResourceDictionary>

@@ -61,7 +61,7 @@ public partial class CourierWindow : Window
         // Initialize a new courier for adding
         CurrentCourier = new BO.Courier()
         {
-            StartWorkDate = DateTime.Now
+            StartWorkDate = s_bl.Admin.GetClock()
         };
 
         // Set the action button text to "Add"

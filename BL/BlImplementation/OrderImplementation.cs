@@ -159,6 +159,19 @@ internal class OrderImplementation : IOrder
 
     #endregion Order Management
 
+    //==================== Additional Functionalities ===================\\
+
+    #region Additional Functionalities
+
+    public void UpdateOrderDetails(BO.Order order, IEnumerable<(string Model, int Quantity)> items)
+    {
+        OrderManager.UpdateOrderDetails(order, items);
+    }
+
+    public double GetProductPrice(string modelName) => OrderManager.GetProductPrice(modelName);
+
+    #endregion Additional Functionalities
+
     //==================== Observer Implementation ===================\\
 
     #region Observer Implementation

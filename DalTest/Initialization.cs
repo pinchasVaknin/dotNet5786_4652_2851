@@ -239,9 +239,11 @@ public static class Initialization
         var clock = s_dal.Config.Clock;
 
         // Build a flat sequence of status tags, then iterate once to create all orders
-        var statuses = Enumerable.Repeat("OPEN", openCount)
-                .Concat(Enumerable.Repeat("IN_PROGRESS", progCount))
-                .Concat(Enumerable.Repeat("CLOSED", closedCount));
+        var statuses = Enumerable.Repeat("Open", openCount)
+                .Concat(Enumerable.Repeat("InProgress", progCount))
+                .Concat(Enumerable.Repeat("Supplied", (int)(closedCount * 0.7)))
+                .Concat(Enumerable.Repeat("Cancelled", (int)(closedCount * 0.2)))
+                .Concat(Enumerable.Repeat("Refused", (int)(closedCount * 0.1)));
 
         foreach (var statusTag in statuses)
         {
@@ -266,22 +268,27 @@ public static class Initialization
                 _ => Array.Empty<string>()
             };
 
-            // Choosing product from Catalog
-            string product = "";
-            int count = s_rand.Next(1, 4); // Randomly choose how many products between 1 and 3
-            List<string> chosenProducts = new();
+            // Choosing UNIQUE products (no duplicates) + add qty format
+            int count = s_rand.Next(1, 4); // 1..3 products
 
-            // Loop to randomly pick products
-            for (int i = 0; i < count; i++)
+            List<string> chosenModels = new();
+
+            // avoid infinite loop if category has fewer items
+            if (items.Length > 0)
+                count = Math.Min(count, items.Length);
+
+            while (chosenModels.Count < count)
             {
-                string chosen = items.Length > 0 ? items[s_rand.Next(items.Length)] : "Generic Item";
-                if (!chosenProducts.Contains(chosen))
-                    chosenProducts.Add(chosen);
-                else
-                    count--; // if hit the same, try again
+                string model = items.Length > 0 ? items[s_rand.Next(items.Length)] : "Generic_Item";
+                if (!chosenModels.Contains(model))
+                    chosenModels.Add(model);
             }
-            // Combine all chosen products into one string separated by commas
-            product = string.Join(", ", chosenProducts);
+
+            // "Sony_Bravia_50{3}, Samsung_QLED_Q80_65{7}"
+            string product = string.Join(", ", chosenModels.Select(m => $"{m}{{{s_rand.Next(1, 10)}}}"));
+
+            // "TV => Sony{3}, Samsung{7}"
+            string detail = $"{kind} => {product}";
 
             // Random customer + phone in Israeli format 05X-XXXXXXX
             string customer = customers[s_rand.Next(customers.Length)];
@@ -289,10 +296,10 @@ public static class Initialization
 
             // Order date based on status
             DateTime orderDate;
-            if (statusTag == "OPEN")
+            if (statusTag == "Open")
                 // Recent orders (last 3 hours)
                 orderDate = clock.AddMinutes(-s_rand.Next(0, 3 * 60));
-            else if (statusTag == "IN_PROGRESS")
+            else if (statusTag == "InProgress")
                 // Mid-age orders (last 12 hours)
                 orderDate = clock.AddMinutes(-s_rand.Next(0, 12 * 60));
             else
@@ -302,7 +309,7 @@ public static class Initialization
             // Size/weight profile per category (min/max + fragility probability)
             (double weightMin, double weightMax, double sizeMin, double sizeMax, bool fragP) pack = kind switch
             {
-                DO.TypeOfOrder.Smartphone => (0.2, 0.8, 0.1, 0.3, false),
+                DO.TypeOfOrder.Smartphone => (0.2, 0.8, 0.1, 0.3, true),
                 DO.TypeOfOrder.Tablet => (0.3, 1.0, 0.15, 0.35, true),
                 DO.TypeOfOrder.Laptop => (1.0, 3.0, 0.3, 0.8, true),
                 DO.TypeOfOrder.TV => (8.0, 25.0, 0.9, 2.0, true),
@@ -325,10 +332,7 @@ public static class Initialization
             double airKm = Haversine(companyLat, companyLon, addr.lat, addr.lon);
 
             // order Status Tag
-            string orderStatusTag = $"[{statusTag}]";
-
-            // Human-readable detail: status tag + product + category + weight + ~air distance
-            string detail = $" {product} => {kind} , {weight}kg , ~{airKm:F1}km";
+            string orderStatusTag = statusTag;
 
             // Persist via DAL: orderId = 0 so DAL assigns the next running ID
             s_dal!.Order.Create(new DO.Order(
@@ -381,7 +385,7 @@ public static class Initialization
         var shipmentTypes = Enum.GetValues<DO.ShipmentType>();
         var finishTypes = Enum.GetValues<DO.DeliveryFinishType>();
 
-        foreach (var order in orders.Where(o => o.OrderStatus != null && o.OrderStatus.Contains("IN_PROGRESS")))
+        foreach (var order in orders.Where(o => o.OrderStatus != null && o.OrderStatus.Contains("InProgress")))
         {
 
             // Pick a random active courier for this delivery
@@ -415,7 +419,10 @@ public static class Initialization
             ));
         }
 
-        foreach (var order in orders.Where(o => o.OrderStatus != null && o.OrderStatus.Contains("CLOSED")))
+        foreach (var order in orders.Where(o => o.OrderStatus != null && 
+                                               (o.OrderStatus.Contains("Supplied") ||
+                                                o.OrderStatus.Contains("Cancelled") ||
+                                                o.OrderStatus.Contains("Refused"))))
         {
 
             // Pick a random courier for this delivery
@@ -473,8 +480,8 @@ public static class Initialization
         s_dal!.Config.Clock = DateTime.Now;
 
         // Admin credentials
-        s_dal.Config.AdminId = 333333333;               // admin id
-        s_dal.Config.AdminPassword = "ChangeMe";   // password
+        s_dal.Config.AdminId = 333333333;   // admin id
+        s_dal.Config.AdminPassword = "1";   // password
 
         // Company address and its geo-coordinates
         s_dal.Config.CompanyAddress = "Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem"; // textual address

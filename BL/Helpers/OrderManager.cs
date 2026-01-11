@@ -373,7 +373,7 @@ internal static class OrderManager
         // Notify observers of the order update
         Observers.NotifyListUpdated(); //stage 5
         Observers.NotifyItemUpdated(orderId); //stage 5
-        
+
     }
 
     #endregion OrderActions
@@ -461,7 +461,7 @@ internal static class OrderManager
             {
                 switch (filterBy.Value)
                 {
-                    
+
                     case BO.OrderInListFilterBy.TypeOfOrder:
                         if (Tools.TryConvertEnum(filterValue, out BO.TypeOfOrder typeVal))
                             list = list.Where(x => x.TypeOfOrder == typeVal).ToList();
@@ -755,6 +755,153 @@ internal static class OrderManager
 
     #endregion StatusSummaries
 
+    //==================== Product Catalog (for Price/Weight/Size) ===================\\
+
+    #region ProductCatalog
+
+    /// <summary>
+    /// Product information record.
+    /// </summary>
+    /// <param name="Price">The price of the product.</param>
+    /// <param name="Weight">The weight of the product.</param>
+    /// <param name="Size">The size of the product.</param>
+    /// <param name="IsFragile">Indicates if the product is fragile.</param>
+    private record ProductInfo(double Price, double Weight, double Size, bool IsFragile);
+
+    /// <summary>
+    /// In-memory product catalog with predefined products.
+    /// </summary>
+    private static readonly Dictionary<string, ProductInfo> _catalog = new()
+    {
+        // ============== Smartphones ============== \\
+        { "iPhone_14",   new(3500, 0.18, 0.6,  true) },
+        { "Galaxy_S23",  new(3200, 0.17, 0.6,  true) },
+        { "Pixel_8",     new(2800, 0.19, 0.6,  true) },
+        { "Xiaomi_13",   new(2200, 0.19, 0.6,  true) },
+
+        // ================== Laptops ================== \\
+        { "Dell_XPS_13",        new(6500, 1.25, 6.5, true) },
+        { "MacBook_Air_M2",     new(5800, 1.24, 6.2, true) },
+        { "HP_Spectre_x360",    new(6200, 1.35, 6.8, true) },
+        { "Lenovo_ThinkPad_X1", new(7000, 1.12, 6.3, true) },
+
+        // ================ Tablets ================ \\
+        { "iPad_Air",       new(2600, 0.46, 2.5, true) },
+        { "Galaxy_Tab_S9",  new(3000, 0.50, 2.7, true) },
+        { "Xiaomi_Pad_6",   new(1900, 0.49, 2.7, true) },
+
+        // ====================== TVs ====================== \\
+        { "LG_OLED_C3_55",       new(5500, 18.0, 110.0, true) },
+        { "Samsung_QLED_Q80_65", new(6000, 24.0, 160.0, true) },
+        { "Sony_Bravia_50",      new(4500, 12.0,  90.0, true) },
+
+        // ================ Cameras ================ \\
+        { "Canon_EOS_R10", new(3200, 0.55, 2.0, true) },
+        { "Sony_a6400",    new(3400, 0.52, 2.0, true) },
+        { "Nikon_Z50",     new(3600, 0.58, 2.1, true) },
+
+        // =================== Audio =================== \\
+        { "Sony_WH_1000XM5", new(1400, 0.25, 3.0, false) },
+        { "AirPods_Pro_2",   new(950,  0.06, 0.4, false) },
+        { "Bose_QC45",       new(1200, 0.24, 3.0, false) },
+        { "JBL_Flip_6",      new(550,  0.55, 2.2, false) },
+
+        // ================== SmartHome ================== \\
+        { "Google_Nest_Hub",     new(450, 0.48, 2.5, true) },
+        { "Amazon_Echo",         new(380, 0.95, 4.5, false) },
+        { "Philips_Hue_Starter", new(520, 1.20, 5.5, false) },
+
+        // ================= Gaming Consoles ================= \\
+        { "PlayStation_5",        new(2200, 4.50, 28.0, false) },
+        { "Xbox_Series_X",        new(2100, 4.45, 25.0, false) },
+        { "Nintendo_Switch_OLED", new(1600, 0.42,  3.5, false) },
+
+        // ================= Accessories ================= \\
+        { "USB_C_Cable_100W",  new(50,  0.10, 0.3, false) },
+        { "GaN_Charger_65W",   new(150, 0.20, 0.6, false) },
+        { "NVMe_SSD_1TB",      new(320, 0.03, 0.2, false) },
+        { "HDMI_4K_2_1_Cable", new(70,  0.15, 0.5, false) },
+    };
+
+    // ==================== Public Logic Methods ==================== \\
+
+    /// <summary>
+    /// Gets the product price from the catalog based on model name.
+    /// </summary>
+    /// <param name="modelName">The model name of the product.</param>
+    /// <returns>The price of the product, or 0 if not found.</returns>
+    internal static double GetProductPrice(string modelName)
+    {
+        // Lookup product in catalog
+        if (_catalog.TryGetValue(modelName, out var info))
+        {
+            return info.Price;
+        }
+        return 0;
+    }
+
+    /// <summary>
+    /// Updates order details (weight, size, fragility, description) based on the provided items.
+    /// </summary>
+    /// <param name="order">The order object to update.</param>
+    /// <param name="items">A collection of tuples containing product model names and their quantities.</param>
+    internal static void UpdateOrderDetails(BO.Order order, IEnumerable<(string Model, int Quantity)> items)
+    {
+        // Handle null items
+        if (items == null)
+            items = Enumerable.Empty<(string Model, int Quantity)>();
+
+        // כדי לא לסרוק פעמיים את IEnumerable
+        var list = items.Where(i => !string.IsNullOrWhiteSpace(i.Model) && i.Quantity > 0).ToList();
+
+        // Handle empty list
+        if (list.Count == 0)
+        {
+            order.OrderDetail = "";
+            order.OrderWeight = 0;
+            order.OrderSize = 0;
+            order.IsFragile = false;
+            return;
+        }
+
+        // Calculate totals
+        double totalWeight = 0;
+        double totalSize = 0;
+        bool isPackageFragile = false;
+
+        // Build order detail string
+        List<string> detailsBuilder = new();
+
+        // Iterate through items
+        foreach (var (nameRaw, qty) in list)
+        {
+            string name = nameRaw.Trim();
+
+            // Lookup product info
+            if (!_catalog.TryGetValue(name, out var info))
+                info = new ProductInfo(0, 1.0, 1.0, false);
+
+            totalWeight += info.Weight * qty;
+            totalSize += info.Size * qty;
+
+            // Check fragility
+            if (info.IsFragile)
+                isPackageFragile = true;
+
+            detailsBuilder.Add($"{name}{{{qty}}}");
+        }
+
+        // Update order properties
+        order.OrderWeight = totalWeight;
+        order.OrderSize = totalSize;
+        order.IsFragile = isPackageFragile;
+
+        // Set order detail string
+        order.OrderDetail = $"{order.TypeOfOrder} => {string.Join(", ", detailsBuilder)}";
+    }
+
+    #endregion ProductCatalog
+
     //==================== Helpers & Converters ===================\\
 
     #region HelpersAndConverters
@@ -930,56 +1077,70 @@ internal static class OrderManager
             TypeOfOrder: (DO.TypeOfOrder)boOrder.TypeOfOrder
         );
 
-    //==================== Not in use ===================\\
-    internal static List<BO.OpenOrderInList> BuildOpenOrderInlist()
+    #endregion HelpersAndConverters
+
+    internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
         try
         {
-            var allDeliveries = s_dal.Delivery.ReadAll();
-            var orderinlist = GetOrders();
-            var config = AdminManager.GetConfig();
+            // Fetch all active orders (Open or InProgress)
+            var activeOrders = s_dal.Order.ReadAll(o => o.OrderStatus == BO.OrderStatus.Open.ToString() ||
+                                                        o.OrderStatus == BO.OrderStatus.InProgress.ToString());
 
-            var query =
-                from o in orderinlist
-                where o.OrderStatus == BO.OrderStatus.InProgress
-                join d in allDeliveries
-                    on o.OrderId equals d.OrderId into deliveriesGroup
+            // Update each active order
+            foreach (var order in activeOrders)
+            {
+                SyncOrderStatus(order, newClock);
+            }
 
-                let lastDelivery = deliveriesGroup.OrderByDescending(del => del.DeliveryDate).FirstOrDefault()
-                let thisOrder = GetOrder(o.OrderId)
-                let courierOfLastDelivery = lastDelivery == null ? null : s_dal.Courier.Read(c => c.CourierId == lastDelivery.CourierId)
-
-                let EstimatedActualTime =
-                lastDelivery is null || courierOfLastDelivery is null ? (TimeSpan?)null :
-                    courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Car ? TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgCarSpeed) :
-                    courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Motorcycle ? TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgMotorcycleSpeed) :
-                    courierOfLastDelivery.CourierVehicleType == DO.CourierVehicleType.Bicycle ? TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgBicycleSpeed) :
-                    TimeSpan.FromHours(o.AirDistance / s_dal.Config.AvgWalkSpeed)
-
-                select new BO.OpenOrderInList
-                {
-                    CourierId = lastDelivery.CourierId,
-                    OrderId = o.OrderId,
-                    TypeOfOrder = o.TypeOfOrder,
-                    OrderWeight = thisOrder.OrderWeight,
-                    IsFragile = thisOrder.IsFragile,
-                    OrderSize = thisOrder.OrderSize,
-                    CustomerAddress = thisOrder.OrderAddress,
-                    AirDistance = o.AirDistance,
-                    ActualDistance = 1,
-                    EstimatedActualTime = EstimatedActualTime,
-                    ScheduleStatus = o.ScheduleStatus,
-                    TimeLeftToFinish = o.TimeLeftToFinish,
-                    MaxDeliveryTime = thisOrder.MaxDeliveryTime
-                };
-            return query.ToList();
+            // Notify observers about the updates
+            Observers.NotifyListUpdated();
         }
-        catch (DO.DalDoesNotExistException ex)
+        catch (Exception ex)
         {
-            throw new BO.BlDoesNotExistException("Failed to build open orders in list", ex);
+            throw new BO.BlXMLFileLoadCreateException("Failed to perform periodic order updates", ex);
         }
     }
 
-    #endregion HelpersAndConverters
+    private static void SyncOrderStatus(DO.Order order, DateTime newClock)
+    {
+        // Fetch all deliveries for the order
+        var deliveries = s_dal.Delivery.ReadAll(d => d.OrderId == order.OrderId);
+
+        // Get the last delivery
+        var lastDelivery = deliveries.OrderByDescending(d => d.DeliveryDate).FirstOrDefault();
+
+        // Determine new status based on last delivery
+        BO.OrderStatus newStatus;
+
+        // Determine status based on last delivery
+        if (lastDelivery == null)
+            newStatus = BO.OrderStatus.Open;
+        else if (lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.None)
+            newStatus = BO.OrderStatus.InProgress;
+        else
+        {
+            // Map finish types to order statuses
+            newStatus = lastDelivery.DeliveryFinishType switch
+            {
+                DO.DeliveryFinishType.Completed => BO.OrderStatus.Supplied,
+                DO.DeliveryFinishType.Cancelled => BO.OrderStatus.Cancelled,
+                DO.DeliveryFinishType.Failed or DO.DeliveryFinishType.Returned => BO.OrderStatus.Refused,
+                _ => throw new BO.BlInvalidDeliveryStatusException($"Unknown delivery finish type: {lastDelivery.DeliveryFinishType}")
+            };
+        }
+
+        // Convert new status to DAL string
+        var dalNewStatus = newStatus.ToString();
+
+        // Update order if status has changed
+        if (order.OrderStatus != dalNewStatus)
+        {
+            order = order with { OrderStatus = dalNewStatus };
+            s_dal.Order.Update(order);
+
+            Observers.NotifyItemUpdated(order.OrderId);
+        }
+    }
 
 }

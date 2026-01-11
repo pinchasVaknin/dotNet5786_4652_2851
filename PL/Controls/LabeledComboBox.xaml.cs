@@ -63,15 +63,6 @@ public partial class LabeledComboBox : UserControl
         DependencyProperty.Register("SelectedItem", typeof(object), typeof(LabeledComboBox),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-    public Style InputStyle
-    {
-        get { return (Style)GetValue(InputStyleProperty); }
-        set { SetValue(InputStyleProperty, value); }
-    }
-    // Using a DependencyProperty as the backing store for InputStyle.  This enables animation, styling, binding, etc...
-    public static readonly DependencyProperty InputStyleProperty =
-        DependencyProperty.Register("InputStyle", typeof(Style), typeof(LabeledComboBox), new PropertyMetadata(null));
-
     public bool IsReadOnly
     {
         get { return (bool)GetValue(IsReadOnlyProperty); }
@@ -81,6 +72,15 @@ public partial class LabeledComboBox : UserControl
     public static readonly DependencyProperty IsReadOnlyProperty =
         DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(LabeledComboBox),
             new PropertyMetadata(false, OnIsReadOnlyChanged));
+
+    public Style InputStyle
+    {
+        get { return (Style)GetValue(InputStyleProperty); }
+        set { SetValue(InputStyleProperty, value); }
+    }
+    // Using a DependencyProperty as the backing store for InputStyle.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty InputStyleProperty =
+        DependencyProperty.Register("InputStyle", typeof(Style), typeof(LabeledComboBox), new PropertyMetadata(null));
 
     private static void OnIsReadOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {

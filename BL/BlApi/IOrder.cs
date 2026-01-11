@@ -173,4 +173,24 @@ public interface IOrder : IObservable //stage 5
 
     #endregion OrderActions
 
+    //==================== Additional Order Operations ===================\\
+
+    #region AdditionalOperations
+
+    /// <summary>
+    /// Update the order details with the provided items and their quantities.
+    /// </summary>
+    /// <param name="order">The order to update.</param>
+    /// <param name="items">A collection of tuples containing model names and their quantities.</param>
+    void UpdateOrderDetails(BO.Order order, IEnumerable<(string Model, int Quantity)> items);
+
+    /// <summary>
+    /// Get the price of a product by its model name.
+    /// </summary>
+    /// <param name="modelName">The model name of the product.</param>
+    /// <returns>The price of the product.</returns>
+    double GetProductPrice(string modelName);
+
+    #endregion AdditionalOperations
+
 }

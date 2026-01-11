@@ -32,7 +32,6 @@
                 <Button Grid.Row="2" 
                         Content="{Binding ActionButtonText}" 
                         Style="{StaticResource ActionButtonStyle}"
-                        Width="200"
                         Margin="20" FontSize="18"
                         Click="BtnAddUpdate_Click"/>
             </Grid>

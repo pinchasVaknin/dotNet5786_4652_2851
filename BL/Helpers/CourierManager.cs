@@ -474,6 +474,9 @@ internal static class CourierManager
                 // Update activity based on closed deliveries
                 UpdateCourierActivityByClosedDeliveries(courier, newClock);
             }
+
+            // Notify observers of the courier list update
+            Observers.NotifyListUpdated();
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
@@ -498,7 +501,6 @@ internal static class CourierManager
                 {
                     var activeCourier = courier with { CourierEnabled = true };
                     s_dal.Courier.Update(activeCourier);
-                    Observers.NotifyListUpdated();
                     Observers.NotifyItemUpdated(courier.CourierId);
                 }
                 return;
@@ -528,7 +530,6 @@ internal static class CourierManager
                 var updatedCourier = courier with { CourierEnabled = shouldBeActive };
                 s_dal.Courier.Update(updatedCourier);
 
-                Observers.NotifyListUpdated();
                 Observers.NotifyItemUpdated(courier.CourierId);
             }
         }

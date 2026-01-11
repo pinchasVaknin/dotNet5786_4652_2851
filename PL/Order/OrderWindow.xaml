@@ -6,11 +6,16 @@
         xmlns:Controls="clr-namespace:PL.Controls"
         mc:Ignorable="d"
         Title="Courier Details"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Height="650" Width="900"
+        WindowStartupLocation="CenterScreen"
         Style="{StaticResource StandardWindow}"
-        WindowStartupLocation="CenterScreen">
-    
-    <Grid>
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
+    <Grid Background="#F5F6FA">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
             <ColumnDefinition Width="*"/>
@@ -21,109 +26,175 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Margin="0,40,0,0">
-                    <Label Content="ORDER" Style="{StaticResource StandardLabel}" Foreground="#BDC3C7"/>
-                    <Label Content="PROFILE" Style="{StaticResource StandardLabel}"/>
+                    <Label Content="ORDER" Style="{StaticResource StandardLabel}" Foreground="#BDC3C7" HorizontalAlignment="Center"/>
+                    <Label Content="PROFILE" Style="{StaticResource StandardLabel}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                 </StackPanel>
 
-                <Button Grid.Row="2" 
-                Content="{Binding ActionButtonText}" 
-                Style="{StaticResource ActionButtonStyle}"
-                Width="200"
-                Margin="20" FontSize="18"
-                Click="BtnAddUpdate_Click"/>
+                <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                            Visibility="{Binding IsUpdateMode, Converter={StaticResource BoolToVis}}">
+                    <Label Content="Current Status" Foreground="#BDC3C7" HorizontalAlignment="Center" FontSize="14"/>
+                    <Border CornerRadius="15" Padding="20,8" Margin="0,10" Background="{Binding CurrentOrder.OrderStatus, Converter={StaticResource EnumToColorConverter}}">
+                        <TextBlock Text="{Binding CurrentOrder.OrderStatus}" Foreground="White" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding CurrentOrder.OrderId, StringFormat='ID: #{0}'}" 
+                               Foreground="#7F8C8D" HorizontalAlignment="Center" Margin="0,5"
+                               FontSize="15"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                            Visibility="{Binding IsUpdateMode, Converter={StaticResource BoolToVis}}">
+
+                    <Label Content="Current Schedule" Foreground="#BDC3C7" HorizontalAlignment="Center" FontSize="14"/>
+                    <Border CornerRadius="15" Padding="20,8" Margin="0,10" Background="{Binding CurrentOrder.ScheduleStatus, Converter={StaticResource EnumToColorConverter}}">
+                        <TextBlock Text="{Binding CurrentOrder.ScheduleStatus}" Foreground="White" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
+                    </Border>
+
+                </StackPanel>
+
+                <Button Grid.Row="3" 
+                        Content="{Binding ActionButtonText}" 
+                        Style="{StaticResource ActionButtonStyle}"
+                        Margin="20,0,20,40" Height="50" FontSize="16"
+                        IsEnabled="{Binding IsEditable}"
+                        Click="BtnSave_Click"/>
             </Grid>
         </Border>
 
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Controls:TopBarControl Grid.Row="0" BackButtonVisibility="Collapsed" Title="Order Details"/>
+            <Controls:TopBarControl Grid.Row="0" BackButtonVisibility="Collapsed" Title="Order Form" Margin="0,0,0,20"/>
 
-            <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                <Grid Margin="30">
+            <GroupBox Grid.Row="1" Header="Customer Details" Margin="10,0,10,0" BorderBrush="#BDC3C7">
+                <Grid Margin="10" IsEnabled="{Binding IsEditable}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <Controls:LabeledTextBox Label="Customer Name:" Text="{Binding CurrentOrder.CustomerFullName, Mode=TwoWay}"/>
+                        <Controls:LabeledTextBox Label="Phone Number:" Text="{Binding CurrentOrder.CustomerPhone, Mode=TwoWay}"
+                                                 InputStyle="{StaticResource NumericStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <Controls:LabeledTextBox Label="Address Of Order:" Text="{Binding CurrentOrder.OrderAddress, Mode=TwoWay}" VerticalContentAlignment="Top"/>
+                        <Controls:LabeledTextBox Label="Open Time:" Text="{Binding CurrentOrder.OrderOpenTime, StringFormat=dd/MM/yyyy HH:mm}" IsReadOnly="True"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="2" Header="Items" BorderBrush="#BDC3C7" 
+                      Margin="10" IsEnabled="{Binding IsEditable}">
+                
+                <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" BorderBrush="#BDC3C7" BorderThickness="0,0,0,1" Padding="0,0,0,20">
-                        <StackPanel>
-                            <TextBlock Text="Order Profile" Foreground="#3498DB" FontWeight="Bold" FontSize="18" Margin="0,0,0,15"/>
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.4*"/>
+                            <ColumnDefinition Width="1.8*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="20"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
+                        <!-- Category (TypeOfOrder) -->
+                        <ComboBox x:Name="CmbFilterCategory" Grid.Column="0" Margin="0,0,10,0" Height="36"
+                                  Style="{StaticResource StandardComboBoxStyle}"
+                                  SelectionChanged="CmbOrderCategory_SelectionChanged"/>
 
-                                <StackPanel Grid.Column="0">
+                        <!-- Model -->
+                        <ComboBox x:Name="CmbProductModel" Grid.Column="1" Margin="0,0,10,0" Height="36"
+                                  Style="{StaticResource StandardComboBoxStyle}"/>
 
-                                    <Controls:LabeledTextBox Label="Order ID:" 
-                                                             Text="{Binding CurrentOrder.OrderId, Mode=TwoWay}"
-                                                             InputStyle="{StaticResource NumericStyle}"/>
+                        <!-- Qty -->
+                        <TextBox x:Name="TxtQuantity" Grid.Column="2" Height="36" Text="1" HorizontalContentAlignment="Center"
+                                 Style="{StaticResource NumericStyle}"/>
 
-                                    <Controls:LabeledTextBox Label="Type of Order:" 
-                                                             Text="{Binding CurrentOrder.TypeOfOrder, Mode=TwoWay}"
-                                                             InputStyle="{StaticResource EnumTextBoxStyle}"/>
+                        <Button Content="Add Item" Grid.Column="3" Width="90"
+                                Style="{StaticResource ActionButtonStyle}"
+                                Click="BtnAddItem_Click"/>
+                    </Grid>
 
-                                    <Controls:LabeledTextBox Label="OrderAddress:"
-                                                             Text="{Binding CurrentOrder.OrderAddress, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="AirDistance"
-                                                             Text="{Binding CurrentOrder.AirDistance, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="CustomerFullName"
-                                                             Text="{Binding CurrentOrder.CustomerFullName, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="CustomerPhone"
-                                                             Text="{Binding CurrentOrder.CustomerPhone, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="OrderWeight"
-                                                             Text="{Binding CurrentOrder.OrderWeight, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="OrderSize"
-                                                             Text="{Binding CurrentOrder.OrderSize, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="IsFragile"
-                                                             Text="{Binding CurrentOrder.IsFragile, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="OrderOpenTime"
-                                                             Text="{Binding CurrentOrder.OrderOpenTime, Mode=OneWay}"
-                                                             IsReadOnly="True"/>
-
-                                    <Controls:LabeledTextBox Label="ExpectedDeliveryTime"
-                                                             Text="{Binding CurrentOrder.ExpectedDeliveryTime, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="MaxDeliveryTime"
-                                                             Text="{Binding CurrentOrder.MaxDeliveryTime, Mode=TwoWay}"/>
-
-
-                                    <Controls:LabeledTextBox Label="TimeRemaining"
-                                                             Text="{Binding CurrentOrder.TimeRemaining, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="OrderStatus"
-                                                             Text="{Binding CurrentOrder.OrderStatus, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="ScheduleStatus"
-                                                             Text="{Binding CurrentOrder.ScheduleStatus, Mode=TwoWay}"/>
-
-                                    <Controls:LabeledTextBox Label="OrderDetail"
-                                                             Text="{Binding CurrentOrder.OrderDetail, Mode=TwoWay}"/>
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
+                    <DataGrid x:Name="ItemsDataGrid" Grid.Row="1" ItemsSource="{Binding ItemsCollection}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Model" Binding="{Binding Model}" Width="3*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Qty" Binding="{Binding Quantity}" Width="1*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat={}{0:C}}" Width="1*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Total" Binding="{Binding TotalPrice, StringFormat={}{0:C}}" Width="1*" IsReadOnly="True"/>
+                            <DataGridTemplateColumn Header="Remove" Width="90">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="-1"
+                                                Background="#F39C12" Foreground="White"
+                                                BorderThickness="0" Padding="6,2" Cursor="Hand"
+                                                Click="BtnRemoveItem_Click"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Delete" Width="90">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="🗑"
+                                                Background="#E74C3C" Foreground="White"
+                                                BorderThickness="0" Padding="6,2" Cursor="Hand"
+                                                Click="BtnDeleteItem_Click"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
-            </ScrollViewer>
+            </GroupBox>
+
+            <Border Grid.Row="3" Background="White" BorderBrush="#BDC3C7" BorderThickness="1" CornerRadius="5" Margin="10" Padding="15"
+                    Visibility="{Binding IsUpdateMode, Converter={StaticResource BoolToVis}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="5" IsEnabled="{Binding IsEditable}">
+                        <Controls:LabeledTextBox Label="Size:" Text="{Binding CurrentOrder.OrderSize}" IsReadOnly="True"/>
+                        <Controls:LabeledTextBox Label="Weight:" Text="{Binding CurrentOrder.OrderWeight}" IsReadOnly="True"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="5" IsEnabled="{Binding IsEditable}">
+                        <Controls:LabeledTextBox Label="Time Left:" Text="{Binding CurrentOrder.TimeRemaining}" IsReadOnly="True"/>
+                        <Controls:LabeledTextBox Label="Air Distance (Km):" Text="{Binding CurrentOrder.AirDistance, StringFormat={}{0:N2}}" IsReadOnly="True"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="3" 
+                            Content="View&#x0a;Delivery&#x0a;History" 
+                            Width="80" Height="80"
+                            Margin="10,0,0,0"
+                            Background="#34495E" Foreground="White"
+                            Click="BtnViewDeliveries_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </Window>
