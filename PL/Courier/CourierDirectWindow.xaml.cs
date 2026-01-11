@@ -118,9 +118,18 @@ public partial class CourierDirectWindow : Window
 
         try
         {
-            s_bl.Courier.UpdateCourier(CurrentCourier.CourierId, CurrentCourier);
-            MessageBox.Show("Profile updated!");
-            RefreshData();
+            var config = s_bl.Admin.GetConfig();
+            if (CurrentCourier.MaxCourierDistance > config.MaxAirDistance)
+            {
+                throw new Exception($"Error: Distance must be under or equal to {config.MaxAirDistance} ");
+            }
+            else
+            {
+                s_bl.Courier.UpdateCourier(CurrentCourier.CourierId, CurrentCourier);
+                MessageBox.Show("Profile updated!");
+                RefreshData();
+            }
+                MessageBox.Show("Distance Too Far!");
         }
         catch (Exception ex) 
         { 
@@ -181,4 +190,8 @@ public partial class CourierDirectWindow : Window
 
     #endregion Event Handlers
 
+    private void LabeledTextBox_Error(object sender, System.Windows.Controls.ValidationErrorEventArgs e)
+    {
+
+    }
 }

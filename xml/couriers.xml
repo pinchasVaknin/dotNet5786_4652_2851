@@ -301,18 +301,6 @@
     <CourierVehicleType>Foot</CourierVehicleType>
   </Courier>
   <Courier>
-    <CourierId>279781848</CourierId>
-    <CourierFullName>Uri Shahar</CourierFullName>
-    <CourierCellPhone>053-2302446</CourierCellPhone>
-    <CourierEmail>uri.shahar@courier.com</CourierEmail>
-    <CourierPassword>pw3733!Y</CourierPassword>
-    <CourierAddress>Jabotinsky, St 169</CourierAddress>
-    <CourierEnabled>false</CourierEnabled>
-    <MaxCourierDistance xsi:nil="true" />
-    <SeniorityOfCourier>2024-06-28T00:00:00</SeniorityOfCourier>
-    <CourierVehicleType>Car</CourierVehicleType>
-  </Courier>
-  <Courier>
     <CourierId>330458891</CourierId>
     <CourierFullName>Dani Eliyahu</CourierFullName>
     <CourierCellPhone>054-5485729</CourierCellPhone>
@@ -347,5 +335,17 @@
     <MaxCourierDistance>1.234567890123457E+179</MaxCourierDistance>
     <SeniorityOfCourier>2024-02-25T00:00:00</SeniorityOfCourier>
     <CourierVehicleType>Bicycle</CourierVehicleType>
+  </Courier>
+  <Courier>
+    <CourierId>279781848</CourierId>
+    <CourierFullName>Uri Shahar</CourierFullName>
+    <CourierCellPhone>053-2302446</CourierCellPhone>
+    <CourierEmail>uri.shahar@courier.com</CourierEmail>
+    <CourierPassword>pw3733!Y</CourierPassword>
+    <CourierAddress>Jabotinsky, St 169</CourierAddress>
+    <CourierEnabled>true</CourierEnabled>
+    <MaxCourierDistance xsi:nil="true" />
+    <SeniorityOfCourier>2024-06-28T00:00:00</SeniorityOfCourier>
+    <CourierVehicleType>Car</CourierVehicleType>
   </Courier>
 </ArrayOfCourier>

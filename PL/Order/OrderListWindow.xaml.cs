@@ -253,4 +253,8 @@ public partial class OrderListWindow : Window
 
     #endregion Observers
 
+    private void OrderDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+
+    }
 }
