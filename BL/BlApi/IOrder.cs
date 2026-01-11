@@ -169,7 +169,7 @@ public interface IOrder : IObservable //stage 5
     /// <param name="requesterId">The ID of the requester (must be the delivering courier).</param>
     /// <param name="courierId">The ID of the courier (Teudat Zehut).</param>
     /// <param name="deliveryId">The ID of the delivery for the order being completed.</param>
-    void CompleteOrderHandling(int requesterId, int courierId, int deliveryId);
+    void CompleteOrderHandling(int requesterId, int courierId, int deliveryId, BO.DeliveryFinishType finishType);
 
     #endregion OrderActions
 

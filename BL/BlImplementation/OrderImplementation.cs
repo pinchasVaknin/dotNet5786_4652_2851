@@ -126,13 +126,13 @@ internal class OrderImplementation : IOrder
     /// <summary>
     /// Marks a delivery as completed. Can only be performed by the assigned courier.
     /// </summary>
-    public void CompleteOrderHandling(int requesterId, int courierId, int deliveryId)
+    public void CompleteOrderHandling(int requesterId, int courierId, int deliveryId, BO.DeliveryFinishType finishType)
     {
         // Strict permission check: Only the assigned courier can complete their own delivery
         if (requesterId != courierId)
             throw new BO.BlAdminPermissionException("Only the courier can complete the delivery");
 
-        OrderManager.CompleteOrderHandling(courierId, deliveryId);
+        OrderManager.CompleteOrderHandling(courierId, deliveryId, finishType);
     }
 
     /// <summary>

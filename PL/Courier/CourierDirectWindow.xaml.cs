@@ -2,8 +2,10 @@
 
 using BlApi;
 using BO;
+using PL.Tools;
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -15,7 +17,6 @@ public partial class CourierDirectWindow : Window
     #region Fields
 
     private static readonly IBl s_bl = Factory.Get();
-    private int _courierId;
 
     #endregion Fields
 
@@ -41,8 +42,6 @@ public partial class CourierDirectWindow : Window
     public CourierDirectWindow(int id)
     {
         InitializeComponent();
-        _courierId = id;
-        DataContext = this;
         RefreshData();
     }
 
@@ -61,6 +60,14 @@ public partial class CourierDirectWindow : Window
         }
     }
 
+    public IEnumerable<BO.OrderStatus> DeliveryStatusList
+    {
+        get
+        {
+            return App.GetEnumValues(BO.OrderStatus.Open, BO.OrderStatus.InProgress);
+        }
+    }
+
     #endregion Enumerables
 
     //=================== Methods ===================\\
@@ -73,7 +80,7 @@ public partial class CourierDirectWindow : Window
         try
         {
             // Get Data
-            CurrentCourier = s_bl.Courier.GetCourier(_courierId, _courierId);
+            CurrentCourier = s_bl.Courier.GetCourier(UserData.s_UserId, UserData.s_UserId);
             // Logic: Has Order vs No Order
             if (CurrentCourier.OrderInProgress != null)
             {
@@ -104,6 +111,13 @@ public partial class CourierDirectWindow : Window
         }
     }
 
+    private void CanFinishOrder_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (cmbOrderStatus.SelectedItem != null) btnFinishOrder.IsEnabled = true;
+        else btnFinishOrder.IsEnabled = false;
+    }
+    
+
     #endregion Methods
 
     //================ Event Handlers ================\\
@@ -120,7 +134,6 @@ public partial class CourierDirectWindow : Window
         {
             s_bl.Courier.UpdateCourier(CurrentCourier.CourierId, CurrentCourier);
             MessageBox.Show("Profile updated!");
-            RefreshData();
         }
         catch (Exception ex) 
         { 
@@ -140,8 +153,6 @@ public partial class CourierDirectWindow : Window
 
         // Open window to pick order
         MessageBox.Show("Opening Order Selector...");
-        // new OrderSelectionWindow(_courierId).ShowDialog();
-        RefreshData();
 
         // Restore default cursor
         Mouse.OverrideCursor = null;
@@ -154,17 +165,25 @@ public partial class CourierDirectWindow : Window
 
         try
         {
+            // Get selected finish status
+            var selectedStatus = (BO.DeliveryFinishType)cmbOrderStatus.SelectedItem;
+
+            // Complete order handling
             if (CurrentCourier.OrderInProgress != null)
             {
-                // Call BL to finish
-                //s_bl.Order.UpdateDelivery(CurrentCourier.OrderInProgress.OrderId, _courierId);
+                var deliveryId = CurrentCourier.OrderInProgress.DeliveryId;
+
+                s_bl.Order.CompleteOrderHandling(UserData.s_UserId, CurrentCourier.CourierId, deliveryId, selectedStatus);
                 MessageBox.Show("Delivery Finished!");
-                RefreshData();
+            }
+            else
+            {
+                MessageBox.Show("No order in progress to finish.");
             }
         }
-        catch (Exception ex) 
-        { 
-            MessageBox.Show(ex.Message); 
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
         }
         finally
         {
@@ -180,5 +199,26 @@ public partial class CourierDirectWindow : Window
     }
 
     #endregion Event Handlers
+
+    //==================== Observers ===================\\
+
+    #region Observers
+
+    private void CourierObserver()
+                    => RefreshData();
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        s_bl.Courier.AddObserver(CourierObserver);
+        s_bl.Order.AddObserver(CourierObserver);
+    }
+
+    private void Window_Closed(object sender, EventArgs e)
+    {
+        s_bl.Courier.RemoveObserver(CourierObserver);
+        s_bl.Order.RemoveObserver(CourierObserver);
+    }
+
+    #endregion Observers
 
 }

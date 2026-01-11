@@ -1,6 +1,7 @@
 ﻿namespace Helpers;
 
 using DalApi;
+using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -272,11 +273,14 @@ internal static class OrderManager
     /// <summary>
     /// Marks a delivery as completed.
     /// </summary>
-    internal static void CompleteOrderHandling(int courierId, int deliveryId)
+    internal static void CompleteOrderHandling(int courierId, int deliveryId, BO.DeliveryFinishType finishType)
     {
         // Validate IDs
         Tools.ValidatePersonId(courierId);
         Tools.ValidateSystemId(deliveryId);
+
+        // Variable to hold order ID for notification
+        int orderId;
 
         try
         {
@@ -289,12 +293,15 @@ internal static class OrderManager
                 throw new BO.BlCourierNotAssignedToDeliveryException(
                     $"Courier with ID={courierId} is not assigned to delivery ID={deliveryId}.");
 
+            // Get order ID for notification
+            orderId = delivery.OrderId;
+
             // Mark delivery as completed
             s_dal.Delivery.Update(
                 delivery with
                 {
                     DeliveryFinishDate = s_dal.Config.Clock,
-                    DeliveryFinishType = DO.DeliveryFinishType.Completed
+                    DeliveryFinishType = (DO.DeliveryFinishType)finishType
                 });
         }
         catch (DO.DalDoesNotExistException ex)
@@ -304,7 +311,8 @@ internal static class OrderManager
 
         // Notify observers of the order update
         Observers.NotifyListUpdated(); //stage 5
-        Observers.NotifyItemUpdated(deliveryId); //stage 5
+        Observers.NotifyItemUpdated(courierId); //stage 5
+        Observers.NotifyItemUpdated(orderId); //stage 5
     }
 
     /// <summary>
