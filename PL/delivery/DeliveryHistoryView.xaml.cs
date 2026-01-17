@@ -19,15 +19,30 @@ namespace PL.delivery;
 /// </summary>
 public partial class DeliveryHistoryView : Window
 {
+
+    //==================== Constructor ===================\\
+
+    #region Constructor
+
     /// <summary>
     /// Initializes a new instance of the window with the provided history list.
     /// </summary>
     /// <param name="historyList">The list of delivery steps from BO.</param>
     public DeliveryHistoryView(IEnumerable<BO.DeliveryPerOrderInList>? historyList)
     {
+
+        // Restore default cursor
+        Mouse.OverrideCursor = null;
+
         InitializeComponent();
         LoadTimeline(historyList);
     }
+
+    #endregion Constructor
+
+    //==================== Timeline Loading ===================\\
+
+    #region Timeline Loading
 
     /// <summary>
     /// Converts the BO list into UI-friendly TimelineEvent objects and binds them.
@@ -78,6 +93,12 @@ public partial class DeliveryHistoryView : Window
         TimelineList.ItemsSource = timelineEvents;
     }
 
+    #endregion Timeline Loading
+
+    //==================== Methods ===================\\
+
+    #region Methods
+
     /// <summary>
     /// Closes the current window.
     /// </summary>
@@ -85,4 +106,7 @@ public partial class DeliveryHistoryView : Window
     {
         this.Close();
     }
+
+    #endregion Methods
+
 }

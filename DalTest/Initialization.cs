@@ -385,6 +385,8 @@ public static class Initialization
         var shipmentTypes = Enum.GetValues<DO.ShipmentType>();
         var finishTypes = Enum.GetValues<DO.DeliveryFinishType>();
 
+        var config = s_dal.Config;
+
         foreach (var order in orders.Where(o => o.OrderStatus != null && o.OrderStatus.Contains("InProgress")))
         {
 
@@ -403,19 +405,20 @@ public static class Initialization
             // Sample randomly from enum
             DO.ShipmentType shipmentType = shipmentTypes[s_rand.Next(shipmentTypes.Length)];
 
-            // Max distance policy used for later checks
-            double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dal.Config.MaxAirDistance : null;
+            // Actual distance policy used for later checks
+            double? actualDistance = (s_rand.NextDouble() < 0.90) ?
+                Math.Round(s_rand.NextDouble() * (config.MaxAirDistance ?? 50), 2) : null;
 
             // Persist via DAL (DeliveryImplementation will assign the running deliveryId)
             s_dal.Delivery.Create(new DO.Delivery(
                 DeliveryId: 0,                    // Next Delivery Id
                 OrderId: order.OrderId,           // link order
                 CourierId: courier.CourierId,     // link courier
-                DeliveryMaxDistance: maxDistance, // per delivery
+                ActualDistance: actualDistance, // per delivery
                 DeliveryDate: deliveryDate,
-                DeliveryFinishDate: DateTime.MinValue,
+                DeliveryFinishDate: null,
                 ShipmentType: shipmentType,
-                DeliveryFinishType: DO.DeliveryFinishType.None
+                DeliveryFinishType: null
             ));
         }
 
@@ -453,15 +456,16 @@ public static class Initialization
             else if (p < 95) finishType = DO.DeliveryFinishType.Failed;      // ~3%
             else finishType = DO.DeliveryFinishType.Returned;                // ~5%
 
-            // Max distance policy used for later checks
-            double? maxDistance = (s_rand.NextDouble() < 0.90) ? s_dal.Config.MaxAirDistance : null;
+            // Actual distance policy used for later checks
+            double? actualDistance = (s_rand.NextDouble() < 0.90) ?
+                Math.Round(s_rand.NextDouble() * (config.MaxAirDistance ?? 50), 2) : null;
 
             // Persist via DAL (DeliveryImplementation will assign the running deliveryId)
             s_dal.Delivery.Create(new DO.Delivery(
                 DeliveryId: 0,                    // Next Delivery Id
                 OrderId: order.OrderId,           // link order
                 CourierId: courier.CourierId,     // link courier
-                DeliveryMaxDistance: maxDistance, // per delivery
+                ActualDistance: actualDistance, // per delivery
                 DeliveryDate: deliveryDate,
                 DeliveryFinishDate: deliveryFinishDate,
                 ShipmentType: shipmentType,

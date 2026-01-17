@@ -1,10 +1,13 @@
 ﻿namespace PL;
 
 using PL.Courier;
-using PL.Order;
 using PL.Login;
+using PL.Order;
+using PL.Tools;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+
 //ChangeMe
 
 /// <summary>
@@ -13,7 +16,14 @@ using System.Windows.Input;
 public partial class MainWindow : Window
 {
 
+    //==================== Fields ===================\\
+
+    #region Fields
+
+    // The entry point to the BL layer (Factory pattern).
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
+    #endregion Fields
 
     //==================== Dependency Properties ===================\\
 
@@ -24,59 +34,29 @@ public partial class MainWindow : Window
         get { return (DateTime)GetValue(CurrentTimeProperty); }
         set { SetValue(CurrentTimeProperty, value); }
     }
+    // Using a DependencyProperty as the backing store for CurrentTime.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty CurrentTimeProperty =
         DependencyProperty.Register("CurrentTime", typeof(DateTime), typeof(MainWindow));
-
 
     public BO.Config Configuration
     {
         get { return (BO.Config)GetValue(ConfigurationProperty); }
         set { SetValue(ConfigurationProperty, value); }
     }
+    // Using a DependencyProperty as the backing store for Configuration.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty ConfigurationProperty =
         DependencyProperty.Register("Configuration", typeof(BO.Config), typeof(MainWindow));
 
+    public IEnumerable<DashboardItem> DashboardStats
+    {
+        get { return (IEnumerable<DashboardItem>)GetValue(DashboardStatsProperty); }
+        set { SetValue(DashboardStatsProperty, value); }
+    }
+    // Using a DependencyProperty as the backing store for DashboardStats.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty DashboardStatsProperty =
+        DependencyProperty.Register("DashboardStats", typeof(IEnumerable<DashboardItem>), typeof(MainWindow));
+
     #endregion Dependency Properties
-
-    //==================== Observers ===================\\
-
-    #region Observers
-
-    private void ClockObserver()
-    {
-        CurrentTime = s_bl.Admin.GetClock();
-    }
-
-    private void ConfigObserver()
-    {
-        Configuration = s_bl.Admin.GetConfig();
-    }
-
-    #endregion Observers
-
-    //==================== Window Events ===================\\
-
-    #region Window Events
-
-    private void Window_Loaded(object sender, RoutedEventArgs e)
-    {
-
-        CurrentTime = s_bl.Admin.GetClock();
-
-        Configuration = s_bl.Admin.GetConfig();
-
-        s_bl.Admin.AddClockObserver(ClockObserver);
-
-        s_bl.Admin.AddConfigObserver(ConfigObserver);
-    }
-
-    private void Window_Closed(object sender, EventArgs e)
-    {             
-        s_bl.Admin.RemoveClockObserver(ClockObserver);
-        s_bl.Admin.RemoveConfigObserver(ConfigObserver);
-    }
-
-    #endregion Window Events
 
     //==================== Constructor ===================\\
 
@@ -111,6 +91,24 @@ public partial class MainWindow : Window
     private void BtnAddYear_Click(object sender, RoutedEventArgs e)
     {
         s_bl.Admin.ForwardClock(BO.TimeUnit.Year);
+    }
+
+    private void BtnDashboardItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.DataContext is DashboardItem item)
+        {
+            // Open OrderListWindow with appropriate filters
+            var win = new OrderListWindow();
+
+            // Set filters based on the clicked dashboard item
+            win.OrderCategoryFilter = (BO.OrderInListFilterBy)item.MainStatus;
+
+            // If the main status is "All", do not set the schedule status filter
+            win.ScheduleStatusFilter = item.TimeStatus;
+
+            // Show the window
+            win.Show();
+        }
     }
 
     private void BtnInitDB_Click(object sender, RoutedEventArgs e)
@@ -225,5 +223,95 @@ public partial class MainWindow : Window
     }
 
     #endregion Button Click Handlers
+
+    //==================== Dashboard Refresh ===================\\
+
+    #region Dashboard Refresh
+
+    private void RefreshDashboard()
+    {
+        try
+        {
+            // Get the summary array from the business logic layer
+            int[] summaryArray = s_bl.Order.GetOrderStatusSummary(UserData.s_UserId);
+
+            // Prepare the list to hold dashboard items
+            var statsList = new List<DashboardItem>();
+            var orderStatuses = Enum.GetValues(typeof(BO.OrderStatus));
+            var scheduleStatuses = Enum.GetValues(typeof(BO.ScheduleStatus));
+            int scheduleCount = scheduleStatuses.Length;
+
+            // Populate the dashboard items based on the summary array
+            foreach (BO.OrderStatus os in orderStatuses)
+            {
+                // For each schedule status
+                foreach (BO.ScheduleStatus ss in scheduleStatuses)
+                {
+                    // Calculate the index in the summary array
+                    int index = (int)os * scheduleCount + (int)ss;
+                    int count = (index < summaryArray.Length) ? summaryArray[index] : 0;
+
+                    // Only add items with a count greater than zero
+                    if (count > 0)
+                    {
+                        // Add a new dashboard item
+                        statsList.Add(new DashboardItem
+                        {
+                            MainStatus = os,
+                            TimeStatus = ss,
+                            Count = count
+                        });
+                    }
+                }
+            }
+
+            // Update the DashboardStats property
+            DashboardStats = statsList;
+        }
+        catch { }
+    }
+
+    #endregion Dashboard Refresh
+
+    //==================== Observers ===================\\
+
+    #region Observers
+
+    private void ClockObserver()
+    {
+        CurrentTime = s_bl.Admin.GetClock();
+    }
+
+    private void ConfigObserver()
+    {
+        Configuration = s_bl.Admin.GetConfig();
+    }
+
+    #endregion Observers
+
+    //==================== Window Events ===================\\
+
+    #region Window Events
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+
+        CurrentTime = s_bl.Admin.GetClock();
+        Configuration = s_bl.Admin.GetConfig();
+        RefreshDashboard();
+
+        s_bl.Admin.AddClockObserver(ClockObserver);
+        s_bl.Admin.AddConfigObserver(ConfigObserver);
+        s_bl.Order.AddObserver(RefreshDashboard);
+    }
+
+    private void Window_Closed(object sender, EventArgs e)
+    {
+        s_bl.Admin.RemoveClockObserver(ClockObserver);
+        s_bl.Admin.RemoveConfigObserver(ConfigObserver);
+        s_bl.Order.RemoveObserver(RefreshDashboard);
+    }
+
+    #endregion Window Events
 
 }

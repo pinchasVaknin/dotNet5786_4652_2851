@@ -2,6 +2,7 @@
 
 using BlApi;
 using BO;
+using PL.delivery;
 using PL.Tools;
 using System;
 using System.Windows;
@@ -18,6 +19,9 @@ public partial class CourierDirectWindow : Window
 
     private static readonly IBl s_bl = Factory.Get();
 
+    // Courier ID for observer registration
+    private readonly int _courierId;
+
     #endregion Fields
 
     //================== Properties =================\\
@@ -30,6 +34,7 @@ public partial class CourierDirectWindow : Window
         get { return (BO.Courier)GetValue(CurrentCourierProperty); }
         set { SetValue(CurrentCourierProperty, value); }
     }
+    // Using a DependencyProperty as the backing store for CurrentCourier.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty CurrentCourierProperty =
         DependencyProperty.Register("CurrentCourier", typeof(BO.Courier), typeof(CourierDirectWindow));
 
@@ -42,7 +47,7 @@ public partial class CourierDirectWindow : Window
     public CourierDirectWindow(int id)
     {
         InitializeComponent();
-        RefreshData();
+        _courierId = id;
     }
 
     #endregion Constructors
@@ -60,11 +65,11 @@ public partial class CourierDirectWindow : Window
         }
     }
 
-    public IEnumerable<BO.OrderStatus> DeliveryStatusList
+    public IEnumerable<BO.DeliveryFinishType> DeliveryStatusList
     {
         get
         {
-            return App.GetEnumValues(BO.OrderStatus.Open, BO.OrderStatus.InProgress);
+            return App.GetEnumValues(BO.DeliveryFinishType.Cancelled);
         }
     }
 
@@ -74,13 +79,12 @@ public partial class CourierDirectWindow : Window
 
     #region Methods
 
-
     private void RefreshData()
     {
         try
         {
             // Get Data
-            CurrentCourier = s_bl.Courier.GetCourier(UserData.s_UserId, UserData.s_UserId);
+            CurrentCourier = s_bl.Courier.GetCourier(UserData.s_UserId, _courierId);
             // Logic: Has Order vs No Order
             if (CurrentCourier.OrderInProgress != null)
             {
@@ -113,10 +117,9 @@ public partial class CourierDirectWindow : Window
 
     private void CanFinishOrder_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (cmbOrderStatus.SelectedItem != null) btnFinishOrder.IsEnabled = true;
-        else btnFinishOrder.IsEnabled = false;
+        // Enable Finish Order button only if a status is selected
+        btnFinishOrder.IsEnabled = cmbOrderStatus.SelectedItem != null;
     }
-    
 
     #endregion Methods
 
@@ -141,13 +144,28 @@ public partial class CourierDirectWindow : Window
             {
                 s_bl.Courier.UpdateCourier(CurrentCourier.CourierId, CurrentCourier);
                 MessageBox.Show("Profile updated!");
-                RefreshData();
             }
-                MessageBox.Show("Distance Too Far!");
         }
-        catch (Exception ex) 
-        { 
-            MessageBox.Show(ex.Message); 
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+        finally
+        {
+            // Restore default cursor
+            Mouse.OverrideCursor = null;
+        }
+    }
+
+    private void BtnHistory_Click(object sender, RoutedEventArgs e)
+    {
+        // Show wait cursor
+        Mouse.OverrideCursor = Cursors.Wait;
+
+        try
+        {
+            // Open history window
+            new DeliveryHistoryWindow(CurrentCourier.CourierId).Show();
         }
         finally
         {
@@ -161,11 +179,16 @@ public partial class CourierDirectWindow : Window
         // Show wait cursor
         Mouse.OverrideCursor = Cursors.Wait;
 
-        // Open window to pick order
-        MessageBox.Show("Opening Order Selector...");
-
-        // Restore default cursor
-        Mouse.OverrideCursor = null;
+        try
+        {
+            // Open window to pick order
+            new OpenDeliveryListWindow(CurrentCourier).ShowDialog();
+        }
+        finally
+        {
+            // Restore default cursor
+            Mouse.OverrideCursor = null;
+        }
     }
 
     private void BtnFinishOrder_Click(object sender, RoutedEventArgs e)
@@ -219,14 +242,13 @@ public partial class CourierDirectWindow : Window
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        s_bl.Courier.AddObserver(CourierObserver);
-        s_bl.Order.AddObserver(CourierObserver);
+        s_bl.Courier.AddObserver(_courierId, CourierObserver);
+        RefreshData();
     }
 
     private void Window_Closed(object sender, EventArgs e)
     {
-        s_bl.Courier.RemoveObserver(CourierObserver);
-        s_bl.Order.RemoveObserver(CourierObserver);
+        s_bl.Courier.RemoveObserver(_courierId, CourierObserver);
     }
 
     #endregion Observers

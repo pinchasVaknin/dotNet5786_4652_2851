@@ -127,7 +127,7 @@ internal class OrderImplementation : IOrder
         // Load orders from XML
         List<Order> orders = XMLTools.LoadListFromXMLSerializer<Order>(Config.s_orders_xml);
 
-        // Remove the order; if none removed, the order does not exist
+        // Remove the order with the specified ID; if none removed, it does not exist
         if (orders.RemoveAll(o => o.OrderId == id) == 0)
             throw new DalDoesNotExistException($"Order with ID={id} does not exist");
 

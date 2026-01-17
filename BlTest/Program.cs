@@ -171,7 +171,6 @@ internal class Program
                     Console.Write("Initializing...");
                     s_bl.Admin.InitializeDB();
                     Console.WriteLine(" Done.");
-                    CheckForBugs();
                     break;
                 case 2:
                     Console.Write("Resetting...");
@@ -364,7 +363,8 @@ internal class Program
                 case 6:
                     int cIdComp = SafeReadInt("Enter Courier ID: ");
                     int dIdComp = SafeReadInt("Enter Delivery ID: ");
-                    s_bl.Order.CompleteOrderHandling(s_currentUserId, cIdComp, dIdComp);
+                    BO.DeliveryFinishType finishType  = SafeReadEnum<BO.DeliveryFinishType>("Select Finish Type:");
+                    s_bl.Order.CompleteOrderHandling(s_currentUserId, cIdComp, dIdComp, finishType);
                     Console.WriteLine("Order supplied.");
                     break;
 

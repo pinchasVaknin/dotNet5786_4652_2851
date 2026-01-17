@@ -5,8 +5,7 @@
         Height="500" Width="700"
         Style="{StaticResource StandardWindow}"
         WindowStartupLocation="CenterScreen"
-        BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1"
-        >
+        BorderBrush="{StaticResource DarkBlueBrush}" BorderThickness="1">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -45,7 +44,8 @@
                 <Label Content="User ID:" Style="{StaticResource ConfigLabelStyle}"/>
                 <TextBox x:Name="txtUserId" 
                          Style="{StaticResource NumericStyle}" 
-                         TextChanged="ClearError_TextChanged"/>
+                         TextChanged="ClearError_TextChanged"
+                         KeyDown="HandleEnterKey"/>
                 
                 <TextBlock x:Name="ErrId" 
                            Text="Invalid User ID" 
@@ -57,7 +57,8 @@
                 <PasswordBox x:Name="txtPassword" Height="25" 
                              VerticalContentAlignment="Center" 
                              Margin="0,3"
-                             PasswordChanged="ClearError_PasswordChanged"/> 
+                             PasswordChanged="ClearError_PasswordChanged"
+                             KeyDown="HandleEnterKey"/> 
                 
                 <TextBlock x:Name="ErrPass" 
                            Text="Password is required" 

@@ -84,90 +84,98 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="2" Margin="30">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="System Configuration" FontSize="18" Margin="0,0,0,15" 
-                       BorderBrush="{StaticResource LightBlueBrush}" BorderThickness="0,0,0,2" FontFamily="Stencil">
-                    <Label.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="Black"/>
-                            <GradientStop Color="White" Offset="0.318"/>
-                        </LinearGradientBrush>
-                    </Label.Background>
-                </Label>
+                    <GroupBox Header="Order Status Dashboard" Grid.Row="0" Margin="0,0,0,20" BorderBrush="{StaticResource DarkBlueBrush}">
+                        <ItemsControl ItemsSource="{Binding DashboardStats, RelativeSource={RelativeSource AncestorType=Window}}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
 
-                <StackPanel Grid.Row="1">
-                    <Grid Margin="0,10">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Margin="8" Width="100" Height="70"
+                                            Click="BtnDashboardItem_Click"
+                                            Cursor="Hand">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="White" CornerRadius="8" BorderThickness="2" Padding="2">
+                                                    <Border.BorderBrush>
+                                                        <SolidColorBrush Color="{Binding StatusColor}"/>
+                                                    </Border.BorderBrush>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                                                    <StackPanel VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Count}" 
+                                                                   HorizontalAlignment="Center" 
+                                                                   FontSize="22" FontWeight="Bold"
+                                                                   Foreground="#2C3E50"/>
 
-                        <Controls:LabeledTextBox Grid.Row="0" 
-                                                 Label="Company Address:" 
-                                                 Text="{Binding Configuration.CompanyAddress}"/>
+                                                        <TextBlock Text="{Binding DisplayTitle}" 
+                                                                   HorizontalAlignment="Center" 
+                                                                   TextAlignment="Center"
+                                                                   FontSize="11" Foreground="Gray" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </GroupBox>
 
-                        <Controls:LabeledTextBox Grid.Row="1" 
-                                                 Label="Max Air Distance:"
-                                                 Text="{Binding Configuration.MaxAirDistance}"
-                                                 InputStyle="{StaticResource NumericStyle}"/>
+                    <Label Grid.Row="1" Content="System Configuration" FontSize="18" Margin="0,0,0,15" 
+                           BorderBrush="{StaticResource LightBlueBrush}" BorderThickness="0,0,0,2" FontFamily="Stencil">
+                        <Label.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="Black"/>
+                                <GradientStop Color="White" Offset="0.318"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
 
-                        <Controls:LabeledTextBox Grid.Row="2"
-                                                 Label="Avg Car Speed (km/h):"
-                                                 Text="{Binding Configuration.AvgCarSpeed}"
-                                                 InputStyle="{StaticResource NumericStyle}"/>
+                    <StackPanel Grid.Row="2">
+                        <Grid Margin="0,5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <Controls:LabeledTextBox Grid.Row="3"
-                                                 Label="Avg Motorcycle Speed (km/h):"
-                                                 Text="{Binding Configuration.AvgMotorcycleSpeed}"
-                                                 InputStyle="{StaticResource NumericStyle}"/>
+                            <Controls:LabeledTextBox Grid.Row="0" Label="Company Address:" Text="{Binding Configuration.CompanyAddress}"/>
+                            <Controls:LabeledTextBox Grid.Row="1" Label="Max Air Distance:" Text="{Binding Configuration.MaxAirDistance}" InputStyle="{StaticResource NumericStyle}"/>
+                            <Controls:LabeledTextBox Grid.Row="2" Label="Avg Car Speed (km/h):" Text="{Binding Configuration.AvgCarSpeed}" InputStyle="{StaticResource NumericStyle}"/>
+                            <Controls:LabeledTextBox Grid.Row="3" Label="Avg Motorcycle Speed (km/h):" Text="{Binding Configuration.AvgMotorcycleSpeed}" InputStyle="{StaticResource NumericStyle}"/>
+                            <Controls:LabeledTextBox Grid.Row="4" Label="Avg Bicycle Speed (km/h):" Text="{Binding Configuration.AvgBicycleSpeed}" InputStyle="{StaticResource NumericStyle}"/>
+                            <Controls:LabeledTextBox Grid.Row="5" Label="Avg Walking Speed (km/h):" Text="{Binding Configuration.AvgWalkSpeed}" InputStyle="{StaticResource NumericStyle}"/>
+                            <Controls:LabeledTextBox Grid.Row="6" Label="Max Delivery Time:" Text="{Binding Configuration.MaxDelTimeRnge}" InputStyle="{StaticResource NumericStyle}"/>
+                            <Controls:LabeledTextBox Grid.Row="7" Label="Risk Time Range:" Text="{Binding Configuration.RiskTimeRnge}" InputStyle="{StaticResource NumericStyle}"/>
+                            <Controls:LabeledTextBox Grid.Row="8" Label="Inactive Time Range:" Text="{Binding Configuration.UnactiveTimeRnge}" InputStyle="{StaticResource NumericStyle}"/>
 
-                        <Controls:LabeledTextBox Grid.Row="4"
-                                                 Label="Avg Bicycle Speed (km/h):"
-                                                 Text="{Binding Configuration.AvgBicycleSpeed}"
-                                                 InputStyle="{StaticResource NumericStyle}"/>
-
-                        <Controls:LabeledTextBox Grid.Row="5"
-                                                 Label="Avg Walking Speed (km/h):"
-                                                 Text="{Binding Configuration.AvgWalkSpeed}"
-                                                 InputStyle="{StaticResource NumericStyle}"/>
-
-                        <Controls:LabeledTextBox Grid.Row="6"
-                                                 Label="Max Delivery Time:"
-                                                 Text="{Binding Configuration.MaxDelTimeRnge}"
-                                                 InputStyle="{StaticResource NumericStyle}"/>
-
-                        <Controls:LabeledTextBox Grid.Row="7"
-                                                 Label="Risk Time Range:"
-                                                 Text="{Binding Configuration.RiskTimeRnge}"
-                                                 InputStyle="{StaticResource NumericStyle}"/>
-
-                        <Controls:LabeledTextBox Grid.Row="8"
-                                                 Label="Inactive Time Range:"
-                                                 Text="{Binding Configuration.UnactiveTimeRnge}"
-                                                 InputStyle="{StaticResource NumericStyle}"/>
-
-                        <Button Grid.Row="9"
-                                Content="Save Configuration" 
-                                HorizontalAlignment="Left" Height="35" Margin="0,20,0,0" 
-                                Style="{StaticResource ActionButtonStyle}"
-                                Click="BtnUpdateConfig_Click"/>
-                    </Grid>
-                </StackPanel>
-            </Grid>
+                            <Button Grid.Row="9"
+                                    Content="Save Configuration" 
+                                    HorizontalAlignment="Left" Height="35" Margin="0,20,0,0" 
+                                    Style="{StaticResource ActionButtonStyle}"
+                                    Click="BtnUpdateConfig_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>

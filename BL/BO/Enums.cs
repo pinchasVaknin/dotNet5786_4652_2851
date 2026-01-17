@@ -63,10 +63,7 @@ public enum DeliveryFinishType
     Completed,
     Cancelled,
     Failed,
-    Returned,
-
-    // Represents no specific finish type (e.g., for open deliveries).
-    None
+    Returned
 }
 
 /// <summary>

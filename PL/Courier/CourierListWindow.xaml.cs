@@ -155,7 +155,10 @@ public partial class CourierListWindow : Window
                     => RefreshCourierList();
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
-                    => s_bl.Courier.AddObserver(CourierListObserver);
+    {
+        s_bl.Courier.AddObserver(CourierListObserver);
+        RefreshCourierList();
+    }
 
     private void Window_Closed(object sender, EventArgs e)
                     => s_bl.Courier.RemoveObserver(CourierListObserver);
@@ -196,7 +199,12 @@ public partial class CourierListWindow : Window
                 MessageBoxImage.Warning);
 
             // If user selects No, cancel deletion
-            if (result == MessageBoxResult.No) return;
+            if (result == MessageBoxResult.No)
+            {
+                // Restore default cursor
+                Mouse.OverrideCursor = null;
+                return;
+            }
 
             try
             {

@@ -61,7 +61,8 @@ internal static class DeliveryManager
 
                 ShipmentType = (BO.ShipmentType)delivery.ShipmentType,
                 StartDeliveryDate = delivery.DeliveryDate,
-                DeliveryFinishType = (BO.DeliveryFinishType)delivery.DeliveryFinishType,
+                DeliveryFinishType = delivery.DeliveryFinishType.HasValue ?
+                                        (BO.DeliveryFinishType)delivery.DeliveryFinishType.Value : null,
                 FinishDeliveryTime = delivery.DeliveryFinishDate
             };
 
@@ -75,42 +76,38 @@ internal static class DeliveryManager
     /// <returns>A list of <see cref="BO.ClosedDeliveryInList"/>.</returns>
     internal static List<BO.ClosedDeliveryInList> BuildClosedDeliveryInList()
     {
-        // Filter only deliveries that have a finish type (not None)
-        var deliveries = s_dal.Delivery.ReadAll(d => d.DeliveryFinishType != DO.DeliveryFinishType.None);
+        // Filter only deliveries that have a finish type
+        var deliveries = s_dal.Delivery.ReadAll(d => d.DeliveryFinishType != null);
+        var config = AdminManager.GetConfig();
 
         var query =
             from delivery in deliveries
 
                 // Retrieve related Order entity
-            let Order = s_dal.Order.Read(delivery.OrderId)
+            let order = s_dal.Order.Read(delivery.OrderId)
 
             // Retrieve related Courier entity
-            let thisCourier = s_dal.Courier.Read(delivery.CourierId)
+            let thisCourier = (delivery.CourierId == 0) ? null : s_dal.Courier.Read(delivery.CourierId)
 
-            // Get System Configuration for coordinates
-            let config = AdminManager.GetConfig()
+            // Ensure both Order and Courier exist
+            where order != null
+
+            // Determine vehicle type, defaulting to Car if courier is null
+            let vehicle = thisCourier?.CourierVehicleType ?? DO.CourierVehicleType.Car
 
             // Calculate total time taken
-            let totalHandleTime = delivery.DeliveryFinishDate - delivery.DeliveryDate
-
-            // Calculate actual distance using the external tool (Sync over Async)
-            let actualDistance = Tools.GetActualDistanceAsync(
-                Order.OrderLatitude,
-                Order.OrderLongitude,
-                config.Latitude,
-                config.Longitude,
-                thisCourier.CourierVehicleType).GetAwaiter().GetResult()
+            let totalHandleTime = (delivery.DeliveryFinishDate ?? delivery.DeliveryDate) - delivery.DeliveryDate
 
             select new BO.ClosedDeliveryInList
             {
                 DeliveryId = delivery.DeliveryId,
                 OrderId = delivery.OrderId,
-                TypeOfOrder = (BO.TypeOfOrder)Order.TypeOfOrder,
-                OrderAddress = Order.OrderAddress,
+                TypeOfOrder = (BO.TypeOfOrder)order.TypeOfOrder,
+                OrderAddress = order.OrderAddress,
                 ShipmentType = (BO.ShipmentType)delivery.ShipmentType,
-                ActualDistance = actualDistance,
+                ActualDistance = delivery.ActualDistance,
                 TotalHandleTime = totalHandleTime,
-                DeliveryFinishType = (BO.DeliveryFinishType)delivery.DeliveryFinishType
+                DeliveryFinishType = (BO.DeliveryFinishType)delivery.DeliveryFinishType!.Value
             };
 
         return query.ToList();

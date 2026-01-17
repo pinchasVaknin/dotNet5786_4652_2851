@@ -34,6 +34,10 @@ public partial class LabeledTextBox : UserControl
         }
     }
 
+    //=============== Style of the Control ===============\\
+
+    #region Label
+
     public string Label
     {
         get { return (string)GetValue(LabelProperty); }
@@ -43,6 +47,9 @@ public partial class LabeledTextBox : UserControl
     public static readonly DependencyProperty LabelProperty =
         DependencyProperty.Register("Label", typeof(string), typeof(LabeledTextBox), new PropertyMetadata(string.Empty));
 
+    #endregion Label
+
+    #region Text
 
     public string Text
     {
@@ -54,16 +61,9 @@ public partial class LabeledTextBox : UserControl
         DependencyProperty.Register("Text", typeof(string), typeof(LabeledTextBox),
             new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+    #endregion Text
 
-    public bool IsReadOnly
-    {
-        get { return (bool)GetValue(IsReadOnlyProperty); }
-        set { SetValue(IsReadOnlyProperty, value); }
-    }
-    // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
-    public static readonly DependencyProperty IsReadOnlyProperty =
-        DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(LabeledTextBox), new PropertyMetadata(false));
-
+    #region InputStyle
 
     public Style InputStyle
     {
@@ -74,6 +74,10 @@ public partial class LabeledTextBox : UserControl
     public static readonly DependencyProperty InputStyleProperty =
         DependencyProperty.Register("InputStyle", typeof(Style), typeof(LabeledTextBox), new PropertyMetadata(null));
 
+    #endregion InputStyle
+
+    #region TextForeground
+
     public Brush TextForeground
     {
         get { return (Brush)GetValue(TextForegroundProperty); }
@@ -82,6 +86,23 @@ public partial class LabeledTextBox : UserControl
     // Using a DependencyProperty as the backing store for TextForeground.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty TextForegroundProperty =
         DependencyProperty.Register("TextForeground", typeof(Brush), typeof(LabeledTextBox), new PropertyMetadata(Brushes.Black));
+
+    #endregion TextForeground
+
+    //=============== Data of the Control ===============\\
+
+    #region IsReadOnly
+
+    public bool IsReadOnly
+    {
+        get { return (bool)GetValue(IsReadOnlyProperty); }
+        set { SetValue(IsReadOnlyProperty, value); }
+    }
+    // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty IsReadOnlyProperty =
+        DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(LabeledTextBox), new PropertyMetadata(false));
+
+    #endregion IsReadOnly
 
 }
 

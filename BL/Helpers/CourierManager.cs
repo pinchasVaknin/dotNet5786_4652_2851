@@ -192,7 +192,7 @@ internal static class CourierManager
             int late = completedDeliveries.Count - onTime;
 
             // Active Order
-            var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
+            var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == null);
 
             // Get active order ID if any
             int? activeOrderId = activeDelivery?.OrderId;
@@ -376,7 +376,7 @@ internal static class CourierManager
         int late = completedDeliveries.Count - onTime;
 
         // Active Order
-        var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == DO.DeliveryFinishType.None);
+        var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == null);
 
         BO.OrderInProgress? orderInProgress = null;
         if (activeDelivery is not null)
@@ -492,7 +492,7 @@ internal static class CourierManager
         try
         {
             bool hasActiveDelivery = s_dal.Delivery
-                .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType == DO.DeliveryFinishType.None)
+                .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType == null)
                 .Any();
 
             if (hasActiveDelivery)
@@ -507,7 +507,7 @@ internal static class CourierManager
             }
 
             var lastClosedDelivery = s_dal.Delivery
-                .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType != DO.DeliveryFinishType.None)
+                .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType != null)
                 .OrderByDescending(d => d.DeliveryFinishDate)
                 .FirstOrDefault();
 

@@ -18,6 +18,12 @@ public partial class CourierWindow : Window
     // The entry point to the BL layer (Factory pattern).
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
+    // The ID of the courier being added or updated.
+    private readonly int _courierId;
+
+    // Flag to indicate if the window is in update mode.
+    private bool _isUpdateMode = false;
+
     #endregion Fields
 
     //==================== Properties ===================\\
@@ -48,6 +54,17 @@ public partial class CourierWindow : Window
     public static readonly DependencyProperty ActionButtonTextProperty =
         DependencyProperty.Register("ActionButtonText", typeof(string), typeof(CourierWindow), new PropertyMetadata("Add"));
 
+    public bool IsReadOnlyId
+    {
+        get { return (bool)GetValue(IsReadOnlyIdProperty); }
+        set { SetValue(IsReadOnlyIdProperty, value); }
+    }
+    // Using a DependencyProperty as the backing store for IsReadOnlyId.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty IsReadOnlyIdProperty =
+        DependencyProperty.Register("IsReadOnlyId", typeof(bool), typeof(CourierWindow), new PropertyMetadata(false));
+
+
+
     #endregion Properties
 
     //================== Constructors =================\\
@@ -64,6 +81,9 @@ public partial class CourierWindow : Window
             StartWorkDate = s_bl.Admin.GetClock()
         };
 
+        // Set the mode to add
+        IsReadOnlyId = false;
+
         // Set the action button text to "Add"
         ActionButtonText = "Add";
     }
@@ -71,6 +91,8 @@ public partial class CourierWindow : Window
     public CourierWindow(int courierId)
     {
         InitializeComponent();
+        _courierId = courierId;
+        _isUpdateMode = true;
 
         try
         {
@@ -80,8 +102,8 @@ public partial class CourierWindow : Window
             // Set the action button text to "Update"
             ActionButtonText = "Update";
 
-            // Disable editing of the Courier ID field when updating
-            if (TxtId != null) TxtId.IsEnabled = false;
+            // Disable ID change in update mode
+            IsReadOnlyId = true;
         }
         catch
         {
@@ -110,6 +132,19 @@ public partial class CourierWindow : Window
 
     #region Methods
 
+    private void RefreshCourier()
+    {
+        try
+        {
+            // Refresh the current courier details from the BL layer
+            CurrentCourier = s_bl.Courier.GetCourier(UserData.s_UserId, _courierId);
+        }
+        catch
+        {
+            // Handle exceptions silently
+        }
+    }
+
     private void BtnAddUpdate_Click(object sender, RoutedEventArgs e)
     {
         // Show wait cursor
@@ -136,7 +171,7 @@ public partial class CourierWindow : Window
                 return;
             }
             // Validate the courier data before proceeding
-            if (ActionButtonText == "Add")
+            if (!_isUpdateMode)
             {
                 s_bl.Courier.AddCourier(UserData.s_UserId, CurrentCourier);
                 MessageBox.Show("Courier added successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -162,5 +197,31 @@ public partial class CourierWindow : Window
     }
 
     #endregion Methods
-    
+
+    //==================== Observers ===================\\
+
+    #region Observers
+
+    private void CourierObserver()
+                    => RefreshCourier();
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        // Only add observer in update mode
+        if (!_isUpdateMode) return;
+
+        s_bl.Courier.AddObserver(_courierId, CourierObserver);
+        RefreshCourier();
+    }
+
+    private void Window_Closed(object sender, EventArgs e)
+    {
+        // Only remove observer in update mode
+        if (!_isUpdateMode) return;
+
+        s_bl.Courier.RemoveObserver(_courierId, CourierObserver);
+    }
+
+    #endregion Observers
+
 }

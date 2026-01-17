@@ -161,7 +161,7 @@ public interface IOrder : IObservable //stage 5
     /// <param name="requesterId">The ID of the requester (admin or the courier himself, as defined logically).</param>
     /// <param name="courierId">The ID of the courier taking the order.</param>
     /// <param name="orderId">The ID of the order chosen for handling.</param>
-    void AssignOrderToCourier(int requesterId, int courierId, int orderId);
+    void AssignOrderToCourier(int requesterId, int courierId, int orderId, double? actualDistance = null);
 
     /// <summary>
     /// Marks the end of handling an order by a courier (delivery supplied).
@@ -172,6 +172,21 @@ public interface IOrder : IObservable //stage 5
     void CompleteOrderHandling(int requesterId, int courierId, int deliveryId, BO.DeliveryFinishType finishType);
 
     #endregion OrderActions
+
+    //==================== Delivery History Retrieval ===================\\
+
+    #region DeliveryHistory
+
+    /// <summary>
+    /// Retrieves the delivery history for a specific order handled by a courier.
+    /// </summary>
+    /// <param name="requesterId">The ID of the requester (admin or that courier).</param>
+    /// <param name="courierId">The ID of the courier whose delivery history is requested.</param>
+    /// <param name="orderId">The ID of the order whose delivery history is requested.</param>
+    /// <returns>A collection of <see cref="BO.DeliveryPerOrderInList"/> objects representing the delivery history.</returns>
+    IEnumerable<BO.DeliveryPerOrderInList> GetDeliveryHistoryForCourier(int requesterId, int courierId, int orderId);
+
+    #endregion DeliveryHistory
 
     //==================== Additional Order Operations ===================\\
 

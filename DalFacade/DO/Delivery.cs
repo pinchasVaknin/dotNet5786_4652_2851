@@ -4,11 +4,11 @@ public record Delivery
     int DeliveryId, //need to be run number
     int OrderId,
     int CourierId,
-    double? DeliveryMaxDistance,
+    double? ActualDistance,
     DateTime DeliveryDate,
-    DateTime DeliveryFinishDate,
+    DateTime? DeliveryFinishDate,
     ShipmentType ShipmentType,
-    DeliveryFinishType DeliveryFinishType
+    DeliveryFinishType? DeliveryFinishType
 )
 {
     public Delivery() : this(
@@ -17,9 +17,9 @@ public record Delivery
        0,                       // courierId
        null,                    // deliveryMaxDistance
        DateTime.MinValue,       // deliveryDate
-       DateTime.MinValue,       // deliveryFinishDate
+       null,                    // deliveryFinishDate
        ShipmentType.Standard,   // default
-       DeliveryFinishType.None  // default
+       null                     // default
     )
     { }
 }

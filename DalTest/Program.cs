@@ -6,6 +6,9 @@ using System.Data;
 
 internal class Program
 {
+    //==================== Data Access Layer ==================\\
+
+    #region DAL Instances
 
     //private static ICourier? s_dalCourier = new CourierImplementation(); //stage 1
     //private static IDelivery? s_dalDelivery = new DeliveryImplementation(); //stage 1
@@ -18,7 +21,12 @@ internal class Program
 
     static readonly IDal s_dal = Factory.Get; //stage 4
 
-    // -------------------- Main -------------------- \\
+    #endregion DAL Instances
+
+    //==================== Main program ==================\\
+
+    #region Main Method
+
     static void Main(string[] args)
     {
 
@@ -52,7 +60,12 @@ internal class Program
             Console.Clear();
         }
     }
-    // -------------------- Menus -------------------- \\
+
+    #endregion Main Method
+
+    //==================== Menus ==================\\
+
+    #region Menus
 
     /// <summary>
     /// Displays the main root menu with all program sections.  
@@ -181,8 +194,11 @@ internal class Program
         return ReadIntOfMenu(); // read user choice
     }
 
+    #endregion Menus
 
-    // -------------------- Stage ops (init/print/reset) -------------------- \\
+    //==================== Actions ==================\\
+
+    #region Actions
 
     /// <summary>
     /// Performs the system initialization process.  
@@ -233,8 +249,11 @@ internal class Program
         Console.WriteLine("All lists cleared and Config reset.");
     }
 
+    #endregion Actions
 
-    // -------------------- Courier -------------------- \\
+    //==================== Courier ==================\\
+
+    #region Courier
 
     /// <summary>
     /// Create a new Courier and save it to the data layer
@@ -393,8 +412,11 @@ internal class Program
         Console.WriteLine("Courier deleted.");
     }
 
+    #endregion Courier
 
-    // -------------------- Order -------------------- \\
+    //==================== Order ==================\\
+
+    #region Order
 
     /// <summary>
     /// Create a new Order and save it to the data layer
@@ -500,8 +522,11 @@ internal class Program
         Console.WriteLine("Order deleted.");
     }
 
+    #endregion Order
 
-    // -------------------- Delivery -------------------- \\
+    //==================== Delivery ==================\\
+
+    #region Delivery
 
     /// <summary>
     /// Create a new Delivery and save it to the data layer
@@ -516,9 +541,9 @@ internal class Program
         // optional max air distance
         Console.Write("Max air distance or Enter to skip: ");
         string? distInput = Console.ReadLine();
-        double? deliveryMaxDistance = null;
+        double? actualDistance = null; // Renamed for clarity to match DO property
         if (double.TryParse(distInput, out double dVal))
-            deliveryMaxDistance = dVal;
+            actualDistance = dVal;
 
         // timestamps
         DateTime deliveryDate = ReadDateTime("Pickup/Start date (dd/MM/yy HH:mm:ss): "); // start time
@@ -533,7 +558,7 @@ internal class Program
             DeliveryId: 0, // running Id assigned by DAL
             OrderId: orderId,
             CourierId: courierId,
-            DeliveryMaxDistance: deliveryMaxDistance,
+            ActualDistance: actualDistance,
             DeliveryDate: deliveryDate,
             DeliveryFinishDate: deliveryFinishDate,
             ShipmentType: shipType,
@@ -587,13 +612,13 @@ internal class Program
         int courierId = ReadIntOptional($"Courier Id [{d.CourierId}]: ", d.CourierId);
 
         // update optional double
-        double? maxDist = d.DeliveryMaxDistance;
-        Console.Write($"Max air distance [current={(d.DeliveryMaxDistance?.ToString() ?? "null")}]. Enter=keep, '-'=null, or number: ");
+        double? newActualDistance = d.ActualDistance;
+        Console.Write($"Max air distance [current={(d.ActualDistance?.ToString() ?? "null")}]. Enter=keep, '-'=null, or number: ");
         var distIn = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(distIn))
         {
-            if (distIn.Trim() == "-") maxDist = null;
-            else if (double.TryParse(distIn, out var dd)) maxDist = dd;
+            if (distIn.Trim() == "-") newActualDistance = null;
+            else if (double.TryParse(distIn, out var dd)) newActualDistance = dd;
             else throw new DalInvalidIntegerException("Invalid number for max distance.");
         }
 
@@ -609,10 +634,12 @@ internal class Program
 
         Console.Write($"Finish date (dd/MM/yy HH:mm:ss) [current={d.DeliveryFinishDate:dd/MM/yy HH:mm:ss}] (Enter=keep): ");
         var finIn = Console.ReadLine();
-        DateTime deliveryFinishDate = d.DeliveryFinishDate;
+        DateTime? deliveryFinishDate = d.DeliveryFinishDate;
         if (!string.IsNullOrWhiteSpace(finIn))
         {
-            if (!DateTime.TryParse(finIn, out deliveryFinishDate))
+            if (DateTime.TryParse(finIn, out DateTime parsedDate))
+                deliveryFinishDate = parsedDate;
+            else
                 throw new DalInvalidDateException("Invalid finish date/time.");
         }
 
@@ -631,10 +658,15 @@ internal class Program
         Console.WriteLine($"Delivery finish type (Enter=keep [{d.DeliveryFinishType}]): {string.Join(", ", Enum.GetNames<DeliveryFinishType>())}");
         Console.Write("> ");
         var finTypeIn = Console.ReadLine();
+
         if (!string.IsNullOrWhiteSpace(finTypeIn))
         {
-            if (!Enum.TryParse<DeliveryFinishType>(finTypeIn, ignoreCase: true, out finishType))
+            DeliveryFinishType parsedResult;
+            if (!Enum.TryParse<DeliveryFinishType>(finTypeIn, ignoreCase: true, out parsedResult))
+            {
                 throw new DalInvalidDeliveryStatusException("Invalid delivery finish type.");
+            }
+            finishType = parsedResult;
         }
 
         // apply changes and save
@@ -642,7 +674,7 @@ internal class Program
         {
             OrderId = orderId,
             CourierId = courierId,
-            DeliveryMaxDistance = maxDist,
+            ActualDistance = newActualDistance,
             DeliveryDate = deliveryDate,
             DeliveryFinishDate = deliveryFinishDate,
             ShipmentType = shipType,
@@ -663,8 +695,11 @@ internal class Program
         Console.WriteLine("Delivery deleted.");
     }
 
+    #endregion Delivery
 
-    // -------------------- Read helpers -------------------- \\
+    //==================== Helper Methods ==================\\
+
+    #region Helper Methods
 
     /// <summary>
     /// Read a menu selection from the console and return it only if it is in [0..6].
@@ -834,5 +869,7 @@ internal class Program
             Console.WriteLine("Invalid enum value."); // try again
         }
     }
+
+    #endregion Helper Methods
 
 }

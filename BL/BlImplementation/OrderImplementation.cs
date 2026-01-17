@@ -108,6 +108,11 @@ internal class OrderImplementation : IOrder
         return OrderManager.GetOpenOrdersForCourier(courierId, typeFilter, sortBy);
     }
 
+    public IEnumerable<BO.DeliveryPerOrderInList> GetDeliveryHistoryForCourier(int requesterId, int courierId, int orderId)
+    {
+        return OrderManager.GetDeliveryHistoryForCourier(requesterId, courierId, orderId);
+    }
+
     #endregion List Operations
 
     //==================== Business Actions ===================\\
@@ -148,13 +153,13 @@ internal class OrderImplementation : IOrder
     /// Assigns an order to a courier.
     /// Can be performed by the courier themselves (claiming an order) or by an Admin.
     /// </summary>
-    public void AssignOrderToCourier(int requesterId, int courierId, int orderId)
+    public void AssignOrderToCourier(int requesterId, int courierId, int orderId, double? actualDistance = null)
     {
         // Permission check: If requester is NOT the courier, they must be Admin
         if (requesterId != courierId)
             Tools.EnsureAdmin(requesterId, nameof(AssignOrderToCourier));
 
-        OrderManager.AssignOrderToCourier(courierId, orderId);
+        OrderManager.AssignOrderToCourier(courierId, orderId, actualDistance);
     }
 
     #endregion Order Management

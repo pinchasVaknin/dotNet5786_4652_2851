@@ -9,7 +9,9 @@
         Height="650" Width="900"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource StandardWindow}"
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
@@ -172,13 +174,13 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Margin="5" IsEnabled="{Binding IsEditable}">
-                        <Controls:LabeledTextBox Label="Size:" Text="{Binding CurrentOrder.OrderSize}" IsReadOnly="True"/>
-                        <Controls:LabeledTextBox Label="Weight:" Text="{Binding CurrentOrder.OrderWeight}" IsReadOnly="True"/>
+                        <Controls:LabeledTextBox Label="Size:" Text="{Binding CurrentOrder.OrderSize, StringFormat={}{0:F1} L}" IsReadOnly="True"/>
+                        <Controls:LabeledTextBox Label="Weight:" Text="{Binding CurrentOrder.OrderWeight, StringFormat={}{0:F1} Kg}" IsReadOnly="True"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Margin="5" IsEnabled="{Binding IsEditable}">
                         <Controls:LabeledTextBox Label="Time Left:" Text="{Binding CurrentOrder.TimeRemaining}" IsReadOnly="True"/>
-                        <Controls:LabeledTextBox Label="Air Distance (Km):" Text="{Binding CurrentOrder.AirDistance, StringFormat={}{0:N2}}" IsReadOnly="True"/>
+                        <Controls:LabeledTextBox Label="Air Distance:" Text="{Binding CurrentOrder.AirDistance, StringFormat={}{0:N2} Km}" IsReadOnly="True"/>
                     </StackPanel>
 
                     <Button Grid.Column="3" 

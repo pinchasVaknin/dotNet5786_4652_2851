@@ -22,13 +22,30 @@ namespace PL.Login;
 /// </summary>
 public partial class LoginWindow : Window
 {
+
+    //==================== Fields ===================\\
+
+    #region Fields
+
     // Access to the Business Logic layer
     private static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
+
+    #endregion Fields
+
+    //==================== Constructor ===================\\
+
+    #region Constructor
 
     public LoginWindow()
     {
         InitializeComponent();
     }
+
+    #endregion Constructor
+
+    //==================== Event Handlers ===================\\
+
+    #region Event Handlers
 
     /// <summary>
     /// Validates input and attempts to log in via BL.
@@ -105,6 +122,38 @@ public partial class LoginWindow : Window
         }
     }
 
+    private void HandleEnterKey(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            // Mark event as handled to prevent default behavior
+            e.Handled = true;
+
+            // If Enter is pressed in the password box, trigger login
+            if (sender == txtPassword)
+            {
+                BtnLogin_Click(sender, e);
+            }
+            else
+            {
+                // Move focus to the next control
+                TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                (sender as UIElement)?.MoveFocus(request);
+            }
+        }
+    }
+
+    private void BtnExit_Click(object sender, RoutedEventArgs e)
+    {
+        Application.Current.Shutdown();
+    }
+
+    #endregion Event Handlers
+
+    //==================== Methods ===================\\
+
+    #region Methods
+
     private void ShowError(TextBlock errBlock, string msg)
     {
         errBlock.Text = msg;
@@ -127,9 +176,6 @@ public partial class LoginWindow : Window
         ErrPass.Visibility = Visibility.Collapsed;
     }
 
-    private void BtnExit_Click(object sender, RoutedEventArgs e)
-    {
-        Application.Current.Shutdown();
-    }
+    #endregion Methods
 
 }

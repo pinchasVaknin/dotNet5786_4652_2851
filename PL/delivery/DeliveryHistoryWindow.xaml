@@ -1,0 +1,56 @@
+﻿<Window x:Class="PL.delivery.DeliveryHistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="clr-namespace:PL.Controls"
+        xmlns:local="clr-namespace:PL.delivery"
+        mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
+        Style="{StaticResource StandardWindow}"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#2C3E50">
+            <StackPanel Margin="0,40,0,0">
+                <TextBlock Text="DELIVERY" Foreground="#BDC3C7" HorizontalAlignment="Center" FontSize="25" FontWeight="Bold"/>
+                <TextBlock Text="HISTORY" Foreground="White" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                <Separator Margin="20,10" Opacity="0.3"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Controls:TopBarControl Grid.Row="0" BackButtonVisibility="Collapsed"/>
+
+            <DataGrid x:Name="ItemsDataGrid" Grid.Row="1" 
+                      ItemsSource="{Binding DeliveryList}"
+                      SelectedItem="{Binding SelectedDelivery}"
+                      Style="{StaticResource StandardDataGridStyle}"
+                      MouseDoubleClick="DeliveryDataGrid_MouseDoubleClick">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="DeliveryId" Binding="{Binding DeliveryId}" Width="*"/>
+                    <DataGridTextColumn Header="OrderId" Binding="{Binding OrderId}" Width="*"/>
+                    <DataGridTextColumn Header="Type" Binding="{Binding TypeOfOrder}" CellStyle="{StaticResource EnumDataGridCellStyle}"  Width="Auto" />
+                    <DataGridTextColumn Header="Address" Binding="{Binding OrderAddress}" Width="*" />
+                    <DataGridTextColumn Header="Shipment" Binding="{Binding ShipmentType}" Width="*"/>
+                    <DataGridTextColumn Header="Distance" Binding="{Binding ActualDistance}" Width="*" />
+                    <DataGridTextColumn Header="HandleTime" Binding="{Binding TotalHandleTime}" Width="Auto"/>
+                    <DataGridTextColumn Header="FinishType" Binding="{Binding DeliveryFinishType}" CellStyle="{StaticResource EnumDataGridCellStyle}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>

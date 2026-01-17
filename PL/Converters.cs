@@ -35,6 +35,7 @@ public class EnumToColorConverter : IValueConverter
         else if (Enum.TryParse(typeof(OrderStatus), text, out var o)) enumValue = o;
         else if (Enum.TryParse(typeof(VehicleType), text, out var v)) enumValue = v;
         else if (Enum.TryParse(typeof(TypeOfOrder), text, out var t)) enumValue = t;
+        else if (Enum.TryParse(typeof(DeliveryFinishType), text, out var d)) enumValue = d;
 
         // Use the parsed enum value if successful, otherwise use the original value
         object finalValue = enumValue ?? value;
@@ -112,6 +113,24 @@ public class EnumToColorConverter : IValueConverter
         }
 
         #endregion VehicleType
+
+        // Convert DeliveryFinishType to corresponding Brush color
+
+        #region DeliveryFinishType
+
+        if (finalValue is DeliveryFinishType finishType)
+        {
+            switch (finishType)
+            {
+                case DeliveryFinishType.Completed: return Brushes.LightGreen;
+                case DeliveryFinishType.Returned: return Brushes.LightBlue; 
+                case DeliveryFinishType.Cancelled: return Brushes.Orange;
+                case DeliveryFinishType.Failed: return Brushes.Red;
+                default: return Brushes.LightGray;
+            }
+        }
+
+        #endregion DeliveryFinishType
 
         return DependencyProperty.UnsetValue; ;
     }

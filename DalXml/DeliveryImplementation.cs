@@ -41,31 +41,29 @@ internal class DeliveryImplementation : IDelivery
         int courierId = d.ToIntNullable("CourierId")
             ?? throw new DalInvalidIntegerException($"Invalid or missing CourierId in {filePath}");
 
-        // Optional max-distance field
-        double? maxDistance = d.ToDoubleNullable("DeliveryMaxDistance");
+        // Extract ActualDistance (optional)
+        double? actualDistance = d.ToDoubleNullable("ActualDistance");
 
         // Extract and validate DeliveryDate (required)
         DateTime deliveryDate = d.ToDateTimeNullable("DeliveryDate")
             ?? throw new DalInvalidDateException($"Invalid or missing DeliveryDate in {filePath}");
 
         // Extract and validate DeliveryFinishDate (required)
-        DateTime deliveryFinishDate = d.ToDateTimeNullable("DeliveryFinishDate")
-            ?? throw new DalInvalidDateException($"Invalid or missing DeliveryFinishDate in {filePath}");
+        DateTime? deliveryFinishDate = d.ToDateTimeNullable("DeliveryFinishDate");
 
         // Extract and validate ShipmentType enum
         ShipmentType shipmentType = d.ToEnumNullable<ShipmentType>("ShipmentType")
             ?? throw new DalInvalidShipmentTypeException($"Invalid ShipmentType in {filePath}");
 
         // Extract and validate finish type enum
-        DeliveryFinishType finishType = d.ToEnumNullable<DeliveryFinishType>("DeliveryFinishType")
-            ?? throw new DalInvalidDeliveryStatusException($"Invalid DeliveryFinishType in {filePath}");
+        DeliveryFinishType? finishType = d.ToEnumNullable<DeliveryFinishType>("DeliveryFinishType");
 
         // Construct the Delivery object with all validated fields
         return new Delivery(
             DeliveryId: deliveryId,
             OrderId: orderId,
             CourierId: courierId,
-            DeliveryMaxDistance: maxDistance,
+            ActualDistance: actualDistance,
             DeliveryDate: deliveryDate,
             DeliveryFinishDate: deliveryFinishDate,
             ShipmentType: shipmentType,
@@ -83,7 +81,7 @@ internal class DeliveryImplementation : IDelivery
             new XElement("DeliveryId", d.DeliveryId),
             new XElement("OrderId", d.OrderId),
             new XElement("CourierId", d.CourierId),
-            new XElement("DeliveryMaxDistance", d.DeliveryMaxDistance),
+            new XElement("ActualDistance", d.ActualDistance),
             new XElement("DeliveryDate", d.DeliveryDate),
             new XElement("DeliveryFinishDate", d.DeliveryFinishDate),
             new XElement("ShipmentType", d.ShipmentType),

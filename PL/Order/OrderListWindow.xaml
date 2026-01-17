@@ -54,7 +54,7 @@
                   x:Name="OrderDataGrid"
                   ItemsSource="{Binding OrderList}"
                   Style="{StaticResource StandardDataGridStyle}"
-                  MouseDoubleClick="OrderDataGrid_MouseDoubleClick" SelectionChanged="OrderDataGrid_SelectionChanged">
+                  MouseDoubleClick="OrderDataGrid_MouseDoubleClick">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="OrderId" Binding="{Binding OrderId}" Width="*"/>

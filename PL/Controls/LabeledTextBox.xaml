@@ -13,11 +13,15 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Column="0" 
+        <Label Grid.Column="0"
+               HorizontalAlignment="Left" 
+               VerticalAlignment="Center"
                Content="{Binding ElementName=_this, Path=Label}" 
                Style="{StaticResource ConfigLabelStyle}"/>
 
-        <TextBox Grid.Column="1" 
+
+        <TextBox Grid.Column="1"
+                 VerticalAlignment="Center"
                  Text="{Binding ElementName=_this, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  IsReadOnly="{Binding ElementName=_this, Path=IsReadOnly}"
                  Style="{Binding ElementName=_this, Path=InputStyle}"/>

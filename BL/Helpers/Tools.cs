@@ -134,14 +134,14 @@ internal static class Tools
     internal static bool TryConvertEnum<TEnum>(object? value, out TEnum result)
         where TEnum : struct, Enum
     {
-        // 1. Value is already the enum type
+        // Value is already the enum type
         if (value is TEnum enumVal)
         {
             result = enumVal;
             return true;
         }
 
-        // 2. Value is a string (case-insensitive parsing)
+        // Value is a string (case-insensitive parsing)
         if (value is string s &&
             Enum.TryParse<TEnum>(s, ignoreCase: true, out var parsedByName))
         {
@@ -149,7 +149,7 @@ internal static class Tools
             return true;
         }
 
-        // 3. Value is numeric (int) and is defined in the enum
+        // Value is numeric (int) and is defined in the enum
         if (value is IConvertible &&
             int.TryParse(Convert.ToString(value), out int intVal) &&
             Enum.IsDefined(typeof(TEnum), intVal))
@@ -448,12 +448,12 @@ internal static class Tools
     /// <returns>A tuple (Lat, Lon) or null if failed/not found.</returns>
     internal static (double? Lat, double? Lon)? GetLocationFromAddress(string address)
     {
-        // 1. Validate input
+        // Validate input
         if (string.IsNullOrWhiteSpace(address)) return null;
 
         try
         {
-            // 2. Build the request URL
+            // Build the request URL
             string url = $"https://nominatim.openstreetmap.org/search?q={address}&format=xml&limit=1";
 
             // 3. Send request (Synchronous via GetAwaiter().GetResult() for consistency in sync flows)
@@ -545,4 +545,5 @@ internal static class Tools
     }
 
     #endregion ExternalAPIs
+
 }

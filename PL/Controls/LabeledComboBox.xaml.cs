@@ -35,6 +35,10 @@ public partial class LabeledComboBox : UserControl
         }
     }
 
+    //=============== Style of the Control ===============\\
+
+    #region Label
+
     public string Label
     {
         get { return (string)GetValue(LabelProperty); }
@@ -44,6 +48,25 @@ public partial class LabeledComboBox : UserControl
     public static readonly DependencyProperty LabelProperty =
         DependencyProperty.Register("Label", typeof(string), typeof(LabeledComboBox), new PropertyMetadata(string.Empty));
 
+    #endregion Label
+
+    #region InputStyle
+
+    public Style InputStyle
+    {
+        get { return (Style)GetValue(InputStyleProperty); }
+        set { SetValue(InputStyleProperty, value); }
+    }
+    // Using a DependencyProperty as the backing store for InputStyle.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty InputStyleProperty =
+        DependencyProperty.Register("InputStyle", typeof(Style), typeof(LabeledComboBox), new PropertyMetadata(null));
+
+    #endregion InputStyle
+
+    //=============== ComboBox Properties ===============\\
+
+    #region ItemsSource
+
     public IEnumerable ItemsSource
     {
         get { return (IEnumerable)GetValue(ItemsSourceProperty); }
@@ -52,6 +75,10 @@ public partial class LabeledComboBox : UserControl
     // Using a DependencyProperty as the backing store for ItemsSource.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty ItemsSourceProperty =
         DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(LabeledComboBox), new PropertyMetadata(null));
+
+    #endregion ItemsSource
+
+    #region SelectedItem
 
     public object SelectedItem
     {
@@ -63,6 +90,10 @@ public partial class LabeledComboBox : UserControl
         DependencyProperty.Register("SelectedItem", typeof(object), typeof(LabeledComboBox),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+    #endregion SelectedItem
+
+    #region IsReadOnly
+
     public bool IsReadOnly
     {
         get { return (bool)GetValue(IsReadOnlyProperty); }
@@ -73,15 +104,6 @@ public partial class LabeledComboBox : UserControl
         DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(LabeledComboBox),
             new PropertyMetadata(false, OnIsReadOnlyChanged));
 
-    public Style InputStyle
-    {
-        get { return (Style)GetValue(InputStyleProperty); }
-        set { SetValue(InputStyleProperty, value); }
-    }
-    // Using a DependencyProperty as the backing store for InputStyle.  This enables animation, styling, binding, etc...
-    public static readonly DependencyProperty InputStyleProperty =
-        DependencyProperty.Register("InputStyle", typeof(Style), typeof(LabeledComboBox), new PropertyMetadata(null));
-
     private static void OnIsReadOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         // When IsReadOnly changes, update the IsEnabled property of the inner ComboBox
@@ -90,4 +112,30 @@ public partial class LabeledComboBox : UserControl
         if (control != null)
             control.cmbInner.IsEnabled = !(bool)e.NewValue;
     }
+
+    #endregion IsReadOnly
+
+    #region SelectionChanged Event
+
+    public static readonly RoutedEvent SelectionChangedEvent = EventManager.RegisterRoutedEvent(
+        "SelectionChanged",
+        RoutingStrategy.Bubble,
+        typeof(SelectionChangedEventHandler),
+        typeof(LabeledComboBox));
+    // .NET event wrapper
+    public event SelectionChangedEventHandler SelectionChanged
+    {
+        add { AddHandler(SelectionChangedEvent, value); }
+        remove { RemoveHandler(SelectionChangedEvent, value); }
+    }
+
+    private void CmbInner_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        // Raise the SelectionChanged event
+        RoutedEventArgs newEventArgs = new SelectionChangedEventArgs(SelectionChangedEvent, e.RemovedItems, e.AddedItems);
+        RaiseEvent(newEventArgs);
+    }
+
+    #endregion SelectionChanged Event
+
 }

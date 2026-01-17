@@ -32,11 +32,7 @@ public enum DeliveryFinishType
     Completed,
     Cancelled,
     Failed,
-    Returned,
-    /// <summary>
-    /// Indicates the delivery has not been finalized yet.
-    /// </summary>
-    None
+    Returned
 }
 
 /// <summary>

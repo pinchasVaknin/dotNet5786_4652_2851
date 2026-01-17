@@ -29,6 +29,7 @@ public partial class OrderListWindow : Window
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
     public BO.OrderInListFilterBy OrderCategoryFilter { get; set; } = BO.OrderInListFilterBy.All;
     public BO.OrderInList? SelectedOrder { get; set; }
+    public BO.ScheduleStatus? ScheduleStatusFilter { get; set; } = null;
 
     #endregion Fields
 
@@ -104,12 +105,34 @@ public partial class OrderListWindow : Window
     {
         try
         {
-            // If no filter is applied, retrieve all orders
+            // If a ScheduleStatus filter is applied, filter orders by that status
+            if (ScheduleStatusFilter != null)
+            {
+                // Disable filter controls
+                if (CmbFilterCategory != null) CmbFilterCategory.IsEnabled = false;
+                if (CmbFilterValue != null) CmbFilterValue.IsEnabled = false;
+
+                // Get all orders for the user
+                var allOrders = s_bl?.Order.GetOrders(UserData.s_UserId) ?? Enumerable.Empty<BO.OrderInList>();
+
+                // Filter orders by the selected OrderStatus and ScheduleStatus
+                var targetStatus = (BO.OrderStatus)OrderCategoryFilter;
+                OrderList = allOrders.Where(o => o.OrderStatus == targetStatus && o.ScheduleStatus == ScheduleStatusFilter);
+
+                // Exit the method early
+                return;
+            }
+
+            // Enable filter controls
+            if (CmbFilterCategory != null) CmbFilterCategory.IsEnabled = true;
+
+            // If no specific filter is selected, retrieve all orders
             if (OrderCategoryFilter == BO.OrderInListFilterBy.All)
             {
-                // Retrieve all orders for the user
+                // Get all orders for the user
                 OrderList = s_bl?.Order.GetOrders(UserData.s_UserId) ?? Enumerable.Empty<BO.OrderInList>();
 
+                // Reset filter value ComboBox
                 if (CmbFilterValue != null)
                 {
                     CmbFilterValue.ItemsSource = null;
@@ -118,42 +141,57 @@ public partial class OrderListWindow : Window
             }
             else
             {
-
+                // A specific filter is selected
                 if (CmbFilterValue == null) return;
 
+                // Enable the filter value ComboBox
                 CmbFilterValue.IsEnabled = true;
 
+                // Populate the filter value ComboBox if not already populated
                 if (CmbFilterValue.ItemsSource == null)
                 {
+                    // Populate based on the selected filter category
                     switch (OrderCategoryFilter)
                     {
+                        // Populate OrderStatus values
                         case BO.OrderInListFilterBy.OrderStatus:
                             CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.OrderStatus));
                             break;
 
+                        // Populate TypeOfOrder values
                         case BO.OrderInListFilterBy.TypeOfOrder:
                             CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.TypeOfOrder));
                             break;
 
+                        // Populate ScheduleStatus values
                         case BO.OrderInListFilterBy.ScheduleStatus:
                             CmbFilterValue.ItemsSource = Enum.GetValues(typeof(BO.ScheduleStatus));
                             break;
                     }
                 }
 
+                // Ensure both filter category and value are selected
                 if (CmbFilterCategory.SelectedItem == null || CmbFilterValue.SelectedItem == null) return;
+
+                // Retrieve orders based on the selected filter criteria
                 var category = (BO.OrderInListFilterBy)CmbFilterCategory.SelectedItem;
 
+                // Switch based on the selected filter category
                 switch (category)
                 {
+                    // Filter by OrderStatus
                     case BO.OrderInListFilterBy.OrderStatus:
                         var status = (BO.OrderStatus)CmbFilterValue.SelectedItem;
                         OrderList = s_bl?.Order.GetOrders(UserData.s_UserId, category, status);
                         break;
+
+                    // Filter by TypeOfOrder
                     case BO.OrderInListFilterBy.TypeOfOrder:
                         var type = (BO.TypeOfOrder)CmbFilterValue.SelectedItem;
                         OrderList = s_bl?.Order.GetOrders(UserData.s_UserId, category, type);
                         break;
+
+                    // Filter by ScheduleStatus
                     case BO.OrderInListFilterBy.ScheduleStatus:
                         var scheduleStatus = (BO.ScheduleStatus)CmbFilterValue.SelectedItem;
                         OrderList = s_bl?.Order.GetOrders(UserData.s_UserId, category, scheduleStatus);
@@ -164,7 +202,6 @@ public partial class OrderListWindow : Window
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
         }
     }
 
@@ -189,7 +226,12 @@ public partial class OrderListWindow : Window
                 MessageBoxImage.Warning);
 
             // If user selects No, cancel deletion
-            if (result == MessageBoxResult.No) return;
+            if (result == MessageBoxResult.No)
+            {
+                // Restore default cursor
+                Mouse.OverrideCursor = null;
+                return;
+            }
 
             try
             {
@@ -246,15 +288,14 @@ public partial class OrderListWindow : Window
                     => RefreshOrderList();
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
-                    => s_bl.Order.AddObserver(OrderListObserver);
+    {
+        s_bl.Order.AddObserver(OrderListObserver);
+        RefreshOrderList();
+    }
 
     private void Window_Closed(object sender, EventArgs e)
                     => s_bl.Order.RemoveObserver(OrderListObserver);
 
     #endregion Observers
 
-    private void OrderDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-
-    }
 }

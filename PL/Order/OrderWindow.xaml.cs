@@ -23,6 +23,12 @@ public partial class OrderWindow : Window
     // The entry point to the BL layer (Factory pattern).
     static readonly BlApi.IBl s_bl = BlApi.Factory.Get();
 
+    // The order ID associated with this window (used for observers)
+    private readonly int _orderId;
+
+    // Flag to indicate if loading the order failed
+    private bool _LoadFailed = false;
+
     #endregion Fields
 
     //==================== Properties ===================\\
@@ -118,37 +124,21 @@ public partial class OrderWindow : Window
 
         InitializeComponent();
 
+        _orderId = orderId;
         IsUpdateMode = true;
         ActionButtonText = "Update Order";
 
-        try
-        {
-            // Fetch the existing order from BL
-            CurrentOrder = s_bl.Order.GetOrder(UserData.s_UserId, orderId);
+        // Load the existing order details
+        RefreshOrder();
 
-            // Determine if the order is editable based on its status
-            IsEditable = (CurrentOrder.OrderStatus == BO.OrderStatus.Open ||
-                CurrentOrder.OrderStatus == BO.OrderStatus.InProgress);
-        }
-        catch (Exception ex)
+        // If loading failed, close the window
+        if (_LoadFailed)
         {
-            MessageBox.Show($"Failed to load order: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             Close();
             return;
         }
 
-        // Populate the ItemsCollection from the OrderDetail string
-        ItemsCollection.Clear();
-        foreach (var (model, qty) in ParseOrderDetail(CurrentOrder.OrderDetail))
-        {
-            double price = s_bl.Order.GetProductPrice(model);
-            ItemsCollection.Add(new OrderItem { Model = model, Quantity = qty, Price = price });
-        }
-
         InitializeUI();
-
-        // Bind the DataGrid to the ObservableCollection
-        ItemsDataGrid.ItemsSource = ItemsCollection;
     }
 
     #endregion Constructors
@@ -165,9 +155,6 @@ public partial class OrderWindow : Window
     /// is disabled to prevent changes. The product list  is refreshed based on the selected order type.</remarks>
     private void InitializeUI()
     {
-        // Initialize Product ComboBox
-        ItemsDataGrid.ItemsSource = ItemsCollection;
-
         // Populate Order Category ComboBox
         CmbFilterCategory.ItemsSource = Enum.GetValues(typeof(BO.TypeOfOrder));
 
@@ -178,6 +165,36 @@ public partial class OrderWindow : Window
             CmbFilterCategory.SelectedItem = CurrentOrder.TypeOfOrder;
             CmbFilterCategory.IsEnabled = false;
             RefreshProductList(CurrentOrder.TypeOfOrder);
+        }
+    }
+
+    /// <summary>
+    /// Refreshes the current order details from the business logic layer.
+    /// </summary>
+    private void RefreshOrder()
+    {
+        try
+        {
+            // Fetch the latest order details
+            CurrentOrder = s_bl.Order.GetOrder(UserData.s_UserId, _orderId);
+
+            // Clear existing items
+            ItemsCollection.Clear();
+
+            // Parse the order details and populate the items collection
+            foreach (var (model, qty) in ParseOrderDetail(CurrentOrder.OrderDetail))
+            {
+                double price = s_bl.Order.GetProductPrice(model);
+                ItemsCollection.Add(new OrderItem { Model = model, Quantity = qty, Price = price });
+            }
+            // Update the editability based on order status
+            IsEditable = (CurrentOrder.OrderStatus == BO.OrderStatus.Open ||
+                          CurrentOrder.OrderStatus == BO.OrderStatus.InProgress);
+        }
+        catch
+        {
+            MessageBox.Show($"Failed to load order: {_orderId}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            _LoadFailed = true;
         }
     }
 
@@ -319,6 +336,9 @@ public partial class OrderWindow : Window
         if (CmbFilterCategory.SelectedItem == null)
         {
             MessageBox.Show("Please select a valid Category first.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            // Restore default cursor
+            Mouse.OverrideCursor = null;
             return;
         }
 
@@ -332,8 +352,6 @@ public partial class OrderWindow : Window
             if (existingItem != null)
             {
                 existingItem.Quantity += qty;
-                // Refresh the DataGrid to reflect the updated quantity
-                ItemsDataGrid.Items.Refresh();
             }
             else
             {
@@ -398,9 +416,6 @@ public partial class OrderWindow : Window
             if (item.Quantity > 1)
             {
                 item.Quantity--;
-
-                // Refresh the DataGrid to reflect the updated quantity
-                ItemsDataGrid.Items.Refresh();
             }
             else
             {
@@ -455,23 +470,34 @@ public partial class OrderWindow : Window
         // Show wait cursor
         Mouse.OverrideCursor = Cursors.Wait;
 
-        if (CurrentOrder.DeliveryPerOrderInList == null || CurrentOrder.DeliveryPerOrderInList.Count == 0)
+        try
         {
-            MessageBox.Show("No history available for this order.", "Info");
+            if (CurrentOrder.DeliveryPerOrderInList == null || CurrentOrder.DeliveryPerOrderInList.Count == 0)
+            {
+                MessageBox.Show("No history available for this order.", "Info");
 
+                // Restore default cursor
+                Mouse.OverrideCursor = null;
+                return;
+            }
+
+            // Create and configure the delivery history window
+            var trackingWindow = new DeliveryHistoryView(CurrentOrder.DeliveryPerOrderInList);
+            trackingWindow.Owner = this;
+
+            // Show the delivery history window as a dialog
+            trackingWindow.ShowDialog();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
             // Restore default cursor
             Mouse.OverrideCursor = null;
-            return;
         }
-        // Create and configure the delivery history window
-        var trackingWindow = new DeliveryHistoryView(CurrentOrder.DeliveryPerOrderInList);
-        trackingWindow.Owner = this;
 
-        // Restore default cursor
-        Mouse.OverrideCursor = null;
-
-        // Show the delivery history window as a dialog
-        trackingWindow.ShowDialog();
     }
 
     #endregion Event Handlers
@@ -481,15 +507,20 @@ public partial class OrderWindow : Window
     #region Observers
 
     private void OrderObserver()
-    {
+                    =>RefreshOrder();
 
-    }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
-                    => s_bl.Order.AddObserver(OrderObserver);
+    {
+        if (!IsUpdateMode) return;
+        s_bl.Order.AddObserver(_orderId, OrderObserver);
+    }
 
     private void Window_Closed(object sender, EventArgs e)
-                    => s_bl.Order.RemoveObserver(OrderObserver);
+    {
+        if (!IsUpdateMode) return;
+        s_bl.Order.RemoveObserver(_orderId, OrderObserver);
+    }
 
     #endregion Observers
 
