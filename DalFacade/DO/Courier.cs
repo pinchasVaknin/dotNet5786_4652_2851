@@ -7,7 +7,6 @@ public record Courier
     string CourierCellPhone,
     string CourierEmail,
     string CourierPassword,
-    string CourierAddress, // Address from which the courier starts work
     bool CourierEnabled,
     double? MaxCourierDistance,
     DateTime? SeniorityOfCourier,
@@ -16,7 +15,6 @@ public record Courier
 {
     public Courier() : this(
         0,
-        "",
         "",
         "",
         "",

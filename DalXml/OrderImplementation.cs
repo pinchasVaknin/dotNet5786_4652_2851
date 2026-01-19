@@ -4,6 +4,7 @@ using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 //==================== Order CRUD Implementation (XML) ===================\\
@@ -23,6 +24,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="item">The order entity to add.</param>
     /// <exception cref="DalAlreadyExistsException">Thrown if an order with the generated ID already exists.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Create(Order item)
     {
         // Load all existing orders from the XML file
@@ -47,6 +49,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="item">The order entity with updated values.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the order to update does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Update(Order item)
     {
         // Load orders from XML
@@ -74,6 +77,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="id">The unique identifier of the order to retrieve.</param>
     /// <returns>The order entity if found, otherwise null.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Order? Read(int id)
     {
         // Load all orders from XML
@@ -88,6 +92,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="filter">A predicate function to test each element.</param>
     /// <returns>The first matching order, or null if no match is found.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Order? Read(Func<Order, bool> filter)
     {
         // Load orders from XML
@@ -102,6 +107,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="filter">Optional predicate to filter the results.</param>
     /// <returns>A collection of order entities.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
     {
         // Load orders from XML
@@ -122,6 +128,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="id">The ID of the order to delete.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the order does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Delete(int id)
     {
         // Load orders from XML
@@ -138,6 +145,7 @@ internal class OrderImplementation : IOrder
     /// <summary>
     /// Deletes all orders from the XML store.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void DeleteAll()
     {
         // Overwrite the XML file with an empty list of orders

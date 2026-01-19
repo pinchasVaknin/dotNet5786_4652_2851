@@ -1,9 +1,11 @@
 ﻿namespace Helpers;
 
+using BO;
 using DalApi;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 //==================== Courier Business Logic Manager ===================\\
 
@@ -231,10 +233,6 @@ internal static class CourierManager
         // Validate input
         Tools.ValidateCourier(courier);
 
-        // Validate location
-        if (Tools.GetLocationFromAddress(courier.CourierLocation) == null)
-            throw new BO.BlInvalidStringException($"Location '{courier.CourierLocation}' is invalid.");
-
         try
         {
             // Add new courier
@@ -284,10 +282,6 @@ internal static class CourierManager
     {
         // Validate input
         Tools.ValidateCourier(courier);
-
-        // Validate location
-        if (Tools.GetLocationFromAddress(courier.CourierLocation) == null)
-            throw new BO.BlInvalidStringException($"Location '{courier.CourierLocation}' is invalid.");
 
         try
         {
@@ -395,7 +389,6 @@ internal static class CourierManager
             CourierEmail = doCourier.CourierEmail,
             CourierPassword = doCourier.CourierPassword,
             CourierIsActive = doCourier.CourierEnabled,
-            CourierLocation = doCourier.CourierAddress,
             MaxCourierDistance = doCourier.MaxCourierDistance,
             VehicleType = (BO.VehicleType)doCourier.CourierVehicleType,
             StartWorkDate = doCourier.SeniorityOfCourier,
@@ -415,7 +408,6 @@ internal static class CourierManager
             CourierCellPhone: boCourier.CourierCellPhone,
             CourierEmail: boCourier.CourierEmail,
             CourierPassword: boCourier.CourierPassword,
-            CourierAddress: boCourier.CourierLocation,
             CourierEnabled: boCourier.CourierIsActive,
             MaxCourierDistance: boCourier.MaxCourierDistance,
             SeniorityOfCourier: boCourier.StartWorkDate,
@@ -540,6 +532,107 @@ internal static class CourierManager
         catch (DO.DalDoesNotExistException ex)
         {
             throw new BO.BlDoesNotExistException("Failed to update courier activity", ex);
+        }
+    }
+
+    internal static void PeriodicCouriersUpdatesAsync()
+    {
+        // Get deliveries in progress
+        List<DO.Delivery> deliveriesInProgress;
+        double speedCar, speedMotorcycle, speedBicycle, speedWalk;
+        DateTime currentSimClock;
+        double companyLat, companyLon;
+
+        // Read config and deliveries in progress under lock
+        lock (AdminManager.BlMutex)
+        {
+            // Read config
+            var config = s_dal.Config;
+            currentSimClock = config.Clock;
+
+            // Ensure company location is set
+            if (!config.Latitude.HasValue || !config.Longitude.HasValue)
+                return;
+
+            // Company location
+            companyLat = config.Latitude.Value;
+            companyLon = config.Longitude.Value;
+
+            // Speeds
+            speedCar = config.AvgCarSpeed;
+            speedMotorcycle = config.AvgMotorcycleSpeed;
+            speedBicycle = config.AvgBicycleSpeed;
+            speedWalk = config.AvgWalkSpeed;
+
+            // Deliveries in progress
+            deliveriesInProgress = s_dal.Delivery.ReadAll(d => d.DeliveryFinishDate == null).ToList();
+        }
+
+        // Process each delivery
+        foreach (var delivery in deliveriesInProgress)
+        {
+            // Process delivery update
+            bool statusChanged = false;
+            var updatedDelivery = delivery;
+
+            // Get courier and order details
+            DO.Courier courier;
+            DO.Order order;
+
+            // Read courier and order under lock
+            lock (AdminManager.BlMutex)
+            {
+                courier = s_dal.Courier.Read(c => c.CourierId == delivery.CourierId)!;
+                order = s_dal.Order.Read(o => o.OrderId == delivery.OrderId)!;
+            }
+
+            // Determine courier speed
+            double speed = courier.CourierVehicleType switch
+            {
+                DO.CourierVehicleType.Car => speedCar,
+                DO.CourierVehicleType.Motorcycle => speedMotorcycle,
+                DO.CourierVehicleType.Bicycle => speedBicycle,
+                _ => speedWalk
+            };
+            if (speed <= 0) speed = 50;
+
+            // Calculate distance and required time
+            double airDistance = Tools.DistanceKm(companyLat, companyLon, order.OrderLatitude, order.OrderLongitude);
+
+            // Time required to cover the distance
+            double requiredHours = airDistance / speed;
+            TimeSpan requiredTime = TimeSpan.FromHours(requiredHours);
+
+            // Calculate time travelled
+            TimeSpan timeTravelled = currentSimClock - updatedDelivery.DeliveryDate;
+
+            // Check if delivery is completed
+            if (timeTravelled >= requiredTime)
+            {
+                // Mark delivery as completed
+                updatedDelivery = updatedDelivery with
+                {
+                    DeliveryFinishDate = currentSimClock,
+                    DeliveryFinishType = DO.DeliveryFinishType.Completed
+                };
+                statusChanged = true;
+            }
+
+            // Update delivery if status changed
+            if (statusChanged)
+            {
+                lock (AdminManager.BlMutex)
+                {
+                    s_dal.Delivery.Update(updatedDelivery);
+                }
+
+                // Notify observers of the delivery update
+                Observers.NotifyListUpdated();
+                Observers.NotifyItemUpdated(updatedDelivery.OrderId);
+
+                // Notify OrderManager observers of the order update
+                OrderManager.Observers.NotifyItemUpdated(updatedDelivery.OrderId);
+            }
         }
     }
 

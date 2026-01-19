@@ -3,6 +3,7 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 //==================== Delivery CRUD Implementation (List) ===================\\
 
@@ -21,6 +22,7 @@ internal class DeliveryImplementation : IDelivery
     /// Assigns a new unique ID automatically.
     /// </summary>
     /// <param name="item">The delivery entity to add.</param>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Create(Delivery item)
     {
         // Generate a new running ID from the DAL config
@@ -38,6 +40,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="item">The delivery entity with updated values.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the delivery to update does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Update(Delivery item)
     {
         // Delete the existing delivery (throws exception if not found)
@@ -59,6 +62,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="id">The ID of the delivery to find.</param>
     /// <returns>The delivery entity if found, otherwise null.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Delivery? Read(int id)
     {
         // Return the first delivery matching the ID, or null if not found
@@ -70,6 +74,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="filter">A predicate function to test each element.</param>
     /// <returns>The first matching delivery, or null if no match is found.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Delivery? Read(Func<Delivery, bool> filter)
     {
         // Iterate and find the first match based on the filter
@@ -81,6 +86,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="filter">Optional predicate to filter the results.</param>
     /// <returns>A collection of delivery entities.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public IEnumerable<Delivery> ReadAll(Func<Delivery, bool>? filter = null)
     {
         // If no filter is provided, return all items
@@ -102,6 +108,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="id">The ID of the delivery to delete.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the delivery does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Delete(int id)
     {
         // Attempt to find the delivery
@@ -118,6 +125,7 @@ internal class DeliveryImplementation : IDelivery
     /// <summary>
     /// Deletes all deliveries from the data source.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void DeleteAll()
     {
         // Clear the entire list

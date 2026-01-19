@@ -1,753 +1,753 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Order>
-    <OrderId>2</OrderId>
+    <OrderId>0</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Audio =&gt; Bose_QC45{4}, Sony_WH_1000XM5{5}, JBL_Flip_6{7}</OrderDetail>
-    <OrderAddress>Rehavia, Ramban 15, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77673</OrderLatitude>
-    <OrderLongitude>35.21388</OrderLongitude>
-    <OrderCustomerFullName>Eden Peri</OrderCustomerFullName>
-    <OrderCustomerPhone>056-4027181</OrderCustomerPhone>
-    <OrderWeight>1</OrderWeight>
+    <OrderDetail>Audio =&gt; AirPods_Pro_2{7}, Sony_WH_1000XM5{4}</OrderDetail>
+    <OrderAddress>Shlomtzion HaMalka 6, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77744</OrderLatitude>
+    <OrderLongitude>35.22543</OrderLongitude>
+    <OrderCustomerFullName>Meitar Sahar</OrderCustomerFullName>
+    <OrderCustomerPhone>051-2464095</OrderCustomerPhone>
+    <OrderWeight>0.7</OrderWeight>
     <IsFragile>false</IsFragile>
     <OrderSize>0.5</OrderSize>
-    <OrderDate>2026-01-16T00:02:27</OrderDate>
+    <OrderDate>2026-01-18T19:21:40</OrderDate>
     <TypeOfOrder>Audio</TypeOfOrder>
+  </Order>
+  <Order>
+    <OrderId>1</OrderId>
+    <OrderStatus>Open</OrderStatus>
+    <OrderDetail>Tablet =&gt; Galaxy_Tab_S9{1}, Xiaomi_Pad_6{5}</OrderDetail>
+    <OrderAddress>Hebrew University, Mt. Scopus</OrderAddress>
+    <OrderLatitude>31.7946</OrderLatitude>
+    <OrderLongitude>35.24423</OrderLongitude>
+    <OrderCustomerFullName>Yael Menachem</OrderCustomerFullName>
+    <OrderCustomerPhone>055-6859914</OrderCustomerPhone>
+    <OrderWeight>0.7</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2026-01-18T18:52:40</OrderDate>
+    <TypeOfOrder>Tablet</TypeOfOrder>
+  </Order>
+  <Order>
+    <OrderId>3</OrderId>
+    <OrderStatus>Open</OrderStatus>
+    <OrderDetail>TV =&gt; Samsung_QLED_Q80_65{9}, Sony_Bravia_50{1}</OrderDetail>
+    <OrderAddress>Central Bus Station, Jerusalem</OrderAddress>
+    <OrderLatitude>31.79</OrderLatitude>
+    <OrderLongitude>35.2042</OrderLongitude>
+    <OrderCustomerFullName>Eden Peri</OrderCustomerFullName>
+    <OrderCustomerPhone>058-1329418</OrderCustomerPhone>
+    <OrderWeight>11.5</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>1.3</OrderSize>
+    <OrderDate>2026-01-18T18:33:40</OrderDate>
+    <TypeOfOrder>TV</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>4</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Laptop =&gt; MacBook_Air_M2{2}, Dell_XPS_13{3}, Lenovo_ThinkPad_X1{9}</OrderDetail>
-    <OrderAddress>Rekhes Shmuel, Jerusalem</OrderAddress>
-    <OrderLatitude>31.7926</OrderLatitude>
-    <OrderLongitude>35.21008</OrderLongitude>
-    <OrderCustomerFullName>Rotem Halevi</OrderCustomerFullName>
-    <OrderCustomerPhone>057-7840616</OrderCustomerPhone>
-    <OrderWeight>1.4</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.6</OrderSize>
-    <OrderDate>2026-01-16T01:44:27</OrderDate>
-    <TypeOfOrder>Laptop</TypeOfOrder>
+    <OrderDetail>Audio =&gt; Sony_WH_1000XM5{7}</OrderDetail>
+    <OrderAddress>Ein Kerem, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76452</OrderLatitude>
+    <OrderLongitude>35.14696</OrderLongitude>
+    <OrderCustomerFullName>Itai Mor</OrderCustomerFullName>
+    <OrderCustomerPhone>058-2308992</OrderCustomerPhone>
+    <OrderWeight>1.2</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.5</OrderSize>
+    <OrderDate>2026-01-18T19:51:40</OrderDate>
+    <TypeOfOrder>Audio</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>5</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>GamingConsole =&gt; PlayStation_5{6}, Xbox_Series_X{1}, Nintendo_Switch_OLED{4}</OrderDetail>
-    <OrderAddress>Ben Yehuda 10, Jerusalem</OrderAddress>
-    <OrderLatitude>31.78144</OrderLatitude>
-    <OrderLongitude>35.21603</OrderLongitude>
-    <OrderCustomerFullName>Sapir Menashe</OrderCustomerFullName>
-    <OrderCustomerPhone>054-7364398</OrderCustomerPhone>
-    <OrderWeight>2.4</OrderWeight>
+    <OrderDetail>SmartHome =&gt; Google_Nest_Hub{7}, Amazon_Echo{5}</OrderDetail>
+    <OrderAddress>Armon HaNatziv, Yanovski 12, Jerusalem</OrderAddress>
+    <OrderLatitude>31.7509</OrderLatitude>
+    <OrderLongitude>35.22988</OrderLongitude>
+    <OrderCustomerFullName>Itai Mor</OrderCustomerFullName>
+    <OrderCustomerPhone>051-6193928</OrderCustomerPhone>
+    <OrderWeight>1.8</OrderWeight>
     <IsFragile>false</IsFragile>
-    <OrderSize>0.6</OrderSize>
-    <OrderDate>2026-01-16T02:12:27</OrderDate>
-    <TypeOfOrder>GamingConsole</TypeOfOrder>
+    <OrderSize>0.5</OrderSize>
+    <OrderDate>2026-01-18T20:09:40</OrderDate>
+    <TypeOfOrder>SmartHome</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>6</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Accessory =&gt; HDMI_4K_2_1_Cable{8}, NVMe_SSD_1TB{5}, GaN_Charger_65W{9}</OrderDetail>
-    <OrderAddress>Light Rail — Shimon HaTzadik Station</OrderAddress>
-    <OrderLatitude>31.80226</OrderLatitude>
-    <OrderLongitude>35.23514</OrderLongitude>
-    <OrderCustomerFullName>Liron Shalom</OrderCustomerFullName>
-    <OrderCustomerPhone>056-4246773</OrderCustomerPhone>
-    <OrderWeight>0.2</OrderWeight>
+    <OrderDetail>Audio =&gt; JBL_Flip_6{5}</OrderDetail>
+    <OrderAddress>Jabotinsky 2, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77343</OrderLatitude>
+    <OrderLongitude>35.21262</OrderLongitude>
+    <OrderCustomerFullName>Ido Tal</OrderCustomerFullName>
+    <OrderCustomerPhone>051-5506382</OrderCustomerPhone>
+    <OrderWeight>0.7</OrderWeight>
     <IsFragile>false</IsFragile>
-    <OrderSize>0.2</OrderSize>
-    <OrderDate>2026-01-16T02:31:27</OrderDate>
-    <TypeOfOrder>Accessory</TypeOfOrder>
+    <OrderSize>0.6</OrderSize>
+    <OrderDate>2026-01-18T20:00:40</OrderDate>
+    <TypeOfOrder>Audio</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>7</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Accessory =&gt; USB_C_Cable_100W{7}</OrderDetail>
-    <OrderAddress>Light Rail — Davidka Station, Jerusalem</OrderAddress>
-    <OrderLatitude>31.78553</OrderLatitude>
-    <OrderLongitude>35.21205</OrderLongitude>
-    <OrderCustomerFullName>Maor David</OrderCustomerFullName>
-    <OrderCustomerPhone>056-4211171</OrderCustomerPhone>
-    <OrderWeight>0.3</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.1</OrderSize>
-    <OrderDate>2026-01-16T01:40:27</OrderDate>
-    <TypeOfOrder>Accessory</TypeOfOrder>
-  </Order>
-  <Order>
-    <OrderId>8</OrderId>
-    <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Laptop =&gt; HP_Spectre_x360{7}, Dell_XPS_13{7}</OrderDetail>
-    <OrderAddress>Rekhes Shmuel, Jerusalem</OrderAddress>
-    <OrderLatitude>31.7926</OrderLatitude>
-    <OrderLongitude>35.21008</OrderLongitude>
-    <OrderCustomerFullName>Orly Tamir</OrderCustomerFullName>
-    <OrderCustomerPhone>055-3843517</OrderCustomerPhone>
-    <OrderWeight>1.4</OrderWeight>
+    <OrderDetail>Laptop =&gt; HP_Spectre_x360{4}, Lenovo_ThinkPad_X1{1}, Dell_XPS_13{6}</OrderDetail>
+    <OrderAddress>Mamilla Mall, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77705</OrderLatitude>
+    <OrderLongitude>35.22162</OrderLongitude>
+    <OrderCustomerFullName>Noa Levi</OrderCustomerFullName>
+    <OrderCustomerPhone>054-7430324</OrderCustomerPhone>
+    <OrderWeight>2.9</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.8</OrderSize>
-    <OrderDate>2026-01-16T02:11:27</OrderDate>
+    <OrderSize>0.7</OrderSize>
+    <OrderDate>2026-01-18T20:03:40</OrderDate>
     <TypeOfOrder>Laptop</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>9</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Laptop =&gt; Lenovo_ThinkPad_X1{5}</OrderDetail>
-    <OrderAddress>Gilo Center, Jerusalem</OrderAddress>
-    <OrderLatitude>31.72718</OrderLatitude>
-    <OrderLongitude>35.19039</OrderLongitude>
-    <OrderCustomerFullName>Rina Azulay</OrderCustomerFullName>
-    <OrderCustomerPhone>050-7794706</OrderCustomerPhone>
-    <OrderWeight>2.6</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.5</OrderSize>
-    <OrderDate>2026-01-16T00:54:27</OrderDate>
-    <TypeOfOrder>Laptop</TypeOfOrder>
-  </Order>
-  <Order>
-    <OrderId>10</OrderId>
-    <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Smartphone =&gt; iPhone_14{6}, Pixel_8{3}</OrderDetail>
+    <OrderDetail>SmartHome =&gt; Google_Nest_Hub{4}, Amazon_Echo{1}, Philips_Hue_Starter{6}</OrderDetail>
     <OrderAddress>Ramat Eshkol, Ussishkin 14, Jerusalem</OrderAddress>
     <OrderLatitude>31.80587</OrderLatitude>
     <OrderLongitude>35.22674</OrderLongitude>
-    <OrderCustomerFullName>Dvir Mizrahi</OrderCustomerFullName>
-    <OrderCustomerPhone>051-3738525</OrderCustomerPhone>
-    <OrderWeight>0.4</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.3</OrderSize>
-    <OrderDate>2026-01-16T01:52:27</OrderDate>
-    <TypeOfOrder>Smartphone</TypeOfOrder>
+    <OrderCustomerFullName>Naor Levy</OrderCustomerFullName>
+    <OrderCustomerPhone>055-1966075</OrderCustomerPhone>
+    <OrderWeight>2.3</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.6</OrderSize>
+    <OrderDate>2026-01-18T19:21:40</OrderDate>
+    <TypeOfOrder>SmartHome</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>11</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Tablet =&gt; Galaxy_Tab_S9{5}, Xiaomi_Pad_6{7}</OrderDetail>
-    <OrderAddress>Neve Yaakov Blvd, Jerusalem</OrderAddress>
-    <OrderLatitude>31.84455</OrderLatitude>
-    <OrderLongitude>35.2275</OrderLongitude>
-    <OrderCustomerFullName>Shir Avital</OrderCustomerFullName>
-    <OrderCustomerPhone>054-2854148</OrderCustomerPhone>
-    <OrderWeight>0.8</OrderWeight>
+    <OrderDetail>Smartphone =&gt; Xiaomi_13{1}, Galaxy_S23{8}, Pixel_8{4}</OrderDetail>
+    <OrderAddress>Hebrew University, Givat Ram</OrderAddress>
+    <OrderLatitude>31.7736</OrderLatitude>
+    <OrderLongitude>35.20146</OrderLongitude>
+    <OrderCustomerFullName>Yair Katz</OrderCustomerFullName>
+    <OrderCustomerPhone>056-4755915</OrderCustomerPhone>
+    <OrderWeight>0.7</OrderWeight>
     <IsFragile>true</IsFragile>
     <OrderSize>0.2</OrderSize>
-    <OrderDate>2026-01-16T01:23:27</OrderDate>
+    <OrderDate>2026-01-18T19:27:40</OrderDate>
+    <TypeOfOrder>Smartphone</TypeOfOrder>
+  </Order>
+  <Order>
+    <OrderId>12</OrderId>
+    <OrderStatus>Open</OrderStatus>
+    <OrderDetail>Tablet =&gt; Galaxy_Tab_S9{5}</OrderDetail>
+    <OrderAddress>Ramat Sharet, Hartom 12, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76133</OrderLatitude>
+    <OrderLongitude>35.20395</OrderLongitude>
+    <OrderCustomerFullName>Roy Daniel</OrderCustomerFullName>
+    <OrderCustomerPhone>055-3989835</OrderCustomerPhone>
+    <OrderWeight>0.5</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>0.3</OrderSize>
+    <OrderDate>2026-01-18T17:25:40</OrderDate>
     <TypeOfOrder>Tablet</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>13</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Laptop =&gt; Lenovo_ThinkPad_X1{5}, Dell_XPS_13{2}</OrderDetail>
-    <OrderAddress>Light Rail — Davidka Station, Jerusalem</OrderAddress>
-    <OrderLatitude>31.78553</OrderLatitude>
-    <OrderLongitude>35.21205</OrderLongitude>
-    <OrderCustomerFullName>Ofir Shalev</OrderCustomerFullName>
-    <OrderCustomerPhone>057-5255398</OrderCustomerPhone>
-    <OrderWeight>1.9</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.5</OrderSize>
-    <OrderDate>2026-01-16T00:32:27</OrderDate>
-    <TypeOfOrder>Laptop</TypeOfOrder>
+    <OrderDetail>Accessory =&gt; HDMI_4K_2_1_Cable{8}, NVMe_SSD_1TB{5}</OrderDetail>
+    <OrderAddress>Hillel 18, Jerusalem</OrderAddress>
+    <OrderLatitude>31.78098</OrderLatitude>
+    <OrderLongitude>35.22002</OrderLongitude>
+    <OrderCustomerFullName>Tom Elbaz</OrderCustomerFullName>
+    <OrderCustomerPhone>058-9445845</OrderCustomerPhone>
+    <OrderWeight>0.2</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.1</OrderSize>
+    <OrderDate>2026-01-18T18:00:40</OrderDate>
+    <TypeOfOrder>Accessory</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>14</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Camera =&gt; Canon_EOS_R10{7}, Sony_a6400{2}, Nikon_Z50{2}</OrderDetail>
-    <OrderAddress>Jabotinsky 2, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77343</OrderLatitude>
-    <OrderLongitude>35.21262</OrderLongitude>
-    <OrderCustomerFullName>Shaked Bar-On</OrderCustomerFullName>
-    <OrderCustomerPhone>057-6756184</OrderCustomerPhone>
-    <OrderWeight>1.7</OrderWeight>
+    <OrderDetail>Tablet =&gt; Xiaomi_Pad_6{7}, Galaxy_Tab_S9{3}</OrderDetail>
+    <OrderAddress>Talpiot, HaUman 17, Jerusalem</OrderAddress>
+    <OrderLatitude>31.7488</OrderLatitude>
+    <OrderLongitude>35.2233</OrderLongitude>
+    <OrderCustomerFullName>Efrat Shoshani</OrderCustomerFullName>
+    <OrderCustomerPhone>055-1780110</OrderCustomerPhone>
+    <OrderWeight>1</OrderWeight>
     <IsFragile>true</IsFragile>
     <OrderSize>0.3</OrderSize>
-    <OrderDate>2026-01-16T01:09:27</OrderDate>
-    <TypeOfOrder>Camera</TypeOfOrder>
+    <OrderDate>2026-01-18T20:00:40</OrderDate>
+    <TypeOfOrder>Tablet</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>15</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Smartphone =&gt; Galaxy_S23{2}, Pixel_8{8}</OrderDetail>
-    <OrderAddress>Shlomtzion HaMalka 6, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77744</OrderLatitude>
-    <OrderLongitude>35.22543</OrderLongitude>
-    <OrderCustomerFullName>Emanuel Sharon</OrderCustomerFullName>
-    <OrderCustomerPhone>058-5139107</OrderCustomerPhone>
-    <OrderWeight>0.2</OrderWeight>
+    <OrderDetail>Smartphone =&gt; Galaxy_S23{8}, iPhone_14{8}, Xiaomi_13{1}</OrderDetail>
+    <OrderAddress>Pisgat Ze'ev Center, Jerusalem</OrderAddress>
+    <OrderLatitude>31.83852</OrderLatitude>
+    <OrderLongitude>35.24322</OrderLongitude>
+    <OrderCustomerFullName>Ido Tal</OrderCustomerFullName>
+    <OrderCustomerPhone>058-6036761</OrderCustomerPhone>
+    <OrderWeight>0.5</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.2</OrderSize>
-    <OrderDate>2026-01-16T01:30:27</OrderDate>
+    <OrderSize>0.1</OrderSize>
+    <OrderDate>2026-01-18T18:21:40</OrderDate>
     <TypeOfOrder>Smartphone</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>16</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Camera =&gt; Nikon_Z50{9}, Sony_a6400{5}</OrderDetail>
-    <OrderAddress>Malha Mall, Jerusalem</OrderAddress>
-    <OrderLatitude>31.74788</OrderLatitude>
-    <OrderLongitude>35.18803</OrderLongitude>
-    <OrderCustomerFullName>Noga Vardi</OrderCustomerFullName>
-    <OrderCustomerPhone>054-5489251</OrderCustomerPhone>
-    <OrderWeight>1.4</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.5</OrderSize>
-    <OrderDate>2026-01-16T01:11:27</OrderDate>
-    <TypeOfOrder>Camera</TypeOfOrder>
+    <OrderDetail>Accessory =&gt; USB_C_Cable_100W{3}, GaN_Charger_65W{5}, HDMI_4K_2_1_Cable{3}</OrderDetail>
+    <OrderAddress>Mamilla Mall, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77705</OrderLatitude>
+    <OrderLongitude>35.22162</OrderLongitude>
+    <OrderCustomerFullName>Aviv Dagan</OrderCustomerFullName>
+    <OrderCustomerPhone>054-2736849</OrderCustomerPhone>
+    <OrderWeight>0.4</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.1</OrderSize>
+    <OrderDate>2026-01-18T19:25:40</OrderDate>
+    <TypeOfOrder>Accessory</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>17</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>SmartHome =&gt; Philips_Hue_Starter{1}, Google_Nest_Hub{9}</OrderDetail>
-    <OrderAddress>Mamilla Mall, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77705</OrderLatitude>
-    <OrderLongitude>35.22162</OrderLongitude>
-    <OrderCustomerFullName>Yael Menachem</OrderCustomerFullName>
-    <OrderCustomerPhone>051-2797612</OrderCustomerPhone>
-    <OrderWeight>2.3</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.4</OrderSize>
-    <OrderDate>2026-01-16T01:04:27</OrderDate>
-    <TypeOfOrder>SmartHome</TypeOfOrder>
+    <OrderDetail>Camera =&gt; Sony_a6400{3}</OrderDetail>
+    <OrderAddress>Gilo Center, Jerusalem</OrderAddress>
+    <OrderLatitude>31.72718</OrderLatitude>
+    <OrderLongitude>35.19039</OrderLongitude>
+    <OrderCustomerFullName>Shaked Bar-On</OrderCustomerFullName>
+    <OrderCustomerPhone>051-1002251</OrderCustomerPhone>
+    <OrderWeight>0.7</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>0.5</OrderSize>
+    <OrderDate>2026-01-18T17:30:40</OrderDate>
+    <TypeOfOrder>Camera</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>18</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>Laptop =&gt; Lenovo_ThinkPad_X1{1}, HP_Spectre_x360{1}</OrderDetail>
-    <OrderAddress>Yemin Moshe, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77135</OrderLatitude>
-    <OrderLongitude>35.2262</OrderLongitude>
-    <OrderCustomerFullName>Hadar Sinai</OrderCustomerFullName>
-    <OrderCustomerPhone>052-9481649</OrderCustomerPhone>
-    <OrderWeight>2.8</OrderWeight>
+    <OrderDetail>Tablet =&gt; Xiaomi_Pad_6{9}, Galaxy_Tab_S9{7}</OrderDetail>
+    <OrderAddress>Ramat Sharet, Hartom 12, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76133</OrderLatitude>
+    <OrderLongitude>35.20395</OrderLongitude>
+    <OrderCustomerFullName>Eden Peri</OrderCustomerFullName>
+    <OrderCustomerPhone>058-3613592</OrderCustomerPhone>
+    <OrderWeight>0.7</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.4</OrderSize>
-    <OrderDate>2026-01-16T02:14:27</OrderDate>
-    <TypeOfOrder>Laptop</TypeOfOrder>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2026-01-18T17:30:40</OrderDate>
+    <TypeOfOrder>Tablet</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>19</OrderId>
     <OrderStatus>Open</OrderStatus>
-    <OrderDetail>TV =&gt; LG_OLED_C3_55{3}</OrderDetail>
-    <OrderAddress>Rekhes Shmuel, Jerusalem</OrderAddress>
-    <OrderLatitude>31.7926</OrderLatitude>
-    <OrderLongitude>35.21008</OrderLongitude>
-    <OrderCustomerFullName>Rina Azulay</OrderCustomerFullName>
-    <OrderCustomerPhone>057-5418132</OrderCustomerPhone>
-    <OrderWeight>16</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>1.6</OrderSize>
-    <OrderDate>2026-01-16T00:13:27</OrderDate>
-    <TypeOfOrder>TV</TypeOfOrder>
+    <OrderDetail>Audio =&gt; JBL_Flip_6{9}, AirPods_Pro_2{4}, Bose_QC45{7}</OrderDetail>
+    <OrderAddress>Neve Yaakov Blvd, Jerusalem</OrderAddress>
+    <OrderLatitude>31.84455</OrderLatitude>
+    <OrderLongitude>35.2275</OrderLongitude>
+    <OrderCustomerFullName>Noa Levi</OrderCustomerFullName>
+    <OrderCustomerPhone>055-8210493</OrderCustomerPhone>
+    <OrderWeight>0.5</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.4</OrderSize>
+    <OrderDate>2026-01-18T17:36:40</OrderDate>
+    <TypeOfOrder>Audio</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>20</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>Audio =&gt; JBL_Flip_6{7}, Bose_QC45{4}</OrderDetail>
-    <OrderAddress>Kiryat HaYovel, Stern 33, Jerusalem</OrderAddress>
-    <OrderLatitude>31.76481</OrderLatitude>
-    <OrderLongitude>35.18595</OrderLongitude>
-    <OrderCustomerFullName>Rotem Halevi</OrderCustomerFullName>
-    <OrderCustomerPhone>056-4444480</OrderCustomerPhone>
-    <OrderWeight>1.4</OrderWeight>
+    <OrderDetail>SmartHome =&gt; Google_Nest_Hub{5}, Philips_Hue_Starter{5}</OrderDetail>
+    <OrderAddress>Ramat Sharet, Hartom 12, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76133</OrderLatitude>
+    <OrderLongitude>35.20395</OrderLongitude>
+    <OrderCustomerFullName>Hila Porat</OrderCustomerFullName>
+    <OrderCustomerPhone>055-2758019</OrderCustomerPhone>
+    <OrderWeight>2</OrderWeight>
     <IsFragile>false</IsFragile>
-    <OrderSize>0.2</OrderSize>
-    <OrderDate>2026-01-15T23:27:27</OrderDate>
-    <TypeOfOrder>Audio</TypeOfOrder>
+    <OrderSize>0.6</OrderSize>
+    <OrderDate>2026-01-18T18:38:40</OrderDate>
+    <TypeOfOrder>SmartHome</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>21</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>Laptop =&gt; MacBook_Air_M2{8}, Dell_XPS_13{4}, HP_Spectre_x360{7}</OrderDetail>
-    <OrderAddress>Shlomtzion HaMalka 6, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77744</OrderLatitude>
-    <OrderLongitude>35.22543</OrderLongitude>
-    <OrderCustomerFullName>Adi Ravid</OrderCustomerFullName>
-    <OrderCustomerPhone>054-2478596</OrderCustomerPhone>
-    <OrderWeight>1.7</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.5</OrderSize>
-    <OrderDate>2026-01-15T20:14:27</OrderDate>
-    <TypeOfOrder>Laptop</TypeOfOrder>
+    <OrderDetail>GamingConsole =&gt; Xbox_Series_X{2}, Nintendo_Switch_OLED{3}</OrderDetail>
+    <OrderAddress>Shaare Zedek Hospital, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76971</OrderLatitude>
+    <OrderLongitude>35.19573</OrderLongitude>
+    <OrderCustomerFullName>Roy Daniel</OrderCustomerFullName>
+    <OrderCustomerPhone>051-3244198</OrderCustomerPhone>
+    <OrderWeight>5.9</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.8</OrderSize>
+    <OrderDate>2026-01-18T18:15:40</OrderDate>
+    <TypeOfOrder>GamingConsole</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>22</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>Audio =&gt; AirPods_Pro_2{2}</OrderDetail>
-    <OrderAddress>Ramat Sharet, Hartom 12, Jerusalem</OrderAddress>
-    <OrderLatitude>31.76133</OrderLatitude>
-    <OrderLongitude>35.20395</OrderLongitude>
-    <OrderCustomerFullName>Shani Eldar</OrderCustomerFullName>
-    <OrderCustomerPhone>053-7549662</OrderCustomerPhone>
-    <OrderWeight>1.4</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.5</OrderSize>
-    <OrderDate>2026-01-15T20:57:27</OrderDate>
-    <TypeOfOrder>Audio</TypeOfOrder>
+    <OrderDetail>Tablet =&gt; Galaxy_Tab_S9{9}, iPad_Air{8}</OrderDetail>
+    <OrderAddress>Gonen (Katamon), Hovevei Zion 5, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76217</OrderLatitude>
+    <OrderLongitude>35.20862</OrderLongitude>
+    <OrderCustomerFullName>Maor David</OrderCustomerFullName>
+    <OrderCustomerPhone>054-4855253</OrderCustomerPhone>
+    <OrderWeight>0.4</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2026-01-18T09:45:40</OrderDate>
+    <TypeOfOrder>Tablet</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>23</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>Accessory =&gt; USB_C_Cable_100W{9}</OrderDetail>
-    <OrderAddress>Givat Shaul 40, Jerusalem</OrderAddress>
-    <OrderLatitude>31.78886</OrderLatitude>
-    <OrderLongitude>35.18847</OrderLongitude>
-    <OrderCustomerFullName>Ofek Azulay</OrderCustomerFullName>
-    <OrderCustomerPhone>056-5909409</OrderCustomerPhone>
-    <OrderWeight>0.1</OrderWeight>
+    <OrderDetail>GamingConsole =&gt; PlayStation_5{8}, Nintendo_Switch_OLED{6}</OrderDetail>
+    <OrderAddress>Yemin Moshe, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77135</OrderLatitude>
+    <OrderLongitude>35.2262</OrderLongitude>
+    <OrderCustomerFullName>Rina Azulay</OrderCustomerFullName>
+    <OrderCustomerPhone>055-2899884</OrderCustomerPhone>
+    <OrderWeight>2.6</OrderWeight>
     <IsFragile>false</IsFragile>
-    <OrderSize>0.1</OrderSize>
-    <OrderDate>2026-01-15T19:25:27</OrderDate>
-    <TypeOfOrder>Accessory</TypeOfOrder>
+    <OrderSize>0.7</OrderSize>
+    <OrderDate>2026-01-18T10:18:40</OrderDate>
+    <TypeOfOrder>GamingConsole</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>24</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>TV =&gt; Samsung_QLED_Q80_65{5}</OrderDetail>
+    <OrderDetail>Smartphone =&gt; Xiaomi_13{1}, Pixel_8{5}</OrderDetail>
     <OrderAddress>Herzl 90, Jerusalem</OrderAddress>
     <OrderLatitude>31.80235</OrderLatitude>
     <OrderLongitude>35.19855</OrderLongitude>
-    <OrderCustomerFullName>Omer Golan</OrderCustomerFullName>
-    <OrderCustomerPhone>051-4972564</OrderCustomerPhone>
-    <OrderWeight>13.1</OrderWeight>
+    <OrderCustomerFullName>Naor Levy</OrderCustomerFullName>
+    <OrderCustomerPhone>051-1223236</OrderCustomerPhone>
+    <OrderWeight>0.7</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>1.6</OrderSize>
-    <OrderDate>2026-01-15T20:50:27</OrderDate>
-    <TypeOfOrder>TV</TypeOfOrder>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2026-01-18T08:42:40</OrderDate>
+    <TypeOfOrder>Smartphone</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>25</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>Laptop =&gt; Dell_XPS_13{5}</OrderDetail>
-    <OrderAddress>Gilo Center, Jerusalem</OrderAddress>
-    <OrderLatitude>31.72718</OrderLatitude>
-    <OrderLongitude>35.19039</OrderLongitude>
-    <OrderCustomerFullName>Gal Shachar</OrderCustomerFullName>
-    <OrderCustomerPhone>054-1225558</OrderCustomerPhone>
-    <OrderWeight>2.2</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.7</OrderSize>
-    <OrderDate>2026-01-15T22:30:27</OrderDate>
-    <TypeOfOrder>Laptop</TypeOfOrder>
+    <OrderDetail>Accessory =&gt; GaN_Charger_65W{2}, HDMI_4K_2_1_Cable{2}, NVMe_SSD_1TB{3}</OrderDetail>
+    <OrderAddress>Hebrew University, Mt. Scopus</OrderAddress>
+    <OrderLatitude>31.7946</OrderLatitude>
+    <OrderLongitude>35.24423</OrderLongitude>
+    <OrderCustomerFullName>Roy Daniel</OrderCustomerFullName>
+    <OrderCustomerPhone>051-7550491</OrderCustomerPhone>
+    <OrderWeight>0.2</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2026-01-18T11:07:40</OrderDate>
+    <TypeOfOrder>Accessory</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>26</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>SmartHome =&gt; Amazon_Echo{5}, Philips_Hue_Starter{4}</OrderDetail>
-    <OrderAddress>Central Bus Station, Jerusalem</OrderAddress>
-    <OrderLatitude>31.79</OrderLatitude>
-    <OrderLongitude>35.2042</OrderLongitude>
-    <OrderCustomerFullName>Ofir Shalev</OrderCustomerFullName>
-    <OrderCustomerPhone>051-7180813</OrderCustomerPhone>
-    <OrderWeight>0.5</OrderWeight>
+    <OrderDetail>SmartHome =&gt; Amazon_Echo{4}</OrderDetail>
+    <OrderAddress>Mishkenot Shaananim, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77098</OrderLatitude>
+    <OrderLongitude>35.22651</OrderLongitude>
+    <OrderCustomerFullName>Or Peleg</OrderCustomerFullName>
+    <OrderCustomerPhone>057-9014343</OrderCustomerPhone>
+    <OrderWeight>2.1</OrderWeight>
     <IsFragile>false</IsFragile>
-    <OrderSize>0.2</OrderSize>
-    <OrderDate>2026-01-15T21:25:27</OrderDate>
+    <OrderSize>0.4</OrderSize>
+    <OrderDate>2026-01-18T12:54:40</OrderDate>
     <TypeOfOrder>SmartHome</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>27</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>TV =&gt; LG_OLED_C3_55{1}, Samsung_QLED_Q80_65{1}</OrderDetail>
-    <OrderAddress>Malha Railway Station, Jerusalem</OrderAddress>
-    <OrderLatitude>31.75033</OrderLatitude>
-    <OrderLongitude>35.1923</OrderLongitude>
-    <OrderCustomerFullName>Bar Shahar</OrderCustomerFullName>
-    <OrderCustomerPhone>055-4197464</OrderCustomerPhone>
-    <OrderWeight>17.8</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>1.9</OrderSize>
-    <OrderDate>2026-01-16T00:38:27</OrderDate>
-    <TypeOfOrder>TV</TypeOfOrder>
+    <OrderDetail>SmartHome =&gt; Philips_Hue_Starter{9}, Google_Nest_Hub{3}, Amazon_Echo{3}</OrderDetail>
+    <OrderAddress>Hebrew University, Mt. Scopus</OrderAddress>
+    <OrderLatitude>31.7946</OrderLatitude>
+    <OrderLongitude>35.24423</OrderLongitude>
+    <OrderCustomerFullName>Tom Elbaz</OrderCustomerFullName>
+    <OrderCustomerPhone>054-6205403</OrderCustomerPhone>
+    <OrderWeight>1.2</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.4</OrderSize>
+    <OrderDate>2026-01-18T18:26:40</OrderDate>
+    <TypeOfOrder>SmartHome</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>28</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>Smartphone =&gt; Galaxy_S23{5}, Xiaomi_13{6}, Pixel_8{6}</OrderDetail>
-    <OrderAddress>Ein Yael, Jerusalem</OrderAddress>
-    <OrderLatitude>31.75681</OrderLatitude>
-    <OrderLongitude>35.17579</OrderLongitude>
-    <OrderCustomerFullName>Efrat Shoshani</OrderCustomerFullName>
-    <OrderCustomerPhone>050-4403342</OrderCustomerPhone>
-    <OrderWeight>0.3</OrderWeight>
+    <OrderDetail>Camera =&gt; Canon_EOS_R10{8}, Sony_a6400{3}, Nikon_Z50{3}</OrderDetail>
+    <OrderAddress>Talpiot, HaUman 17, Jerusalem</OrderAddress>
+    <OrderLatitude>31.7488</OrderLatitude>
+    <OrderLongitude>35.2233</OrderLongitude>
+    <OrderCustomerFullName>Noga Vardi</OrderCustomerFullName>
+    <OrderCustomerPhone>057-6427720</OrderCustomerPhone>
+    <OrderWeight>0.9</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.1</OrderSize>
-    <OrderDate>2026-01-15T23:36:27</OrderDate>
-    <TypeOfOrder>Smartphone</TypeOfOrder>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2026-01-18T18:41:40</OrderDate>
+    <TypeOfOrder>Camera</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>29</OrderId>
     <OrderStatus>InProgress</OrderStatus>
-    <OrderDetail>Audio =&gt; Bose_QC45{4}</OrderDetail>
-    <OrderAddress>Azza 34, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77652</OrderLatitude>
-    <OrderLongitude>35.20998</OrderLongitude>
-    <OrderCustomerFullName>Shachar Shemesh</OrderCustomerFullName>
-    <OrderCustomerPhone>058-2991127</OrderCustomerPhone>
-    <OrderWeight>0.9</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.6</OrderSize>
-    <OrderDate>2026-01-15T18:29:27</OrderDate>
-    <TypeOfOrder>Audio</TypeOfOrder>
+    <OrderDetail>Laptop =&gt; HP_Spectre_x360{9}, MacBook_Air_M2{2}, Dell_XPS_13{5}</OrderDetail>
+    <OrderAddress>Gonen (Katamon), Hovevei Zion 5, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76217</OrderLatitude>
+    <OrderLongitude>35.20862</OrderLongitude>
+    <OrderCustomerFullName>Naor Levy</OrderCustomerFullName>
+    <OrderCustomerPhone>056-2238804</OrderCustomerPhone>
+    <OrderWeight>1.7</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>0.7</OrderSize>
+    <OrderDate>2026-01-18T14:33:40</OrderDate>
+    <TypeOfOrder>Laptop</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>30</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Accessory =&gt; NVMe_SSD_1TB{9}, GaN_Charger_65W{2}, USB_C_Cable_100W{7}</OrderDetail>
-    <OrderAddress>French Hill, HaGoren 2, Jerusalem</OrderAddress>
-    <OrderLatitude>31.79274</OrderLatitude>
-    <OrderLongitude>35.24134</OrderLongitude>
-    <OrderCustomerFullName>Ofir Shalev</OrderCustomerFullName>
-    <OrderCustomerPhone>053-5936907</OrderCustomerPhone>
-    <OrderWeight>0.4</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.1</OrderSize>
-    <OrderDate>2025-11-22T20:15:27</OrderDate>
-    <TypeOfOrder>Accessory</TypeOfOrder>
+    <OrderDetail>Camera =&gt; Canon_EOS_R10{9}, Nikon_Z50{2}, Sony_a6400{2}</OrderDetail>
+    <OrderAddress>Azza 34, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77652</OrderLatitude>
+    <OrderLongitude>35.20998</OrderLongitude>
+    <OrderCustomerFullName>Sapir Menashe</OrderCustomerFullName>
+    <OrderCustomerPhone>056-5480271</OrderCustomerPhone>
+    <OrderWeight>1.8</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>0.6</OrderSize>
+    <OrderDate>2026-01-11T10:27:40</OrderDate>
+    <TypeOfOrder>Camera</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>31</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Tablet =&gt; Xiaomi_Pad_6{9}, iPad_Air{8}</OrderDetail>
-    <OrderAddress>Ramat Sharet, Hartom 12, Jerusalem</OrderAddress>
-    <OrderLatitude>31.76133</OrderLatitude>
-    <OrderLongitude>35.20395</OrderLongitude>
-    <OrderCustomerFullName>Yair Katz</OrderCustomerFullName>
-    <OrderCustomerPhone>051-6073488</OrderCustomerPhone>
-    <OrderWeight>0.8</OrderWeight>
+    <OrderDetail>Camera =&gt; Sony_a6400{2}, Canon_EOS_R10{4}</OrderDetail>
+    <OrderAddress>Zoo Biblical, Jerusalem</OrderAddress>
+    <OrderLatitude>31.74851</OrderLatitude>
+    <OrderLongitude>35.17531</OrderLongitude>
+    <OrderCustomerFullName>Ido Tal</OrderCustomerFullName>
+    <OrderCustomerPhone>057-2730520</OrderCustomerPhone>
+    <OrderWeight>1.2</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.3</OrderSize>
-    <OrderDate>2026-01-15T22:47:27</OrderDate>
-    <TypeOfOrder>Tablet</TypeOfOrder>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2025-10-25T12:46:40</OrderDate>
+    <TypeOfOrder>Camera</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>32</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Tablet =&gt; Xiaomi_Pad_6{9}</OrderDetail>
-    <OrderAddress>Herzl 90, Jerusalem</OrderAddress>
-    <OrderLatitude>31.80235</OrderLatitude>
-    <OrderLongitude>35.19855</OrderLongitude>
-    <OrderCustomerFullName>Liron Shalom</OrderCustomerFullName>
-    <OrderCustomerPhone>057-4587130</OrderCustomerPhone>
-    <OrderWeight>0.8</OrderWeight>
+    <OrderDetail>TV =&gt; Samsung_QLED_Q80_65{5}, LG_OLED_C3_55{8}</OrderDetail>
+    <OrderAddress>Emek Refaim 21, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76501</OrderLatitude>
+    <OrderLongitude>35.21765</OrderLongitude>
+    <OrderCustomerFullName>Dana Bar</OrderCustomerFullName>
+    <OrderCustomerPhone>052-8375357</OrderCustomerPhone>
+    <OrderWeight>9.6</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.2</OrderSize>
-    <OrderDate>2025-10-31T20:24:27</OrderDate>
-    <TypeOfOrder>Tablet</TypeOfOrder>
+    <OrderSize>1</OrderSize>
+    <OrderDate>2025-12-24T18:49:40</OrderDate>
+    <TypeOfOrder>TV</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>33</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Smartphone =&gt; Xiaomi_13{1}, Galaxy_S23{2}</OrderDetail>
-    <OrderAddress>Armon HaNatziv, Yanovski 12, Jerusalem</OrderAddress>
-    <OrderLatitude>31.7509</OrderLatitude>
-    <OrderLongitude>35.22988</OrderLongitude>
-    <OrderCustomerFullName>Maya Dayan</OrderCustomerFullName>
-    <OrderCustomerPhone>055-2883000</OrderCustomerPhone>
-    <OrderWeight>0.5</OrderWeight>
+    <OrderDetail>Camera =&gt; Canon_EOS_R10{2}, Sony_a6400{8}, Nikon_Z50{6}</OrderDetail>
+    <OrderAddress>Zoo Biblical, Jerusalem</OrderAddress>
+    <OrderLatitude>31.74851</OrderLatitude>
+    <OrderLongitude>35.17531</OrderLongitude>
+    <OrderCustomerFullName>Roy Daniel</OrderCustomerFullName>
+    <OrderCustomerPhone>051-7298670</OrderCustomerPhone>
+    <OrderWeight>0.8</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.1</OrderSize>
-    <OrderDate>2025-12-11T00:16:27</OrderDate>
-    <TypeOfOrder>Smartphone</TypeOfOrder>
+    <OrderSize>0.6</OrderSize>
+    <OrderDate>2025-10-24T13:26:40</OrderDate>
+    <TypeOfOrder>Camera</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>34</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>TV =&gt; Samsung_QLED_Q80_65{2}, LG_OLED_C3_55{2}, Sony_Bravia_50{9}</OrderDetail>
-    <OrderAddress>Ben Yehuda 10, Jerusalem</OrderAddress>
-    <OrderLatitude>31.78144</OrderLatitude>
-    <OrderLongitude>35.21603</OrderLongitude>
-    <OrderCustomerFullName>Yair Katz</OrderCustomerFullName>
-    <OrderCustomerPhone>053-5575603</OrderCustomerPhone>
-    <OrderWeight>15.9</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>1.3</OrderSize>
-    <OrderDate>2025-12-07T18:30:27</OrderDate>
-    <TypeOfOrder>TV</TypeOfOrder>
+    <OrderDetail>Audio =&gt; Bose_QC45{8}, Sony_WH_1000XM5{9}</OrderDetail>
+    <OrderAddress>Emek Refaim 21, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76501</OrderLatitude>
+    <OrderLongitude>35.21765</OrderLongitude>
+    <OrderCustomerFullName>Hadar Sinai</OrderCustomerFullName>
+    <OrderCustomerPhone>052-9267878</OrderCustomerPhone>
+    <OrderWeight>0.6</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.3</OrderSize>
+    <OrderDate>2025-11-05T09:40:40</OrderDate>
+    <TypeOfOrder>Audio</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>35</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Audio =&gt; Bose_QC45{3}, JBL_Flip_6{5}</OrderDetail>
-    <OrderAddress>German Colony, Rachel Imenu 15, Jerusalem</OrderAddress>
-    <OrderLatitude>31.76445</OrderLatitude>
-    <OrderLongitude>35.2198</OrderLongitude>
-    <OrderCustomerFullName>Hadar Sinai</OrderCustomerFullName>
-    <OrderCustomerPhone>056-9807218</OrderCustomerPhone>
-    <OrderWeight>0.8</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.5</OrderSize>
-    <OrderDate>2026-01-04T01:11:27</OrderDate>
-    <TypeOfOrder>Audio</TypeOfOrder>
+    <OrderDetail>Smartphone =&gt; Pixel_8{8}, Galaxy_S23{9}</OrderDetail>
+    <OrderAddress>Gonen (Katamon), Hovevei Zion 5, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76217</OrderLatitude>
+    <OrderLongitude>35.20862</OrderLongitude>
+    <OrderCustomerFullName>Liad Shalom</OrderCustomerFullName>
+    <OrderCustomerPhone>055-2724171</OrderCustomerPhone>
+    <OrderWeight>0.5</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2026-01-11T19:13:40</OrderDate>
+    <TypeOfOrder>Smartphone</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>36</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Laptop =&gt; HP_Spectre_x360{9}, Lenovo_ThinkPad_X1{6}, MacBook_Air_M2{9}</OrderDetail>
-    <OrderAddress>Rehavia, Ramban 15, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77673</OrderLatitude>
-    <OrderLongitude>35.21388</OrderLongitude>
-    <OrderCustomerFullName>Gal Shachar</OrderCustomerFullName>
-    <OrderCustomerPhone>053-6033593</OrderCustomerPhone>
-    <OrderWeight>1.8</OrderWeight>
+    <OrderDetail>Tablet =&gt; iPad_Air{4}, Xiaomi_Pad_6{4}</OrderDetail>
+    <OrderAddress>Yehuda 64, Bakaa, Jerusalem</OrderAddress>
+    <OrderLatitude>31.75919</OrderLatitude>
+    <OrderLongitude>35.22274</OrderLongitude>
+    <OrderCustomerFullName>Liad Shalom</OrderCustomerFullName>
+    <OrderCustomerPhone>054-8320899</OrderCustomerPhone>
+    <OrderWeight>0.7</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.6</OrderSize>
-    <OrderDate>2025-12-21T21:14:27</OrderDate>
-    <TypeOfOrder>Laptop</TypeOfOrder>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2025-12-10T18:50:40</OrderDate>
+    <TypeOfOrder>Tablet</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>37</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>TV =&gt; LG_OLED_C3_55{2}, Samsung_QLED_Q80_65{2}</OrderDetail>
-    <OrderAddress>Zoo Biblical, Jerusalem</OrderAddress>
-    <OrderLatitude>31.74851</OrderLatitude>
-    <OrderLongitude>35.17531</OrderLongitude>
-    <OrderCustomerFullName>Hadar Sinai</OrderCustomerFullName>
-    <OrderCustomerPhone>050-6593517</OrderCustomerPhone>
-    <OrderWeight>22.7</OrderWeight>
+    <OrderDetail>Camera =&gt; Nikon_Z50{5}</OrderDetail>
+    <OrderAddress>HaPalmach 45, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77315</OrderLatitude>
+    <OrderLongitude>35.21297</OrderLongitude>
+    <OrderCustomerFullName>Eli Abramov</OrderCustomerFullName>
+    <OrderCustomerPhone>052-3946650</OrderCustomerPhone>
+    <OrderWeight>1.7</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>2</OrderSize>
-    <OrderDate>2025-12-01T23:26:27</OrderDate>
-    <TypeOfOrder>TV</TypeOfOrder>
+    <OrderSize>0.5</OrderSize>
+    <OrderDate>2026-01-15T19:20:40</OrderDate>
+    <TypeOfOrder>Camera</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>38</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Tablet =&gt; Galaxy_Tab_S9{3}, Xiaomi_Pad_6{9}</OrderDetail>
-    <OrderAddress>Mount Herzl, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77357</OrderLatitude>
-    <OrderLongitude>35.18554</OrderLongitude>
-    <OrderCustomerFullName>Or Peleg</OrderCustomerFullName>
-    <OrderCustomerPhone>056-6847027</OrderCustomerPhone>
-    <OrderWeight>0.9</OrderWeight>
+    <OrderDetail>Laptop =&gt; HP_Spectre_x360{3}, MacBook_Air_M2{4}, Dell_XPS_13{4}</OrderDetail>
+    <OrderAddress>Yemin Moshe, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77135</OrderLatitude>
+    <OrderLongitude>35.2262</OrderLongitude>
+    <OrderCustomerFullName>Hila Arbel</OrderCustomerFullName>
+    <OrderCustomerPhone>054-5458057</OrderCustomerPhone>
+    <OrderWeight>2.1</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.3</OrderSize>
-    <OrderDate>2025-12-26T22:15:27</OrderDate>
-    <TypeOfOrder>Tablet</TypeOfOrder>
+    <OrderSize>0.5</OrderSize>
+    <OrderDate>2025-12-26T18:01:40</OrderDate>
+    <TypeOfOrder>Laptop</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>39</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Accessory =&gt; USB_C_Cable_100W{1}, GaN_Charger_65W{5}</OrderDetail>
+    <OrderDetail>Tablet =&gt; Galaxy_Tab_S9{3}, Xiaomi_Pad_6{6}</OrderDetail>
     <OrderAddress>Mishkenot Shaananim, Jerusalem</OrderAddress>
     <OrderLatitude>31.77098</OrderLatitude>
     <OrderLongitude>35.22651</OrderLongitude>
-    <OrderCustomerFullName>Erez Shachar</OrderCustomerFullName>
-    <OrderCustomerPhone>058-2425407</OrderCustomerPhone>
-    <OrderWeight>0.4</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.1</OrderSize>
-    <OrderDate>2026-01-09T21:44:27</OrderDate>
-    <TypeOfOrder>Accessory</TypeOfOrder>
+    <OrderCustomerFullName>Naor Levy</OrderCustomerFullName>
+    <OrderCustomerPhone>054-4221662</OrderCustomerPhone>
+    <OrderWeight>0.5</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>0.3</OrderSize>
+    <OrderDate>2025-10-31T14:38:40</OrderDate>
+    <TypeOfOrder>Tablet</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>40</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Accessory =&gt; HDMI_4K_2_1_Cable{1}, NVMe_SSD_1TB{7}, GaN_Charger_65W{4}</OrderDetail>
-    <OrderAddress>Yehuda 64, Bakaa, Jerusalem</OrderAddress>
-    <OrderLatitude>31.75919</OrderLatitude>
-    <OrderLongitude>35.22274</OrderLongitude>
-    <OrderCustomerFullName>Dana Bar</OrderCustomerFullName>
-    <OrderCustomerPhone>057-4675157</OrderCustomerPhone>
-    <OrderWeight>0.4</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.1</OrderSize>
-    <OrderDate>2025-11-05T00:44:27</OrderDate>
-    <TypeOfOrder>Accessory</TypeOfOrder>
+    <OrderDetail>Laptop =&gt; MacBook_Air_M2{6}</OrderDetail>
+    <OrderAddress>Ein Yael, Jerusalem</OrderAddress>
+    <OrderLatitude>31.75681</OrderLatitude>
+    <OrderLongitude>35.17579</OrderLongitude>
+    <OrderCustomerFullName>Noa Levi</OrderCustomerFullName>
+    <OrderCustomerPhone>057-4721482</OrderCustomerPhone>
+    <OrderWeight>2.5</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>0.7</OrderSize>
+    <OrderDate>2025-11-04T16:12:40</OrderDate>
+    <TypeOfOrder>Laptop</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>41</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Smartphone =&gt; Pixel_8{2}, Galaxy_S23{2}</OrderDetail>
-    <OrderAddress>King George 3, Jerusalem</OrderAddress>
-    <OrderLatitude>31.78025</OrderLatitude>
-    <OrderLongitude>35.21492</OrderLongitude>
-    <OrderCustomerFullName>Hila Arbel</OrderCustomerFullName>
-    <OrderCustomerPhone>053-9207112</OrderCustomerPhone>
-    <OrderWeight>0.7</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.1</OrderSize>
-    <OrderDate>2025-12-09T01:29:27</OrderDate>
-    <TypeOfOrder>Smartphone</TypeOfOrder>
+    <OrderDetail>GamingConsole =&gt; Nintendo_Switch_OLED{5}, PlayStation_5{2}, Xbox_Series_X{7}</OrderDetail>
+    <OrderAddress>Hebrew University, Mt. Scopus</OrderAddress>
+    <OrderLatitude>31.7946</OrderLatitude>
+    <OrderLongitude>35.24423</OrderLongitude>
+    <OrderCustomerFullName>Dana Bar</OrderCustomerFullName>
+    <OrderCustomerPhone>056-3816552</OrderCustomerPhone>
+    <OrderWeight>3.1</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.7</OrderSize>
+    <OrderDate>2025-10-27T15:00:40</OrderDate>
+    <TypeOfOrder>GamingConsole</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>42</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Smartphone =&gt; Galaxy_S23{1}, Pixel_8{8}</OrderDetail>
-    <OrderAddress>Mount Herzl, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77357</OrderLatitude>
-    <OrderLongitude>35.18554</OrderLongitude>
-    <OrderCustomerFullName>Lihi Bram</OrderCustomerFullName>
-    <OrderCustomerPhone>057-6237317</OrderCustomerPhone>
-    <OrderWeight>0.4</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.2</OrderSize>
-    <OrderDate>2026-01-04T17:43:27</OrderDate>
-    <TypeOfOrder>Smartphone</TypeOfOrder>
+    <OrderDetail>GamingConsole =&gt; Nintendo_Switch_OLED{9}</OrderDetail>
+    <OrderAddress>Ramat Eshkol, Ussishkin 14, Jerusalem</OrderAddress>
+    <OrderLatitude>31.80587</OrderLatitude>
+    <OrderLongitude>35.22674</OrderLongitude>
+    <OrderCustomerFullName>Sapir Menashe</OrderCustomerFullName>
+    <OrderCustomerPhone>058-5461821</OrderCustomerPhone>
+    <OrderWeight>4.4</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.8</OrderSize>
+    <OrderDate>2025-12-11T17:46:40</OrderDate>
+    <TypeOfOrder>GamingConsole</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>43</OrderId>
     <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>Audio =&gt; AirPods_Pro_2{8}, JBL_Flip_6{7}, Sony_WH_1000XM5{3}</OrderDetail>
-    <OrderAddress>Derech Beit Lehem 112, Jerusalem</OrderAddress>
-    <OrderLatitude>31.75683</OrderLatitude>
-    <OrderLongitude>35.21988</OrderLongitude>
-    <OrderCustomerFullName>Noga Vardi</OrderCustomerFullName>
-    <OrderCustomerPhone>050-2366549</OrderCustomerPhone>
-    <OrderWeight>1.4</OrderWeight>
+    <OrderDetail>Accessory =&gt; NVMe_SSD_1TB{9}</OrderDetail>
+    <OrderAddress>Jaffa 97, Jerusalem</OrderAddress>
+    <OrderLatitude>31.78849</OrderLatitude>
+    <OrderLongitude>35.20412</OrderLongitude>
+    <OrderCustomerFullName>Ido Tal</OrderCustomerFullName>
+    <OrderCustomerPhone>053-7118576</OrderCustomerPhone>
+    <OrderWeight>0.1</OrderWeight>
     <IsFragile>false</IsFragile>
-    <OrderSize>0.4</OrderSize>
-    <OrderDate>2025-12-04T22:10:27</OrderDate>
-    <TypeOfOrder>Audio</TypeOfOrder>
+    <OrderSize>0.1</OrderSize>
+    <OrderDate>2025-11-24T10:36:40</OrderDate>
+    <TypeOfOrder>Accessory</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>44</OrderId>
     <OrderStatus>Cancelled</OrderStatus>
-    <OrderDetail>Laptop =&gt; Lenovo_ThinkPad_X1{9}, MacBook_Air_M2{1}, Dell_XPS_13{9}</OrderDetail>
-    <OrderAddress>Armon HaNatziv, Yanovski 12, Jerusalem</OrderAddress>
-    <OrderLatitude>31.7509</OrderLatitude>
-    <OrderLongitude>35.22988</OrderLongitude>
-    <OrderCustomerFullName>Itai Mor</OrderCustomerFullName>
-    <OrderCustomerPhone>055-3599647</OrderCustomerPhone>
-    <OrderWeight>2.8</OrderWeight>
-    <IsFragile>true</IsFragile>
+    <OrderDetail>SmartHome =&gt; Philips_Hue_Starter{7}</OrderDetail>
+    <OrderAddress>Gilo Center, Jerusalem</OrderAddress>
+    <OrderLatitude>31.72718</OrderLatitude>
+    <OrderLongitude>35.19039</OrderLongitude>
+    <OrderCustomerFullName>Shani Eldar</OrderCustomerFullName>
+    <OrderCustomerPhone>053-4573103</OrderCustomerPhone>
+    <OrderWeight>1</OrderWeight>
+    <IsFragile>false</IsFragile>
     <OrderSize>0.4</OrderSize>
-    <OrderDate>2026-01-12T23:27:27</OrderDate>
-    <TypeOfOrder>Laptop</TypeOfOrder>
+    <OrderDate>2025-12-11T19:47:40</OrderDate>
+    <TypeOfOrder>SmartHome</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>45</OrderId>
     <OrderStatus>Cancelled</OrderStatus>
-    <OrderDetail>SmartHome =&gt; Amazon_Echo{4}, Philips_Hue_Starter{2}, Google_Nest_Hub{2}</OrderDetail>
-    <OrderAddress>Pisgat Ze'ev Center, Jerusalem</OrderAddress>
-    <OrderLatitude>31.83852</OrderLatitude>
-    <OrderLongitude>35.24322</OrderLongitude>
-    <OrderCustomerFullName>Orly Tamir</OrderCustomerFullName>
-    <OrderCustomerPhone>057-4753977</OrderCustomerPhone>
-    <OrderWeight>2.1</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.3</OrderSize>
-    <OrderDate>2025-11-01T02:03:27</OrderDate>
-    <TypeOfOrder>SmartHome</TypeOfOrder>
+    <OrderDetail>TV =&gt; LG_OLED_C3_55{7}, Sony_Bravia_50{1}, Samsung_QLED_Q80_65{3}</OrderDetail>
+    <OrderAddress>Ramat Eshkol, Ussishkin 14, Jerusalem</OrderAddress>
+    <OrderLatitude>31.80587</OrderLatitude>
+    <OrderLongitude>35.22674</OrderLongitude>
+    <OrderCustomerFullName>Dvir Mizrahi</OrderCustomerFullName>
+    <OrderCustomerPhone>053-6232130</OrderCustomerPhone>
+    <OrderWeight>13.1</OrderWeight>
+    <IsFragile>true</IsFragile>
+    <OrderSize>1.2</OrderSize>
+    <OrderDate>2025-11-19T08:51:40</OrderDate>
+    <TypeOfOrder>TV</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>46</OrderId>
     <OrderStatus>Cancelled</OrderStatus>
-    <OrderDetail>Camera =&gt; Nikon_Z50{5}</OrderDetail>
-    <OrderAddress>Rehavia, Ramban 15, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77673</OrderLatitude>
-    <OrderLongitude>35.21388</OrderLongitude>
-    <OrderCustomerFullName>Ido Tal</OrderCustomerFullName>
-    <OrderCustomerPhone>057-1323598</OrderCustomerPhone>
-    <OrderWeight>1.5</OrderWeight>
+    <OrderDetail>TV =&gt; Samsung_QLED_Q80_65{1}</OrderDetail>
+    <OrderAddress>Ein Kerem, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76452</OrderLatitude>
+    <OrderLongitude>35.14696</OrderLongitude>
+    <OrderCustomerFullName>Yossi Cohen</OrderCustomerFullName>
+    <OrderCustomerPhone>052-2791797</OrderCustomerPhone>
+    <OrderWeight>10.5</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.6</OrderSize>
-    <OrderDate>2026-01-11T20:16:27</OrderDate>
-    <TypeOfOrder>Camera</TypeOfOrder>
+    <OrderSize>1.8</OrderSize>
+    <OrderDate>2025-11-01T08:37:40</OrderDate>
+    <TypeOfOrder>TV</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>47</OrderId>
     <OrderStatus>Cancelled</OrderStatus>
-    <OrderDetail>Laptop =&gt; Lenovo_ThinkPad_X1{7}</OrderDetail>
-    <OrderAddress>Azza 34, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77652</OrderLatitude>
-    <OrderLongitude>35.20998</OrderLongitude>
-    <OrderCustomerFullName>Ido Tal</OrderCustomerFullName>
-    <OrderCustomerPhone>055-7658779</OrderCustomerPhone>
-    <OrderWeight>1.2</OrderWeight>
-    <IsFragile>true</IsFragile>
-    <OrderSize>0.5</OrderSize>
-    <OrderDate>2025-12-11T21:55:27</OrderDate>
-    <TypeOfOrder>Laptop</TypeOfOrder>
+    <OrderDetail>Accessory =&gt; NVMe_SSD_1TB{3}</OrderDetail>
+    <OrderAddress>Shlomtzion HaMalka 6, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77744</OrderLatitude>
+    <OrderLongitude>35.22543</OrderLongitude>
+    <OrderCustomerFullName>Dvir Mizrahi</OrderCustomerFullName>
+    <OrderCustomerPhone>055-4913920</OrderCustomerPhone>
+    <OrderWeight>0.4</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.1</OrderSize>
+    <OrderDate>2025-12-24T11:40:40</OrderDate>
+    <TypeOfOrder>Accessory</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>48</OrderId>
     <OrderStatus>Refused</OrderStatus>
-    <OrderDetail>TV =&gt; LG_OLED_C3_55{3}, Sony_Bravia_50{3}, Samsung_QLED_Q80_65{3}</OrderDetail>
-    <OrderAddress>Mishkenot Shaananim, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77098</OrderLatitude>
-    <OrderLongitude>35.22651</OrderLongitude>
-    <OrderCustomerFullName>Eli Abramov</OrderCustomerFullName>
-    <OrderCustomerPhone>050-6980942</OrderCustomerPhone>
-    <OrderWeight>22.9</OrderWeight>
+    <OrderDetail>TV =&gt; Sony_Bravia_50{7}, Samsung_QLED_Q80_65{4}</OrderDetail>
+    <OrderAddress>HaPalmach 45, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77315</OrderLatitude>
+    <OrderLongitude>35.21297</OrderLongitude>
+    <OrderCustomerFullName>Adi Ravid</OrderCustomerFullName>
+    <OrderCustomerPhone>057-2322308</OrderCustomerPhone>
+    <OrderWeight>11.6</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.9</OrderSize>
-    <OrderDate>2025-10-24T18:20:27</OrderDate>
+    <OrderSize>1.1</OrderSize>
+    <OrderDate>2025-12-22T14:41:40</OrderDate>
     <TypeOfOrder>TV</TypeOfOrder>
   </Order>
   <Order>
     <OrderId>49</OrderId>
     <OrderStatus>Refused</OrderStatus>
-    <OrderDetail>Tablet =&gt; Xiaomi_Pad_6{3}, iPad_Air{3}, Galaxy_Tab_S9{9}</OrderDetail>
-    <OrderAddress>Derech Beit Lehem 112, Jerusalem</OrderAddress>
-    <OrderLatitude>31.75683</OrderLatitude>
-    <OrderLongitude>35.21988</OrderLongitude>
-    <OrderCustomerFullName>Bar Shahar</OrderCustomerFullName>
-    <OrderCustomerPhone>057-1546503</OrderCustomerPhone>
-    <OrderWeight>0.7</OrderWeight>
+    <OrderDetail>TV =&gt; Samsung_QLED_Q80_65{8}, LG_OLED_C3_55{4}, Sony_Bravia_50{4}</OrderDetail>
+    <OrderAddress>Emek Refaim 21, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76501</OrderLatitude>
+    <OrderLongitude>35.21765</OrderLongitude>
+    <OrderCustomerFullName>Eden Peri</OrderCustomerFullName>
+    <OrderCustomerPhone>054-2675314</OrderCustomerPhone>
+    <OrderWeight>23.6</OrderWeight>
     <IsFragile>true</IsFragile>
-    <OrderSize>0.3</OrderSize>
-    <OrderDate>2025-11-04T19:20:27</OrderDate>
-    <TypeOfOrder>Tablet</TypeOfOrder>
+    <OrderSize>1.1</OrderSize>
+    <OrderDate>2025-12-24T20:23:40</OrderDate>
+    <TypeOfOrder>TV</TypeOfOrder>
   </Order>
   <Order>
-    <OrderId>0</OrderId>
-    <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>GamingConsole =&gt; Xbox_Series_X{1}</OrderDetail>
-    <OrderAddress>Jaffa 97, Jerusalem</OrderAddress>
-    <OrderLatitude>31.78849</OrderLatitude>
-    <OrderLongitude>35.20412</OrderLongitude>
-    <OrderCustomerFullName>Naor Levy</OrderCustomerFullName>
-    <OrderCustomerPhone>055-4554782</OrderCustomerPhone>
-    <OrderWeight>5.5</OrderWeight>
+    <OrderId>10</OrderId>
+    <OrderStatus>Open</OrderStatus>
+    <OrderDetail>Audio =&gt; AirPods_Pro_2{8}, Bose_QC45{9}, JBL_Flip_6{3567}</OrderDetail>
+    <OrderAddress>Har Hotzvim, Jerusalem</OrderAddress>
+    <OrderLatitude>31.80619</OrderLatitude>
+    <OrderLongitude>35.2075</OrderLongitude>
+    <OrderCustomerFullName>Eli Abramov</OrderCustomerFullName>
+    <OrderCustomerPhone>052-3835600</OrderCustomerPhone>
+    <OrderWeight>1964.4900000000002</OrderWeight>
     <IsFragile>false</IsFragile>
-    <OrderSize>0.6</OrderSize>
-    <OrderDate>2026-01-16T02:39:27</OrderDate>
-    <TypeOfOrder>GamingConsole</TypeOfOrder>
-  </Order>
-  <Order>
-    <OrderId>1</OrderId>
-    <OrderStatus>Supplied</OrderStatus>
-    <OrderDetail>SmartHome =&gt; Philips_Hue_Starter{2}</OrderDetail>
-    <OrderAddress>Zoo Biblical, Jerusalem</OrderAddress>
-    <OrderLatitude>31.74851</OrderLatitude>
-    <OrderLongitude>35.17531</OrderLongitude>
-    <OrderCustomerFullName>Bar Shahar</OrderCustomerFullName>
-    <OrderCustomerPhone>056-3168725</OrderCustomerPhone>
-    <OrderWeight>0.9</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.7</OrderSize>
-    <OrderDate>2026-01-16T02:21:27</OrderDate>
-    <TypeOfOrder>SmartHome</TypeOfOrder>
-  </Order>
-  <Order>
-    <OrderId>3</OrderId>
-    <OrderStatus>Refused</OrderStatus>
-    <OrderDetail>Audio =&gt; Sony_WH_1000XM5{2}</OrderDetail>
-    <OrderAddress>Malha Mall, Jerusalem</OrderAddress>
-    <OrderLatitude>31.74788</OrderLatitude>
-    <OrderLongitude>35.18803</OrderLongitude>
-    <OrderCustomerFullName>Noga Vardi</OrderCustomerFullName>
-    <OrderCustomerPhone>054-1380862</OrderCustomerPhone>
-    <OrderWeight>1.2</OrderWeight>
-    <IsFragile>false</IsFragile>
-    <OrderSize>0.4</OrderSize>
-    <OrderDate>2026-01-16T01:21:27</OrderDate>
+    <OrderSize>7877.6</OrderSize>
+    <OrderDate>2026-01-18T18:25:40</OrderDate>
     <TypeOfOrder>Audio</TypeOfOrder>
   </Order>
   <Order>
-    <OrderId>12</OrderId>
-    <OrderStatus>Refused</OrderStatus>
-    <OrderDetail>SmartHome =&gt; Amazon_Echo{3}</OrderDetail>
-    <OrderAddress>Mount Herzl, Jerusalem</OrderAddress>
-    <OrderLatitude>31.77357</OrderLatitude>
-    <OrderLongitude>35.18554</OrderLongitude>
-    <OrderCustomerFullName>Shaked Bar-On</OrderCustomerFullName>
-    <OrderCustomerPhone>055-3686981</OrderCustomerPhone>
-    <OrderWeight>1.7</OrderWeight>
+    <OrderId>2</OrderId>
+    <OrderStatus>Cancelled</OrderStatus>
+    <OrderDetail>SmartHome =&gt; Philips_Hue_Starter{8}</OrderDetail>
+    <OrderAddress>Mamilla Mall, Jerusalem</OrderAddress>
+    <OrderLatitude>31.77705</OrderLatitude>
+    <OrderLongitude>35.22162</OrderLongitude>
+    <OrderCustomerFullName>Hila Porat</OrderCustomerFullName>
+    <OrderCustomerPhone>058-2622139</OrderCustomerPhone>
+    <OrderWeight>2.2</OrderWeight>
     <IsFragile>false</IsFragile>
-    <OrderSize>0.5</OrderSize>
-    <OrderDate>2026-01-16T01:19:27</OrderDate>
+    <OrderSize>0.2</OrderSize>
+    <OrderDate>2026-01-18T19:17:40</OrderDate>
     <TypeOfOrder>SmartHome</TypeOfOrder>
+  </Order>
+  <Order>
+    <OrderId>8</OrderId>
+    <OrderStatus>Supplied</OrderStatus>
+    <OrderDetail>Audio =&gt; Bose_QC45{1}, AirPods_Pro_2{5}, Sony_WH_1000XM5{4}</OrderDetail>
+    <OrderAddress>Kiryat HaYovel, Stern 33, Jerusalem</OrderAddress>
+    <OrderLatitude>31.76481</OrderLatitude>
+    <OrderLongitude>35.18595</OrderLongitude>
+    <OrderCustomerFullName>Efrat Shoshani</OrderCustomerFullName>
+    <OrderCustomerPhone>056-6181350</OrderCustomerPhone>
+    <OrderWeight>1.3</OrderWeight>
+    <IsFragile>false</IsFragile>
+    <OrderSize>0.3</OrderSize>
+    <OrderDate>2026-01-18T18:31:40</OrderDate>
+    <TypeOfOrder>Audio</TypeOfOrder>
   </Order>
 </ArrayOfOrder>

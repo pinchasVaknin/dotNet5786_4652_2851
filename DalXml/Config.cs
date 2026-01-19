@@ -1,4 +1,6 @@
-﻿namespace Dal;
+﻿using System.Runtime.CompilerServices;
+
+namespace Dal;
 
 //==================== XML Config (Static) ===================\\
 
@@ -30,7 +32,10 @@ internal static class Config
     /// </summary>
     internal static int NextOrderId
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetAndIncreaseConfigIntVal(s_data_config_xml, "NextOrderId");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         private set => XMLTools.SetConfigIntVal(s_data_config_xml, "NextOrderId", value);
     }
 
@@ -39,7 +44,10 @@ internal static class Config
     /// </summary>
     internal static int NextDeliveryId
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetAndIncreaseConfigIntVal(s_data_config_xml, "NextDeliveryId");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         private set => XMLTools.SetConfigIntVal(s_data_config_xml, "NextDeliveryId", value);
     }
 
@@ -54,7 +62,10 @@ internal static class Config
     /// </summary>
     internal static DateTime Clock
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigDateVal(s_data_config_xml, "Clock");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigDateVal(s_data_config_xml, "Clock", value);
     }
 
@@ -69,7 +80,10 @@ internal static class Config
     /// </summary>
     internal static int AdminId
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigIntVal(s_data_config_xml, "AdminId");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigIntVal(s_data_config_xml, "AdminId", value);
     }
 
@@ -78,7 +92,10 @@ internal static class Config
     /// </summary>
     internal static string AdminPassword
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigStringVal(s_data_config_xml, "AdminPassword");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigStringVal(s_data_config_xml, "AdminPassword", value);
     }
 
@@ -93,7 +110,10 @@ internal static class Config
     /// </summary>
     internal static string? CompanyAddress
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigStringNullableVal(s_data_config_xml, "CompanyAddress");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigStringNullableVal(s_data_config_xml, "CompanyAddress", value);
     }
 
@@ -102,7 +122,10 @@ internal static class Config
     /// </summary>
     internal static double? Latitude
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "Latitude");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "Latitude", value);
     }
 
@@ -111,7 +134,10 @@ internal static class Config
     /// </summary>
     internal static double? Longitude
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "Longitude");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "Longitude", value);
     }
 
@@ -126,7 +152,10 @@ internal static class Config
     /// </summary>
     internal static double? MaxAirDistance
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigDoubleNullableVal(s_data_config_xml, "MaxAirDistance");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigDoubleNullableVal(s_data_config_xml, "MaxAirDistance", value);
     }
 
@@ -135,7 +164,10 @@ internal static class Config
     /// </summary>
     internal static double AvgCarSpeed
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "AvgCarSpeed");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "AvgCarSpeed", value);
     }
 
@@ -144,7 +176,10 @@ internal static class Config
     /// </summary>
     internal static double AvgMotorcycleSpeed
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "AvgMotorcycleSpeed");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "AvgMotorcycleSpeed", value);
     }
 
@@ -153,7 +188,10 @@ internal static class Config
     /// </summary>
     internal static double AvgBicycleSpeed
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "AvgBicycleSpeed");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "AvgBicycleSpeed", value);
     }
 
@@ -162,7 +200,10 @@ internal static class Config
     /// </summary>
     internal static double AvgWalkSpeed
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigDoubleVal(s_data_config_xml, "AvgWalkSpeed");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigDoubleVal(s_data_config_xml, "AvgWalkSpeed", value);
     }
 
@@ -177,7 +218,10 @@ internal static class Config
     /// </summary>
     internal static TimeSpan MaxDelTimeRnge
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "MaxDelTimeRnge");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "MaxDelTimeRnge", value);
     }
 
@@ -186,7 +230,10 @@ internal static class Config
     /// </summary>
     internal static TimeSpan RiskTimeRnge
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "RiskTimeRnge");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "RiskTimeRnge", value);
     }
 
@@ -195,7 +242,10 @@ internal static class Config
     /// </summary>
     internal static TimeSpan UnactiveTimeRnge
     {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         get => XMLTools.GetConfigTimeSpanVal(s_data_config_xml, "UnactiveTimeRnge");
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
         set => XMLTools.SetConfigTimeSpanVal(s_data_config_xml, "UnactiveTimeRnge", value);
     }
 
@@ -208,6 +258,7 @@ internal static class Config
     /// <summary>
     /// Resets all configuration values to their default states and updates the config XML.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     internal static void Reset()
     {
         NextOrderId = 0; // run number

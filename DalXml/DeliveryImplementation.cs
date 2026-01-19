@@ -4,6 +4,7 @@ using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 //==================== Delivery CRUD Implementation (XML via XElement) ===================\\
@@ -100,6 +101,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="item">The delivery entity to add.</param>
     /// <exception cref="DalAlreadyExistsException">Thrown if the generated ID already exists.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Create(Delivery item)
     {
         // Load the current XML root element
@@ -125,6 +127,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="item">The delivery entity with updated values.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the delivery to update does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Update(Delivery item)
     {
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
@@ -154,6 +157,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="id">The ID of the delivery to find.</param>
     /// <returns>The delivery entity if found, otherwise null.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Delivery? Read(int id)
     {
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
@@ -171,6 +175,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="filter">A predicate function to test each element.</param>
     /// <returns>The first matching delivery, or null if no match is found.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Delivery? Read(Func<Delivery, bool> filter)
     {
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
@@ -186,6 +191,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="filter">Optional predicate to filter the results.</param>
     /// <returns>A collection of delivery entities.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public IEnumerable<Delivery> ReadAll(Func<Delivery, bool>? filter = null)
     {
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
@@ -208,6 +214,7 @@ internal class DeliveryImplementation : IDelivery
     /// </summary>
     /// <param name="id">The ID of the delivery to delete.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the delivery does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Delete(int id)
     {
         XElement root = XMLTools.LoadListFromXMLElement(filePath);
@@ -229,6 +236,7 @@ internal class DeliveryImplementation : IDelivery
     /// <summary>
     /// Deletes all delivery records from the XML store.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void DeleteAll()
     {
         // Create an empty root element to replace existing content

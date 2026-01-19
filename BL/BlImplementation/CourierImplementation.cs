@@ -69,6 +69,7 @@ internal class CourierImplementation : ICourier
     public void AddCourier(int requesterId, BO.Courier courier)
     {
         Tools.EnsureAdmin(requesterId, nameof(AddCourier));
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         CourierManager.AddCourier(courier);
     }
 
@@ -96,6 +97,8 @@ internal class CourierImplementation : ICourier
     {
         if (requesterId != courier.CourierId)
             Tools.EnsureAdmin(requesterId, nameof(UpdateCourier));
+
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         CourierManager.UpdateCourier(courier);
     }
 
@@ -108,6 +111,7 @@ internal class CourierImplementation : ICourier
     public void DeleteCourier(int requesterId, int courierId)
     {
         Tools.EnsureAdmin(requesterId, nameof(DeleteCourier));
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         CourierManager.DeleteCourier(courierId);
     }
 

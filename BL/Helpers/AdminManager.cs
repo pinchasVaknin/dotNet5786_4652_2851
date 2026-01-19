@@ -30,7 +30,15 @@ internal static class AdminManager //stage 4
     /// <summary>
     /// Property for providing current application's clock value for any BL class that may need it
     /// </summary>
-    internal static DateTime Now { get => s_dal.Config.Clock; } //stage 4
+    internal static DateTime Now
+    {
+        get
+        {
+            lock (BlMutex)
+                return s_dal.Config.Clock;  //stage 4
+        }
+
+    }
 
     /// <summary>
     /// Method to update application's clock from any BL class as may be required
@@ -41,21 +49,12 @@ internal static class AdminManager //stage 4
         var oldClock = s_dal.Config.Clock; //stage 4
         s_dal.Config.Clock = newClock; //stage 4
 
-        //Add calls here to any logic method that should be called periodically,
-        //after each clock update
-        //for example, Periodic students' updates:
-        // - Go through all students to update properties that are affected by the clock update
-        // - (students become not active after 5 years etc.)
-
-        //TO_DO: //stage 4
-        CourierManager.PeriodicCouriersUpdates(oldClock, newClock); //stage 4. to be removed in stage 7 and replaced as below
-        OrderManager.PeriodicOrdersUpdates(oldClock, newClock); //stage 5
-        //...
-
-        //TO_DO: //stage 7
-        //if (_periodicTask is null || _periodicTask.IsCompleted) //stage 7
-        //    _periodicTask = Task.Run(() => StudentManager.PeriodicStudentsUpdates(oldClock, newClock));
-        //...
+        //stage 7
+        _ = Task.Run(() =>
+        {
+            CourierManager.PeriodicCouriersUpdates(oldClock, newClock);
+            OrderManager.PeriodicOrdersUpdates(oldClock, newClock);
+        });
 
         //Calling all the observers of clock update
         ClockUpdatedObservers?.Invoke(); //prepared for stage 5
@@ -63,10 +62,11 @@ internal static class AdminManager //stage 4
 
     internal static void ForwardClock(BO.TimeUnit unit) //stage 4
     {
-
+        // Validate input
         if (!Enum.IsDefined(typeof(BO.TimeUnit), unit))
             throw new BO.BlInvalidIntegerException("Invalid time unit.");
 
+        // Advance clock based on specified time unit
         switch (unit) //stage 4
         {
             case BO.TimeUnit.Minute:
@@ -121,110 +121,154 @@ internal static class AdminManager //stage 4
     /// <summary>
     /// Method for setting current configuration variables values for any BL class that may need it
     /// </summary>
-    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
-    internal static void SetConfig(BO.Config configuration) //stage 4
-    {
+    // [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+    internal static async Task SetConfig(BO.Config configuration)
+    { 
+        Tools.ValidateConfig(configuration); // Validate input
 
-        Tools.ValidateConfig(configuration);
+        // Read current address safely (DAL access under lock)
+        string? oldAddress;
+        lock (AdminManager.BlMutex)
+            oldAddress = s_dal.Config.CompanyAddress;
 
-        bool configChanged = false; // stage 5
+        // Check if address changed
+        bool addressChanged = configuration.CompanyAddress != oldAddress;
 
-        if (configuration.CompanyAddress != s_dal.Config.CompanyAddress)
+        // Network call outside lock
+        (double Lat, double Lon)? newCoords = null;
+        bool clearCoords = false;
+
+        // If address changed, get new coordinates
+        if (addressChanged)
         {
+            // If new address is non-empty, get coordinates
             if (!string.IsNullOrWhiteSpace(configuration.CompanyAddress))
             {
-                var coords = Tools.GetLocationFromAddress(configuration.CompanyAddress);
+                // Get coordinates from address
+                var coords = await Tools.GetLocationFromAddressAsync(configuration.CompanyAddress);
 
+                // If address is invalid, throw exception
                 if (coords == null)
-                    throw new BO.BlInvalidStringException($"Company address '{configuration.CompanyAddress}' is invalid.");
+                    throw new BO.BlInvalidStringException(
+                        $"Company address '{configuration.CompanyAddress}' is invalid.");
 
-                s_dal.Config.Latitude = coords.Value.Lat;
-                s_dal.Config.Longitude = coords.Value.Lon;
+                // Set new coordinates
+                newCoords = (coords.Value.Lat, coords.Value.Lon);
             }
             else
             {
-                s_dal.Config.Latitude = null;
-                s_dal.Config.Longitude = null;
+                clearCoords = true; // Empty address -> clear coordinates
             }
-            configChanged = true;
-        } 
-
-        if (s_dal.Config.Clock != configuration.Clock) //stage 4
-        {
-            s_dal.Config.Clock = configuration.Clock;
-            configChanged = true;
         }
 
-        if (s_dal.Config.AdminId != configuration.AdminId) //stage 4
+        bool configChanged = false;
+
+        // Update DAL under lock (no await inside lock)
+        lock (AdminManager.BlMutex)
         {
-            s_dal.Config.AdminId = configuration.AdminId;
-            configChanged = true;
+            if (addressChanged)
+            {
+                // Update address
+                s_dal.Config.CompanyAddress = configuration.CompanyAddress;
+
+                // Update coordinates
+                if (clearCoords)
+                {
+                    s_dal.Config.Latitude = null;
+                    s_dal.Config.Longitude = null;
+                }
+                else
+                {
+                    s_dal.Config.Latitude = newCoords!.Value.Lat;
+                    s_dal.Config.Longitude = newCoords.Value.Lon;
+                }
+
+                configChanged = true;
+            }
+
+            // Update other configuration variables
+            if (s_dal.Config.Clock != configuration.Clock)
+            {
+                s_dal.Config.Clock = configuration.Clock;
+                configChanged = true;
+            }
+
+            // Update admin credentials
+            if (s_dal.Config.AdminId != configuration.AdminId)
+            {
+                s_dal.Config.AdminId = configuration.AdminId;
+                configChanged = true;
+            }
+
+            // Update admin password
+            if (s_dal.Config.AdminPassword != configuration.AdminPassword)
+            {
+                s_dal.Config.AdminPassword = configuration.AdminPassword;
+                configChanged = true;
+            }
+
+            // Update max air distance
+            if (s_dal.Config.MaxAirDistance != configuration.MaxAirDistance)
+            {
+                s_dal.Config.MaxAirDistance = configuration.MaxAirDistance;
+                configChanged = true;
+            }
+
+            // Update average speeds
+            if (s_dal.Config.AvgCarSpeed != configuration.AvgCarSpeed)
+            {
+                s_dal.Config.AvgCarSpeed = configuration.AvgCarSpeed;
+                configChanged = true;
+            }
+
+            // Update average motorcycle speed
+            if (s_dal.Config.AvgMotorcycleSpeed != configuration.AvgMotorcycleSpeed)
+            {
+                s_dal.Config.AvgMotorcycleSpeed = configuration.AvgMotorcycleSpeed;
+                configChanged = true;
+            }
+
+            // Update average bicycle speed
+            if (s_dal.Config.AvgBicycleSpeed != configuration.AvgBicycleSpeed)
+            {
+                s_dal.Config.AvgBicycleSpeed = configuration.AvgBicycleSpeed;
+                configChanged = true;
+            }
+
+            // Update average walk speed
+            if (s_dal.Config.AvgWalkSpeed != configuration.AvgWalkSpeed)
+            {
+                s_dal.Config.AvgWalkSpeed = configuration.AvgWalkSpeed;
+                configChanged = true;
+            }
+
+            // Update time ranges
+            if (s_dal.Config.MaxDelTimeRnge != configuration.MaxDelTimeRnge)
+            {
+                s_dal.Config.MaxDelTimeRnge = configuration.MaxDelTimeRnge;
+                configChanged = true;
+            }
+
+            // Update risk time range
+            if (s_dal.Config.RiskTimeRnge != configuration.RiskTimeRnge)
+            {
+                s_dal.Config.RiskTimeRnge = configuration.RiskTimeRnge;
+                configChanged = true;
+            }
+
+            // Update unactive time range
+            if (s_dal.Config.UnactiveTimeRnge != configuration.UnactiveTimeRnge)
+            {
+                s_dal.Config.UnactiveTimeRnge = configuration.UnactiveTimeRnge;
+                configChanged = true;
+            }
         }
 
-        if (s_dal.Config.AdminPassword != configuration.AdminPassword) //stage 4
-        {
-            s_dal.Config.AdminPassword = configuration.AdminPassword;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.CompanyAddress != configuration.CompanyAddress) //stage 4
-        {
-            s_dal.Config.CompanyAddress = configuration.CompanyAddress;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.MaxAirDistance != configuration.MaxAirDistance) //stage 4
-        {
-            s_dal.Config.MaxAirDistance = configuration.MaxAirDistance;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.AvgCarSpeed != configuration.AvgCarSpeed) //stage 4
-        {
-            s_dal.Config.AvgCarSpeed = configuration.AvgCarSpeed;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.AvgMotorcycleSpeed != configuration.AvgMotorcycleSpeed) //stage 4
-        {
-            s_dal.Config.AvgMotorcycleSpeed = configuration.AvgMotorcycleSpeed;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.AvgBicycleSpeed != configuration.AvgBicycleSpeed) //stage 4
-        {
-            s_dal.Config.AvgBicycleSpeed = configuration.AvgBicycleSpeed;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.AvgWalkSpeed != configuration.AvgWalkSpeed) //stage 4
-        {
-            s_dal.Config.AvgWalkSpeed = configuration.AvgWalkSpeed;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.MaxDelTimeRnge != configuration.MaxDelTimeRnge) //stage 4
-        {
-            s_dal.Config.MaxDelTimeRnge = configuration.MaxDelTimeRnge;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.RiskTimeRnge != configuration.RiskTimeRnge) //stage 4
-        {
-            s_dal.Config.RiskTimeRnge = configuration.RiskTimeRnge;
-            configChanged = true;
-        }
-
-        if (s_dal.Config.UnactiveTimeRnge != configuration.UnactiveTimeRnge) //stage 4
-        {
-            s_dal.Config.UnactiveTimeRnge = configuration.UnactiveTimeRnge;
-            configChanged = true;
-        }
-
-        //Calling all the observers of configuration update
-        if (configChanged) // stage 5
-            ConfigUpdatedObservers?.Invoke(); // stage 5
+        // Notify observers outside lock
+        if (configChanged)
+            ConfigUpdatedObservers?.Invoke();
     }
+
 
     #endregion Configuration Variables
 
@@ -282,6 +326,7 @@ internal static class AdminManager //stage 4
     [MethodImpl(MethodImplOptions.Synchronized)] //stage 7                                                 
     public static void ThrowOnSimulatorIsRunning()
     {
+        // Throw exception if simulator is running
         if (s_thread is not null)
             throw new BO.BlTemporaryNotAvailableException("Cannot perform the operation since Simulator is running");
     }
@@ -310,24 +355,23 @@ internal static class AdminManager //stage 4
         }
     }
 
-    private static Task? _simulateTask = null;
-
     private static void clockRunner()
     {
         while (!s_stop)
         {
             UpdateClock(Now.AddMinutes(s_interval));
 
-            //TO_DO: //stage 7
-            //Add calls here to any logic simulation that was required in stage 7
-            //for example: course registration simulation
-
-
-            //if (_simulateTask is null || _simulateTask.IsCompleted)//stage 7
-            //    _simulateTask = Task.Run(() => StudentManager.SimulateCourseRegistrationAndGrade());
-
-
-            //etc...
+            _ = Task.Run(() =>
+            {
+                try
+                {
+                    CourierManager.PeriodicCouriersUpdatesAsync();
+                }
+                catch
+                {
+                    // Ignore exceptions in periodic updates
+                }
+            });
 
             try
             {

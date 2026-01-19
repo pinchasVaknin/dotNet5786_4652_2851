@@ -1,4 +1,6 @@
-﻿namespace Dal;
+﻿using System.Runtime.CompilerServices;
+
+namespace Dal;
 
 //==================== Internal Configuration Container ===================\\
 
@@ -16,14 +18,22 @@ internal static class Config
     private static int s_nextOrderId = StartOrderId;
 
     // Auto-incrementing ID for Orders
-    internal static int NextOrderId { get => s_nextOrderId++; }
+    internal static int NextOrderId
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get => s_nextOrderId++; 
+    }
 
 
     internal const int StartDeliveryId = 0;
     private static int s_nextDeliveryId = StartDeliveryId;
 
     // Auto-incrementing ID for Deliveries
-    internal static int NextDeliveryId { get => s_nextDeliveryId++; }
+    internal static int NextDeliveryId
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get => s_nextDeliveryId++;
+    }
 
     #endregion IdGenerators
 
@@ -32,7 +42,14 @@ internal static class Config
     #region SystemClock
 
     // Current simulated system time
-    internal static DateTime Clock { get; set; } = DateTime.Now;
+    internal static DateTime Clock
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = DateTime.Now;
 
     #endregion SystemClock
 
@@ -41,10 +58,24 @@ internal static class Config
     #region AdminCredentials
 
     // Administrator's ID
-    internal static int AdminId { get; set; } = 0;
+    internal static int AdminId
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = 0;
 
     // Administrator's Password
-    internal static string AdminPassword { get; set; } = "ChangeMe!1234";
+    internal static string AdminPassword
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = "ChangeMe!1234";
 
     #endregion AdminCredentials
 
@@ -53,13 +84,34 @@ internal static class Config
     #region CompanyLocation
 
     // Company address text
-    internal static string? CompanyAddress { get; set; } = null;
+    internal static string? CompanyAddress
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = null;
 
     // Company Latitude
-    internal static double? Latitude { get; set; } = null;
+    internal static double? Latitude
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = null;
 
     // Company Longitude
-    internal static double? Longitude { get; set; } = null;
+    internal static double? Longitude
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = null;
 
     #endregion CompanyLocation
 
@@ -68,19 +120,54 @@ internal static class Config
     #region OperationalParameters
 
     // Max allowed air distance for deliveries
-    internal static double? MaxAirDistance { get; set; } = null;
+    internal static double? MaxAirDistance
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = null;
 
     // Average speed for Car (km/h)
-    internal static double AvgCarSpeed { get; set; } = 0;
+    internal static double AvgCarSpeed
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = 0;
 
     // Average speed for Motorcycle (km/h)
-    internal static double AvgMotorcycleSpeed { get; set; } = 0;
+    internal static double AvgMotorcycleSpeed
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = 0;
 
     // Average speed for Bicycle (km/h)
-    internal static double AvgBicycleSpeed { get; set; } = 0;
+    internal static double AvgBicycleSpeed
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = 0;
 
     // Average speed for Walking (km/h)
-    internal static double AvgWalkSpeed { get; set; } = 0;
+    internal static double AvgWalkSpeed
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = 0;
 
     #endregion OperationalParameters
 
@@ -89,13 +176,34 @@ internal static class Config
     #region TimePolicies
 
     // Max delivery time range
-    internal static TimeSpan MaxDelTimeRnge { get; set; } = TimeSpan.Zero;
+    internal static TimeSpan MaxDelTimeRnge
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = TimeSpan.Zero;
 
     // Risk time buffer
-    internal static TimeSpan RiskTimeRnge { get; set; } = TimeSpan.Zero;
+    internal static TimeSpan RiskTimeRnge
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = TimeSpan.Zero;
 
     // Inactivity timeout range
-    internal static TimeSpan UnactiveTimeRnge { get; set; } = TimeSpan.Zero;
+    internal static TimeSpan UnactiveTimeRnge
+    {
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        get;
+
+        [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
+        set;
+    } = TimeSpan.Zero;
 
     #endregion TimePolicies
 
@@ -106,6 +214,7 @@ internal static class Config
     /// <summary>
     /// Resets all configuration values and ID counters to their default state.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     internal static void Reset()
     {
         s_nextOrderId = StartOrderId;

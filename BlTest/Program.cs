@@ -3,6 +3,7 @@
 using BlApi;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Main program for testing the Business Logic (BL) Layer.
@@ -33,7 +34,7 @@ internal class Program
     /// Manages the main loop, login enforcement, and top-level menu navigation.
     /// </summary>
     /// <param name="args">Command line arguments (not used).</param>
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         Console.WriteLine(@"//==== Delivery System BL Test ====\\");
 
@@ -79,9 +80,9 @@ internal class Program
 
                 switch (choice)
                 {
-                    case 1: AdminMenu(); break;
+                    case 1: await AdminMenu(); break;
                     case 2: CourierMenu(); break;
-                    case 3: OrderMenu(); break;
+                    case 3: await OrderMenu(); break;
                     case 9:
                         s_currentUserId = -1; // Logout logic
                         break;
@@ -151,7 +152,7 @@ internal class Program
     /// Displays and handles the Admin operations menu.
     /// Includes DB management, Clock, and Config settings.
     /// </summary>
-    private static void AdminMenu()
+    private static async Task AdminMenu()
     {
         Console.WriteLine("\n--- Admin Operations ---");
         Console.WriteLine("1. Initialize Database (Seed Data)");
@@ -194,7 +195,7 @@ internal class Program
                     // Fetch, Update, Set pattern
                     var conf = s_bl.Admin.GetConfig();
                     conf.MaxAirDistance = newDist;
-                    s_bl.Admin.SetConfig(conf);
+                    await s_bl.Admin.SetConfig(conf);
                     Console.WriteLine("Config updated.");
                     break;
                 case 0: return;
@@ -288,7 +289,7 @@ internal class Program
     /// Displays and handles the Order operations menu.
     /// Includes CRUD for orders, assignment, delivery completion, and summaries.
     /// </summary>
-    private static void OrderMenu()
+    private static async Task OrderMenu()
     {
         Console.WriteLine("\n--- Order Operations ---");
         Console.WriteLine("1. Add Order");
@@ -327,7 +328,7 @@ internal class Program
                         OrderStatus = BO.OrderStatus.Open
                     };
 
-                    s_bl.Order.AddOrder(s_currentUserId, newO);
+                    await s_bl.Order.AddOrder(s_currentUserId, newO);
                     Console.WriteLine("Order added.");
                     break;
 
@@ -343,7 +344,7 @@ internal class Program
                     // Simple update example
                     oToUpd.CustomerFullName = SafeReadString($"New Customer Name (current: {oToUpd.CustomerFullName}): ");
 
-                    s_bl.Order.UpdateOrder(s_currentUserId, oToUpd);
+                    await s_bl.Order.UpdateOrder(s_currentUserId, oToUpd);
                     Console.WriteLine("Order updated.");
                     break;
 
@@ -356,7 +357,7 @@ internal class Program
                 case 5:
                     int cIdAssign = SafeReadInt("Enter Courier ID: ");
                     int oIdAssign = SafeReadInt("Enter Order ID: ");
-                    s_bl.Order.AssignOrderToCourier(s_currentUserId, cIdAssign, oIdAssign);
+                    await s_bl.Order.AssignOrderToCourier(s_currentUserId, cIdAssign, oIdAssign);
                     Console.WriteLine("Order assigned.");
                     break;
 
@@ -375,7 +376,7 @@ internal class Program
 
                 case 8:
                     int cIdForOpen = SafeReadInt("Enter Courier ID: ");
-                    foreach (var item in s_bl.Order.GetOpenOrdersForCourier(s_currentUserId, cIdForOpen))
+                    foreach (var item in await s_bl.Order.GetOpenOrdersForCourier(s_currentUserId, cIdForOpen))
                         Console.WriteLine(item);
                     break;
 

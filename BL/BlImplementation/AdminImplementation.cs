@@ -50,6 +50,8 @@ internal class AdminImplementation : IAdmin
     /// <param name="unit">The unit of time to advance.</param>
     public void ForwardClock(BO.TimeUnit unit)
     {
+        // Only allow clock advancement when the simulator is not running
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         AdminManager.ForwardClock(unit);
     }
 
@@ -72,9 +74,11 @@ internal class AdminImplementation : IAdmin
     /// Updates the system configuration settings.
     /// </summary>
     /// <param name="config">The new configuration object to apply.</param>
-    public void SetConfig(BO.Config config)
+    public async Task SetConfig(BO.Config config)
     {
-        AdminManager.SetConfig(config);
+        // Only allow config updates when the simulator is not running
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        await AdminManager.SetConfig(config);
     }
 
     #endregion Configuration
@@ -88,6 +92,8 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void InitializeDB()
     {
+        // Only allow DB initialization when the simulator is not running
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         AdminManager.InitializeDB();
     }
 
@@ -97,9 +103,26 @@ internal class AdminImplementation : IAdmin
     /// </summary>
     public void ResetDB()
     {
+        // Only allow DB reset when the simulator is not running
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         AdminManager.ResetDB();
     }
 
     #endregion DatabaseManagement
+
+    //==================== Simulator Control ===================\\
+
+    #region SimulatorControl
+
+    public void StartSimulator(int interval)  //stage 7
+    {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        AdminManager.Start(interval); //stage 7
+    }
+
+    public void StopSimulator()
+    => AdminManager.Stop(); //stage 7
+
+    #endregion SimulatorControl
 
 }

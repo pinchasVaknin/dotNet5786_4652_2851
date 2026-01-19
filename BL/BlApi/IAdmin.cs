@@ -66,7 +66,7 @@ public interface IAdmin
     /// A <see cref="BO.Config"/> object containing the configuration values
     /// to be applied.
     /// </param>
-    void SetConfig(BO.Config config);
+    Task SetConfig(BO.Config config);
 
     #endregion Configuration
 
@@ -89,5 +89,24 @@ public interface IAdmin
     void InitializeDB();
 
     #endregion DatabaseMaintenance
+
+    //==================== Simulator Control ===================\\
+
+    #region SimulatorControl
+
+    /// <summary>
+    /// Starts the system simulator with the specified time interval.
+    /// </summary>
+    /// <param name="interval"> The time interval in milliseconds for simulator updates.</param>
+    public void StartSimulator(int interval);
+
+    /// <summary>
+    /// Stops the simulator, halting all ongoing operations and releasing associated resources.
+    /// </summary>
+    /// <remarks>This method should be called to gracefully terminate the simulator. Once stopped, the
+    /// simulator cannot be restarted without reinitialization.</remarks>
+    public void StopSimulator();
+
+    #endregion SimulatorControl
 
 }

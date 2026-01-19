@@ -3,6 +3,7 @@
 using BlApi;
 using Helpers;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 //==================== Order Implementation ===================\\
 
@@ -22,10 +23,11 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="requesterId">The user requesting the action.</param>
     /// <param name="order">The order to add.</param>
-    public void AddOrder(int requesterId, BO.Order order)
+    public async Task AddOrder(int requesterId, BO.Order order)
     {
         Tools.EnsureAdmin(requesterId, nameof(AddOrder));
-        OrderManager.AddOrder(order);
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        await OrderManager.AddOrder(order);
     }
 
     /// <summary>
@@ -40,10 +42,11 @@ internal class OrderImplementation : IOrder
     /// <summary>
     /// Updates an existing order. Requires Admin privileges.
     /// </summary>
-    public void UpdateOrder(int requesterId, BO.Order order)
+    public async Task UpdateOrder(int requesterId, BO.Order order)
     {
         Tools.EnsureAdmin(requesterId, nameof(UpdateOrder));
-        OrderManager.UpdateOrder(order);
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        await OrderManager.UpdateOrder(order);
     }
 
     /// <summary>
@@ -52,6 +55,7 @@ internal class OrderImplementation : IOrder
     public void DeleteOrder(int requesterId, int orderId)
     {
         Tools.EnsureAdmin(requesterId, nameof(DeleteOrder));
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.DeleteOrder(orderId);
     }
 
@@ -95,7 +99,7 @@ internal class OrderImplementation : IOrder
     /// Retrieves open orders suitable for a specific courier.
     /// Accessible by the specific courier or an Admin.
     /// </summary>
-    public IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(
+    public async Task<IEnumerable<BO.OpenOrderInList>> GetOpenOrdersForCourier(
         int requesterId,
         int courierId,
         BO.TypeOfOrder? typeFilter = null,
@@ -105,7 +109,7 @@ internal class OrderImplementation : IOrder
         if (requesterId != courierId)
             Tools.EnsureAdmin(requesterId, nameof(GetOpenOrdersForCourier));
 
-        return OrderManager.GetOpenOrdersForCourier(courierId, typeFilter, sortBy);
+        return await OrderManager.GetOpenOrdersForCourierAsync(courierId, typeFilter, sortBy);
     }
 
     public IEnumerable<BO.DeliveryPerOrderInList> GetDeliveryHistoryForCourier(int requesterId, int courierId, int orderId)
@@ -137,6 +141,7 @@ internal class OrderImplementation : IOrder
         if (requesterId != courierId)
             throw new BO.BlAdminPermissionException("Only the courier can complete the delivery");
 
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.CompleteOrderHandling(courierId, deliveryId, finishType);
     }
 
@@ -146,6 +151,7 @@ internal class OrderImplementation : IOrder
     public void CancelOrder(int requesterId, int orderId)
     {
         Tools.EnsureAdmin(requesterId, nameof(CancelOrder));
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.CancelOrder(orderId);
     }
 
@@ -153,13 +159,14 @@ internal class OrderImplementation : IOrder
     /// Assigns an order to a courier.
     /// Can be performed by the courier themselves (claiming an order) or by an Admin.
     /// </summary>
-    public void AssignOrderToCourier(int requesterId, int courierId, int orderId, double? actualDistance = null)
+    public async Task AssignOrderToCourier(int requesterId, int courierId, int orderId, double? actualDistance = null)
     {
         // Permission check: If requester is NOT the courier, they must be Admin
         if (requesterId != courierId)
             Tools.EnsureAdmin(requesterId, nameof(AssignOrderToCourier));
 
-        OrderManager.AssignOrderToCourier(courierId, orderId, actualDistance);
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
+        await OrderManager.AssignOrderToCourier(courierId, orderId, actualDistance);
     }
 
     #endregion Order Management
@@ -170,6 +177,7 @@ internal class OrderImplementation : IOrder
 
     public void UpdateOrderDetails(BO.Order order, IEnumerable<(string Model, int Quantity)> items)
     {
+        AdminManager.ThrowOnSimulatorIsRunning();  //stage 7
         OrderManager.UpdateOrderDetails(order, items);
     }
 

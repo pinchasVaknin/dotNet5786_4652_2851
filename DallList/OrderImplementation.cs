@@ -3,6 +3,7 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 //==================== Order CRUD Implementation (List) ===================\\
 
@@ -21,6 +22,7 @@ internal class OrderImplementation : IOrder
     /// Assigns a new unique ID automatically.
     /// </summary>
     /// <param name="item">The order entity to add.</param>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Create(Order item)
     {
         // Generate a new running ID from the DAL config
@@ -38,6 +40,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="item">The order entity with updated values.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the order to update does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Update(Order item)
     {
         // Delete the existing Order (throws exception if not found)
@@ -59,6 +62,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="id">The ID of the order to find.</param>
     /// <returns>The order entity if found, otherwise null.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Order? Read(int id)
     {
         // Return the first order with the given ID (or null if not found)
@@ -70,6 +74,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="filter">A predicate function to test each element.</param>
     /// <returns>The first matching order, or null if no match is found.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Order? Read(Func<Order, bool> filter)
     {
         // Iterate and find the first match based on the filter
@@ -81,6 +86,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="filter">Optional predicate to filter the results.</param>
     /// <returns>A collection of order entities.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public IEnumerable<Order> ReadAll(Func<Order, bool>? filter = null)
     {
         // If no filter is provided, return all items
@@ -102,6 +108,7 @@ internal class OrderImplementation : IOrder
     /// </summary>
     /// <param name="id">The ID of the order to delete.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the order does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Delete(int id)
     {
         // Retrieve the order with the specified ID
@@ -118,6 +125,7 @@ internal class OrderImplementation : IOrder
     /// <summary>
     /// Deletes all orders from the data source.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void DeleteAll()
     {
         // Clear the entire list

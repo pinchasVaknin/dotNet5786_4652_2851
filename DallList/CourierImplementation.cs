@@ -3,6 +3,7 @@ using DalApi;
 using DO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 //==================== Courier CRUD Implementation (List) ===================\\
 
@@ -21,6 +22,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="item">The courier entity to add.</param>
     /// <exception cref="DalAlreadyExistsException">Thrown if a courier with the same ID already exists.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Create(Courier item)
     {
         // Check if a courier with the same ID already exists
@@ -36,6 +38,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="item">The courier entity with updated values.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the courier to update does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Update(Courier item)
     {
         // Delete the existing courier (throws exception if not found)
@@ -56,6 +59,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="id">The ID of the courier to find.</param>
     /// <returns>The courier entity if found, otherwise null.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Courier? Read(int id)
     {
         // Return the first courier matching the ID, or null if not found
@@ -67,6 +71,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="filter">A predicate function to test each element.</param>
     /// <returns>The first matching courier, or null if no match is found.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Courier? Read(Func<Courier, bool> filter)
     {
         // Iterate and find the first match based on the filter
@@ -78,6 +83,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="filter">Optional predicate to filter the results.</param>
     /// <returns>A collection of courier entities.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null)
     {
         // If no filter is provided, return all items
@@ -99,6 +105,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="id">The ID of the courier to delete.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the courier does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Delete(int id)
     {
         // Attempt to find the courier
@@ -115,6 +122,7 @@ internal class CourierImplementation : ICourier
     /// <summary>
     /// Deletes all couriers from the data source.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void DeleteAll()
     {
         // Clear the entire list

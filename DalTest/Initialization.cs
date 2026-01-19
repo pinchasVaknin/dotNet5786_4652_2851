@@ -75,13 +75,6 @@ public static class Initialization
             "Uri Shahar", "Roni Kadosh", "Dani Eliyahu", "Shani Ben-Haim"
         };
 
-        // Example street names for building courier address
-        string[] streets =
-        {
-            "Jaffa", "King George", "Ben Yehuda", "Aza", "Herzl",
-            "Hillel", "Agripas", "Jabotinsky", "Begin", "Bialik"
-        };
-
         foreach (string name in courierNames)
         {
             // Generate unique courier ID
@@ -101,9 +94,6 @@ public static class Initialization
 
             // Generate a simple random password
             string password = "pw" + s_rand.Next(1000, 9999) + "!" + (char)s_rand.Next('A', 'Z' + 1);
-
-            // Pick random street + house number
-            string address = $"{streets[s_rand.Next(streets.Length)]}, St {s_rand.Next(1, 200)}";
 
             // Employment start time randomly chosen sometime over the past 3 years
             DateTime startBase = new DateTime(s_dal!.Config.Clock.Year - 3, 1, 1);
@@ -137,7 +127,6 @@ public static class Initialization
              CourierCellPhone: phone,
              CourierEmail: email,
              CourierPassword: password,
-             CourierAddress: address, // Address from which the courier starts work
              CourierEnabled: isActive,
              MaxCourierDistance: MaxDistance,
              SeniorityOfCourier: employmentStartTime,

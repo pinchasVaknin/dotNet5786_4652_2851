@@ -4,6 +4,7 @@ using DO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 //==================== Courier CRUD Implementation (XML) ===================\\
 
@@ -22,6 +23,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="item">The courier entity to add.</param>
     /// <exception cref="DalAlreadyExistsException">Thrown if a courier with the same ID already exists.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Create(Courier item)
     {
         // Load all couriers from the XML file into a list
@@ -43,6 +45,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="item">The courier entity with updated values.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the courier to update does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Update(Courier item)
     {
         // Load current couriers from XML
@@ -71,6 +74,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="id">The ID of the courier to find.</param>
     /// <returns>The courier entity if found, otherwise null.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Courier? Read(int id)
     {
         // Load list of couriers from XML
@@ -85,6 +89,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="filter">A predicate function to test each element.</param>
     /// <returns>The first matching courier, or null if no match is found.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public Courier? Read(Func<Courier, bool> filter)
     {
         // Load list of couriers from XML
@@ -99,6 +104,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="filter">Optional predicate to filter the results.</param>
     /// <returns>A collection of courier entities.</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public IEnumerable<Courier> ReadAll(Func<Courier, bool>? filter = null)
     {
         // Load list of couriers from XML
@@ -120,6 +126,7 @@ internal class CourierImplementation : ICourier
     /// </summary>
     /// <param name="id">The ID of the courier to delete.</param>
     /// <exception cref="DalDoesNotExistException">Thrown if the courier does not exist.</exception>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void Delete(int id)
     {
         // Load couriers from XML
@@ -136,6 +143,7 @@ internal class CourierImplementation : ICourier
     /// <summary>
     /// Deletes all courier records from the XML store.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     public void DeleteAll()
     {
         // Overwrite file with an empty list to clear all couriers

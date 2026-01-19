@@ -303,9 +303,6 @@ internal static class Tools
         if (string.IsNullOrWhiteSpace(courier.CourierPassword))
             throw new BO.BlInvalidStringException("Password cannot be empty.");
 
-        if (string.IsNullOrWhiteSpace(courier.CourierLocation))
-            throw new BO.BlInvalidStringException("Location cannot be empty.");
-
         // Format Validations
         if (!IsValidIsraelPhoneNumber(courier.CourierCellPhone))
             throw new BO.BlInvalidStringException($"Phone number '{courier.CourierCellPhone}' is invalid.");
@@ -446,7 +443,7 @@ internal static class Tools
     /// </summary>
     /// <param name="address">The address string to search.</param>
     /// <returns>A tuple (Lat, Lon) or null if failed/not found.</returns>
-    internal static (double? Lat, double? Lon)? GetLocationFromAddress(string address)
+    internal static async Task<(double Lat, double Lon)?> GetLocationFromAddressAsync(string address)
     {
         // Validate input
         if (string.IsNullOrWhiteSpace(address)) return null;
@@ -462,7 +459,7 @@ internal static class Tools
                 // Nominatim requires a valid User-Agent header
                 client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
 
-                var response = client.GetStringAsync(url).GetAwaiter().GetResult();
+                var response = await client.GetStringAsync(url);
 
                 // 4. Parse XML response
                 XElement xml = XElement.Parse(response);

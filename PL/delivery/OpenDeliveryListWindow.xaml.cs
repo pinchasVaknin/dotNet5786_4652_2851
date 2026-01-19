@@ -74,18 +74,28 @@ public partial class OpenDeliveryListWindow : Window
 
     #region Methods
 
-    private void RefreshOrderList()
+    private async Task RefreshOrderListAsync()
     {
         try
         {
-            // Retrieve open orders for the courier
-            OrderList = s_bl.Order.GetOpenOrdersForCourier
-                (UserData.s_UserId, CurrentCourier.CourierId, null, BO.OpenOrderSortBy.AirDistance);
+            // Show wait cursor
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            // Fetch the open orders from the BL layer
+            OrderList = await s_bl.Order.GetOpenOrdersForCourier(
+                UserData.s_UserId,
+                CurrentCourier.CourierId,
+                null,
+                BO.OpenOrderSortBy.AirDistance);
         }
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
+        }
+        finally
+        {
+            // Always restore cursor
+            Mouse.OverrideCursor = null;
         }
     }
 
@@ -109,16 +119,22 @@ public partial class OpenDeliveryListWindow : Window
 
     #region Observers
 
-    private void OrderListObserver()
-                    => RefreshOrderList();
+    private async void OrderListObserver()
+                    => await RefreshOrderListAsync();
 
-    private void Window_Loaded(object sender, RoutedEventArgs e)
+    private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        s_bl.Order.AddObserver(OrderListObserver);
-        RefreshOrderList();
+        try
+        {
+            // Subscribe observer once (make sure you also remove it on Window_Closed)
+            s_bl.Order.AddObserver(OrderListObserver);
 
-        // Restore default cursor
-        Mouse.OverrideCursor = null;
+            await RefreshOrderListAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private void Window_Closed(object sender, EventArgs e)
@@ -130,7 +146,7 @@ public partial class OpenDeliveryListWindow : Window
 
     #region Events
     
-    private void OpenNewDeliveryButton_Click(object sender, RoutedEventArgs e)
+    private async void OpenNewDeliveryButton_Click(object sender, RoutedEventArgs e)
     {
         // Assign the selected order to the courier
         if (SelectedOrder == null) return;
@@ -142,7 +158,7 @@ public partial class OpenDeliveryListWindow : Window
         Mouse.OverrideCursor = Cursors.Wait;
 
         // Call BL to assign order
-        s_bl.Order.AssignOrderToCourier(UserData.s_UserId, CurrentCourier.CourierId, SelectedOrder.OrderId, SelectedOrder.ActualDistance);
+        await s_bl.Order.AssignOrderToCourier(UserData.s_UserId, CurrentCourier.CourierId, SelectedOrder.OrderId, SelectedOrder.ActualDistance);
 
         // Restore default cursor
         Mouse.OverrideCursor = null;

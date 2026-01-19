@@ -93,7 +93,7 @@ public interface IOrder : IObservable //stage 5
     /// A filtered and sorted collection of <see cref="BO.OpenOrderInList"/> objects,
     /// including only orders that fit the courier's personal maximum air distance.
     /// </returns>
-    IEnumerable<BO.OpenOrderInList> GetOpenOrdersForCourier(
+    Task<IEnumerable<BO.OpenOrderInList>> GetOpenOrdersForCourier(
         int requesterId,
         int courierId,
         BO.TypeOfOrder? typeFilter = null,
@@ -119,14 +119,14 @@ public interface IOrder : IObservable //stage 5
     /// </summary>
     /// <param name="requesterId">The ID of the requester (admin).</param>
     /// <param name="order">The logical order object to add.</param>
-    void AddOrder(int requesterId, BO.Order order);
+    Task AddOrder(int requesterId, BO.Order order);
 
     /// <summary>
     /// Updates details of an existing order.
     /// </summary>
     /// <param name="requesterId">The ID of the requester (admin).</param>
     /// <param name="order">The logical order object containing updated details.</param>
-    void UpdateOrder(int requesterId, BO.Order order);
+    Task UpdateOrder(int requesterId, BO.Order order);
 
     /// <summary>
     /// Deletes an order (used only by BlTest, not by the UI).
@@ -161,7 +161,7 @@ public interface IOrder : IObservable //stage 5
     /// <param name="requesterId">The ID of the requester (admin or the courier himself, as defined logically).</param>
     /// <param name="courierId">The ID of the courier taking the order.</param>
     /// <param name="orderId">The ID of the order chosen for handling.</param>
-    void AssignOrderToCourier(int requesterId, int courierId, int orderId, double? actualDistance = null);
+    Task AssignOrderToCourier(int requesterId, int courierId, int orderId, double? actualDistance = null);
 
     /// <summary>
     /// Marks the end of handling an order by a courier (delivery supplied).

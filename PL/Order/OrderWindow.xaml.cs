@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -434,7 +435,7 @@ public partial class OrderWindow : Window
     /// <summary>
     /// Handles the final Save (Add or Update) operation
     /// </summary>
-    private void BtnSave_Click(object sender, RoutedEventArgs e)
+    private async void BtnSave_Click(object sender, RoutedEventArgs e)
     {
         // Show wait cursor
         Mouse.OverrideCursor = Cursors.Wait;
@@ -445,9 +446,9 @@ public partial class OrderWindow : Window
             s_bl.Order.UpdateOrderDetails(CurrentOrder, itemsList);
 
             if (!IsUpdateMode)
-                s_bl.Order.AddOrder(UserData.s_UserId, CurrentOrder);
+                await s_bl.Order.AddOrder(UserData.s_UserId, CurrentOrder);
             else
-                s_bl.Order.UpdateOrder(UserData.s_UserId, CurrentOrder);
+                await s_bl.Order.UpdateOrder(UserData.s_UserId, CurrentOrder);
 
             MessageBox.Show(IsUpdateMode ? "Updated successfully" : "Added successfully", "Success");
             Close();

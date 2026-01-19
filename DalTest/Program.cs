@@ -263,7 +263,6 @@ internal class Program
         Console.WriteLine("Creating a Courier...");
         int id = ReadInt("Id: "); // read courier ID
         string fullName = ReadRequired("Full name: "); // read full name
-        string companyAddress = ReadRequired("Courier start address: "); // read start address
         string phone = ReadRequired("PhoneNumber: "); // read phone number
         string email = ReadRequired("Email address: "); // read email
         string password = ReadRequired("Password: "); // read password
@@ -288,7 +287,6 @@ internal class Program
         var newCourier = new Courier(
             CourierId: id,
             CourierFullName: fullName,
-            CourierAddress: companyAddress,
             CourierCellPhone: phone,
             CourierEmail: email,
             CourierPassword: password,
@@ -339,7 +337,6 @@ internal class Program
         Console.WriteLine($"Current: {c}");
         // read new values (optional)
         string fullName = ReadOptional($"Full name [{c.CourierFullName}]: ", c.CourierFullName);
-        string address = ReadOptional($"Courier address [{c.CourierAddress}]: ", c.CourierAddress);
         string phone = ReadOptional($"Phone [{c.CourierCellPhone}]: ", c.CourierCellPhone);
         string email = ReadOptional($"Email [{c.CourierEmail}]: ", c.CourierEmail);
         string password = ReadOptional($"Password [{c.CourierPassword}]: ", c.CourierPassword);
@@ -388,7 +385,6 @@ internal class Program
         var updated = c with
         {
             CourierFullName = fullName,
-            CourierAddress = address,
             CourierCellPhone = phone,
             CourierEmail = email,
             CourierPassword = password,

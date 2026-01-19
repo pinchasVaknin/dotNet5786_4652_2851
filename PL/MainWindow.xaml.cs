@@ -4,6 +4,7 @@ using PL.Courier;
 using PL.Login;
 using PL.Order;
 using PL.Tools;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -173,11 +174,11 @@ public partial class MainWindow : Window
         }
     }
 
-    private void BtnUpdateConfig_Click(object sender, RoutedEventArgs e)
+    private async void BtnUpdateConfig_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            s_bl.Admin.SetConfig(Configuration);
+            await s_bl.Admin.SetConfig(Configuration);
             MessageBox.Show("Configuration updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
