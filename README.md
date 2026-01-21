@@ -21,7 +21,7 @@
 
 | הבונוס | מיקום בקוד (לחץ לפתיחה) | שורות | הערות | ניקוד |
 | :--- | :--- | :--- | :--- | :---: |
-| **שימוש נכון ומלא ב-TryParse** | [`DalTest/Program.cs`](./DalTest/Program.cs) | 449, 457, 463, 471, 478, 486, 494 | שימוש ב-`int.TryParse`, `double.TryParse`, `DateTime.TryParse`, `Enum.TryParse` עם בדיקת ערך מוחזר והגדרת משתנה בתוך הזימון | **1** |
+| **שימוש נכון ומלא ב-TryParse** | [`DalTest/Program.cs`](./DalTest/Program.cs) | 259, 264, 308, 314, 455, 479, 493, 507, 521 | שימוש ב-`int.TryParse`, `double.TryParse`, `DateTime.TryParse`, `Enum.TryParse` עם בדיקת ערך מוחזר והגדרת משתנה בתוך הזימון | **1** |
 
 ## 🏗️ שכבות נתונים ולוגיקה (DAL & BL)
 
@@ -37,12 +37,12 @@
 | הבונוס | מיקום בקוד (לחץ לפתיחה) | שורות | הערות | ניקוד |
 | :--- | :--- | :--- | :--- | :---: |
 | **תצוגה גרפית אינטראקטיבית (שגיאות)** | [`PL/Login/LoginWindow.xaml`](./PL/Login/LoginWindow.xaml) | 63-66, 74-77 | TextBlocks (`ErrId`, `ErrPass`) עם הודעות שגיאה באדום שמופיעות/נעלמות | **1** |
-| **ולידציה בתוך Binding** | [`PL/Styles/TextBoxes.xaml`](./PL/Styles/TextBoxes.xaml) | 16-20 | Style.Triggers לשינוי מראה לפי `IsReadOnly` | **1** |
+| **ולידציה בתוך Binding** | [`PL/Styles/TextBoxes.xaml`](./PL/Styles/TextBoxes.xaml) | 17-22 | Style.Triggers לשינוי מראה לפי `IsReadOnly` | **1** |
 | **אייקון (Icon) בחלון ובמשימות** | [`PL/Login/LoginWindow.xaml`](./PL/Login/LoginWindow.xaml) | 19-24 | אייקון מותאם אישית `Image.ico` בכותרת החלון | **1** |
 | **טריגר תכונות (Property Trigger)** | [`PL/Styles/Buttons.xaml`](./PL/Styles/Buttons.xaml) | 23-28, 49-52 | `IsMouseOver`, `IsPressed` triggers לשינוי Opacity ו-Foreground | **1** |
-| **טריגר נתונים (Data Trigger)** | [`PL/Styles/DataGrids.xaml`](./PL/Styles/DataGrids.xaml) | 11-14 | `EnumDataGridCellStyle` עם Converter לצביעה לפי Enum | **1** |
-| **ערכות נושא (Theme)** | [`PL/App.xaml`](./PL/App.xaml) <br> [`PL/Styles/Colors.xaml`](./PL/Styles/Colors.xaml) | 12-17 <br> כל הקובץ | עיצוב אחיד המחובר דרך `MergedDictionaries` לכל האפליקציה | **1** |
-| **שימוש ב-ControlTemplate** | [`PL/Styles/Buttons.xaml`](./PL/Styles/Buttons.xaml) | 11-30 | Template מותאם אישית עם Border, CornerRadius, ContentPresenter ו-Triggers | **1** |
+| **טריגר נתונים (Data Trigger)** | [`PL/Styles/DataGrids.xaml`](./PL/Styles/DataGrids.xaml) | 12-16 | `EnumDataGridCellStyle` עם Converter לצביעה לפי Enum | **1** |
+| **ערכות נושא (Theme)** | [`PL/App.xaml`](./PL/App.xaml) <br> [`PL/Styles/Colors.xaml`](./PL/Styles/Colors.xaml) | 10-17 <br> כל הקובץ | עיצוב אחיד המחובר דרך `MergedDictionaries` לכל האפליקציה | **1** |
+| **שימוש ב-ControlTemplate** | [`PL/Styles/Buttons.xaml`](./PL/Styles/Buttons.xaml) | 12-30 | Template מותאם אישית עם Border, CornerRadius, ContentPresenter ו-Triggers | **1** |
 | **לחיצה על Enter ככפתור** | [`PL/Login/LoginWindow.xaml.cs`](./PL/Login/LoginWindow.xaml.cs) | 109-124 | `HandleEnterKey` מטפל ב-`Key.Enter` להפעלת Login או מעבר פוקוס | **1** |
 
 ## 🚀 שכבת התצוגה PL - שיפורים הקשורים לנושא הפרויקט
@@ -107,22 +107,22 @@
 
 ```
 dotNet5786_4652_2851/
-├── DalFacade/          # ממשקי DAL ואובייקטי נתונים (DO)
-├── DallList/      # מימוש DAL בזיכרון
-├── DalXml/   # מימוש DAL מבוסס XML
-├── DalTest/  # אפליקציית בדיקות DAL
-├── BL/        # שכבת הלוגיקה העסקית
-├── BlTest/           # אפליקציית בדיקות BL
-├── PL/      # שכבת התצוגה WPF
-│   ├── Controls/   # פקדים מותאמים אישית
-│   ├── Converters.cs# Value Converters
-│   ├── Helpers/   # כלי עזר
-│   ├── Styles/       # Resource Dictionaries
-│   ├── Courier/        # חלונות ניהול שליחים
-│   ├── Order/          # חלונות ניהול הזמנות
-│   ├── Login/  # חלונות התחברות
+├── DalFacade/       # ממשקי DAL ואובייקטי נתונים (DO)
+├── DallList/     # מימוש DAL בזיכרון
+├── DalXml/# מימוש DAL מבוסס XML
+├── DalTest/# אפליקציית בדיקות DAL
+├── BL/    # שכבת הלוגיקה העסקית
+├── BlTest/         # אפליקציית בדיקות BL
+├── PL/       # שכבת התצוגה WPF
+│   ├── Controls/       # פקדים מותאמים אישית
+│   ├── Converters.cs   # Value Converters
+│   ├── Helpers/  # כלי עזר
+│   ├── Styles/         # Resource Dictionaries
+│ ├── Courier/        # חלונות ניהול שליחים
+│   ├── Order/ # חלונות ניהול הזמנות
+│   ├── Login/ # חלונות התחברות
 │   └── delivery/       # חלונות היסטוריית משלוחים
-└── Stage0/   # פרויקט שלב 0
+└── Stage0/     # פרויקט שלב 0
 ```
 
 ---
