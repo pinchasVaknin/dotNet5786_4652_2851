@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
   <NextOrderId>50</NextOrderId>
-  <NextDeliveryId>52</NextDeliveryId>
-  <Clock>26/01/2026 1:38:37</Clock>
+  <NextDeliveryId>31</NextDeliveryId>
+  <Clock>21/01/2026 16:37:39</Clock>
   <AdminId>333333333</AdminId>
   <AdminPassword>1</AdminPassword>
   <CompanyAddress>Malha Mall, Derech Agudat Sport Beitar 1, Jerusalem</CompanyAddress>
