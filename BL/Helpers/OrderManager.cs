@@ -19,12 +19,12 @@ using System.Threading.Tasks;
 internal static class OrderManager
 {
 
-    //==================== Observer Manager (Stage 5) ===================\\
+    //==================== Observer Manager (Stage5) ===================\\
 
     #region ObserverManager
 
     // Observer manager for order-related updates
-    internal static ObserverManager Observers = new(); //stage 5
+    internal static ObserverManager Observers = new(); //stage5
 
     #endregion ObserverManager
 
@@ -554,13 +554,15 @@ internal static class OrderManager
                 let lastDelivery = deliveriesGroup.OrderByDescending(del => del.DeliveryDate).FirstOrDefault()
 
                 let OrderStatus =
-                    lastDelivery is null ? BO.OrderStatus.Open :
-                    lastDelivery.DeliveryFinishType == null ? BO.OrderStatus.InProgress :
-                    lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Completed ? BO.OrderStatus.Supplied :
-                    lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Cancelled ? BO.OrderStatus.Cancelled :
-                    BO.OrderStatus.Refused
+                        lastDelivery is null ? BO.OrderStatus.Open :
+                        lastDelivery.DeliveryFinishType == null ? BO.OrderStatus.InProgress :
+                        lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Completed ? BO.OrderStatus.Supplied :
+                        lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Cancelled ? BO.OrderStatus.Cancelled :
+                        lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Returned ? BO.OrderStatus.Refused :
+                        lastDelivery.DeliveryFinishType == DO.DeliveryFinishType.Failed ? BO.OrderStatus.Open :
+                        BO.OrderStatus.Refused
 
-                let ScheduleStatus = Tools.CalcScheduleStatus(o.OrderDate, lastDelivery?.DeliveryFinishDate)
+            let ScheduleStatus = Tools.CalcScheduleStatus(o.OrderDate, lastDelivery?.DeliveryFinishDate)
 
                 let filterStatusExclude = filterBy == BO.OrderInListFilterBy.OrderStatus && filterValue is not null &&
                                  Tools.TryConvertEnum(filterValue, out BO.OrderStatus statusVal) &&
@@ -1327,6 +1329,8 @@ internal static class OrderManager
 
     #region PeriodicUpdates
 
+    private static readonly AsyncMutex s_periodicMutex = new(); //stage7
+
     /// <summary>
     /// Performs periodic updates on active orders to sync their statuses based on delivery history.
     /// </summary>
@@ -1335,73 +1339,97 @@ internal static class OrderManager
     /// <exception cref="BO.BlXMLFileLoadCreateException">Thrown when there is an error during the update process.</exception>
     internal static void PeriodicOrdersUpdates(DateTime oldClock, DateTime newClock)
     {
+        // If the previous periodic update is still in progress, skip this invocation
+        if (s_periodicMutex.CheckAndSetInProgress())
+            return;
+
         try
         {
-            // Fetch all active orders (Open or InProgress)
-            var activeOrders = s_dal.Order.ReadAll(o => o.OrderStatus == BO.OrderStatus.Open.ToString() ||
-                                                        o.OrderStatus == BO.OrderStatus.InProgress.ToString());
+            List<DO.Order> activeOrders;
 
-            // Update each active order
-            foreach (var order in activeOrders)
+            lock (AdminManager.BlMutex)
             {
-                SyncOrderStatus(order, newClock);
+                // Materialize to avoid deferred execution outside lock
+                activeOrders = s_dal.Order.ReadAll(o =>
+                        o.OrderStatus == BO.OrderStatus.Open.ToString() ||
+                        o.OrderStatus == BO.OrderStatus.InProgress.ToString())
+                    .ToList();
             }
 
-            // Notify observers about the updates
-            Observers.NotifyListUpdated();
+            bool anyChanged = false;
+
+            foreach (var order in activeOrders)
+            {
+                if (SyncOrderStatus(order.OrderId))
+                    anyChanged = true;
+            }
+
+            if (anyChanged)
+                Observers.NotifyListUpdated();
         }
         catch (Exception ex)
         {
             throw new BO.BlXMLFileLoadCreateException("Failed to perform periodic order updates", ex);
         }
+        finally
+        {
+            s_periodicMutex.UnsetInProgress();
+        }
     }
 
     /// <summary>
-    /// Synchronizes the status of a single order based on its delivery history.
+    /// Synchronizes the status of a specific order based on its delivery history.
     /// </summary>
-    /// <param name="order">The order to synchronize.</param>
-    /// <param name="newClock">The new clock time.</param>
-    /// <exception cref="BO.BlInvalidDeliveryStatusException">Thrown when an unknown delivery finish type is encountered.</exception>
-    private static void SyncOrderStatus(DO.Order order, DateTime newClock)
+    /// <param name="orderId"> The ID of the order to synchronize.</param>
+    /// <returns> True if the order status was changed; otherwise, false.</returns>
+    /// <exception cref="BO.BlInvalidDeliveryStatusException"> Thrown for unknown delivery finish types.</exception>
+    private static bool SyncOrderStatus(int orderId)
     {
-        // Fetch all deliveries for the order
-        var deliveries = s_dal.Delivery.ReadAll(d => d.OrderId == order.OrderId);
+        bool changed = false;
 
-        // Get the last delivery
-        var lastDelivery = deliveries.OrderByDescending(d => d.DeliveryDate).FirstOrDefault();
-
-        // Determine new status based on last delivery
-        BO.OrderStatus newStatus;
-
-        // Determine status based on last delivery
-        if (lastDelivery == null)
-            newStatus = BO.OrderStatus.Open;
-        else if (lastDelivery.DeliveryFinishType == null)
-            newStatus = BO.OrderStatus.InProgress;
-        else
+        lock (AdminManager.BlMutex)
         {
-            // Map finish types to order statuses
-            newStatus = lastDelivery.DeliveryFinishType switch
+            var currentOrder = s_dal.Order.Read(orderId);
+            if (currentOrder is null) return false;
+
+            var deliveries = s_dal.Delivery
+                .ReadAll(d => d.OrderId == orderId)
+                .ToList();
+
+            var lastDelivery = deliveries
+                .OrderByDescending(d => d.DeliveryDate)
+                .ThenByDescending(d => d.DeliveryId)
+                .FirstOrDefault();
+
+            BO.OrderStatus newStatus =
+                lastDelivery is null ? BO.OrderStatus.Open :
+                lastDelivery.DeliveryFinishType is null ? BO.OrderStatus.InProgress :
+                lastDelivery.DeliveryFinishType switch
+                {
+                    DO.DeliveryFinishType.Completed => BO.OrderStatus.Supplied,
+                    DO.DeliveryFinishType.Cancelled => BO.OrderStatus.Cancelled,
+                    DO.DeliveryFinishType.Returned => BO.OrderStatus.Refused,
+                    DO.DeliveryFinishType.Failed => BO.OrderStatus.Open,
+
+                    _ => throw new BO.BlInvalidDeliveryStatusException(
+                            $"Unknown delivery finish type: {lastDelivery.DeliveryFinishType}")
+                };
+
+            var dalNewStatus = newStatus.ToString();
+
+            if (currentOrder.OrderStatus != dalNewStatus)
             {
-                DO.DeliveryFinishType.Completed => BO.OrderStatus.Supplied,
-                DO.DeliveryFinishType.Cancelled => BO.OrderStatus.Cancelled,
-                DO.DeliveryFinishType.Failed or DO.DeliveryFinishType.Returned => BO.OrderStatus.Refused,
-                _ => throw new BO.BlInvalidDeliveryStatusException($"Unknown delivery finish type: {lastDelivery.DeliveryFinishType}")
-            };
+                s_dal.Order.Update(currentOrder with { OrderStatus = dalNewStatus });
+                changed = true;
+            }
         }
 
-        // Convert new status to DAL string
-        var dalNewStatus = newStatus.ToString();
+        if (changed)
+            Observers.NotifyItemUpdated(orderId);
 
-        // Update order if status has changed
-        if (order.OrderStatus != dalNewStatus)
-        {
-            order = order with { OrderStatus = dalNewStatus };
-            s_dal.Order.Update(order);
-
-            Observers.NotifyItemUpdated(order.OrderId);
-        }
+        return changed;
     }
+
 
     #endregion PeriodicUpdates
 

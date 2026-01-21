@@ -5,21 +5,19 @@ using System.Runtime.CompilerServices;
 /// <summary>
 /// Internal BL manager for all Application's Configuration Variables and Clock logic policies
 /// </summary>
-internal static class AdminManager //stage 4
+internal static class AdminManager //stage4
 {
 
-    #region Stage 4-7
+    #region Stage4-7
 
     //======== DAL & Sync Objects ========\\
 
     #region Data Access Layer Instance
 
-    private static readonly DalApi.IDal s_dal = DalApi.Factory.Get; //stage 4
+    private static readonly DalApi.IDal s_dal = DalApi.Factory.Get; //stage4
 
-    internal static event Action? ConfigUpdatedObservers; //stage 5 - for config update observers
-    internal static event Action? ClockUpdatedObservers; //stage 5 - for clock update observers
-
-    private static Task? _periodicTask = null; //stage 7
+    internal static event Action? ConfigUpdatedObservers; //stage5 - for config update observers
+    internal static event Action? ClockUpdatedObservers; //stage5 - for clock update observers
 
     #endregion Data Access Layer Instance
 
@@ -35,39 +33,56 @@ internal static class AdminManager //stage 4
         get
         {
             lock (BlMutex)
-                return s_dal.Config.Clock;  //stage 4
+                return s_dal.Config.Clock; //stage4
         }
-
     }
 
     /// <summary>
     /// Method to update application's clock from any BL class as may be required
     /// </summary>
     /// <param name="newClock">updated clock value</param>
-    internal static void UpdateClock(DateTime newClock) //stage 4-7
+    internal static void UpdateClock(DateTime newClock) //stage4-7
     {
-        var oldClock = s_dal.Config.Clock; //stage 4
-        s_dal.Config.Clock = newClock; //stage 4
+        // Validate input
+        DateTime oldClock;
 
-        //stage 7
-        _ = Task.Run(() =>
+        // Update clock under lock
+        lock (BlMutex) //stage7
         {
-            CourierManager.PeriodicCouriersUpdates(oldClock, newClock);
-            OrderManager.PeriodicOrdersUpdates(oldClock, newClock);
-        });
+            oldClock = s_dal.Config.Clock; //stage4
+            s_dal.Config.Clock = newClock; //stage4
+        }
 
-        //Calling all the observers of clock update
-        ClockUpdatedObservers?.Invoke(); //prepared for stage 5
+        // stage7: call periodic update asynchronously (do not block the simulator thread)
+        _ = Task.Run(() =>
+           {
+               try
+               {
+                   CourierManager.PeriodicCouriersUpdates(oldClock, newClock);
+                   OrderManager.PeriodicOrdersUpdates(oldClock, newClock);
+               }
+               catch
+               {
+                   // Ignore errors during periodic updates when stopping
+               }
+           });
+
+        // Calling all the observers of clock update
+        ClockUpdatedObservers?.Invoke(); //prepared for stage5
+
+        // Notify order and courier list observers that time-dependent fields need recalculation
+        OrderManager.Observers.NotifyListUpdated(); //stage7 - recalculate TimeLeftToFinish, ScheduleStatus
+        CourierManager.Observers.NotifyListUpdated(); //stage7 - refresh courier list as well
     }
 
-    internal static void ForwardClock(BO.TimeUnit unit) //stage 4
+    internal static void ForwardClock(BO.TimeUnit unit) //stage4
     {
         // Validate input
         if (!Enum.IsDefined(typeof(BO.TimeUnit), unit))
             throw new BO.BlInvalidIntegerException("Invalid time unit.");
 
         // Advance clock based on specified time unit
-        switch (unit) //stage 4
+        switch (unit) //stage4
         {
             case BO.TimeUnit.Minute:
                 UpdateClock(Now.AddMinutes(1));
@@ -98,32 +113,36 @@ internal static class AdminManager //stage 4
     /// <summary>
     /// Method for providing current configuration variables values for any BL class that may need it
     /// </summary>
-    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
-    internal static BO.Config GetConfig() //stage 4
-    => new BO.Config()
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage7
+    internal static BO.Config GetConfig() //stage4
     {
-        Clock = s_dal.Config.Clock,
-        AdminId = s_dal.Config.AdminId,
-        AdminPassword = s_dal.Config.AdminPassword,
-        CompanyAddress = s_dal.Config.CompanyAddress,
-        Latitude = s_dal.Config.Latitude,
-        Longitude = s_dal.Config.Longitude,
-        MaxAirDistance = s_dal.Config.MaxAirDistance,
-        AvgCarSpeed = s_dal.Config.AvgCarSpeed,
-        AvgMotorcycleSpeed = s_dal.Config.AvgMotorcycleSpeed,
-        AvgBicycleSpeed = s_dal.Config.AvgBicycleSpeed,
-        AvgWalkSpeed = s_dal.Config.AvgWalkSpeed,
-        MaxDelTimeRnge = s_dal.Config.MaxDelTimeRnge,
-        RiskTimeRnge = s_dal.Config.RiskTimeRnge,
-        UnactiveTimeRnge = s_dal.Config.UnactiveTimeRnge
-    };
+        lock (BlMutex) //stage7
+        {
+            return new BO.Config()
+            {
+                Clock = s_dal.Config.Clock,
+                AdminId = s_dal.Config.AdminId,
+                AdminPassword = s_dal.Config.AdminPassword,
+                CompanyAddress = s_dal.Config.CompanyAddress,
+                Latitude = s_dal.Config.Latitude,
+                Longitude = s_dal.Config.Longitude,
+                MaxAirDistance = s_dal.Config.MaxAirDistance,
+                AvgCarSpeed = s_dal.Config.AvgCarSpeed,
+                AvgMotorcycleSpeed = s_dal.Config.AvgMotorcycleSpeed,
+                AvgBicycleSpeed = s_dal.Config.AvgBicycleSpeed,
+                AvgWalkSpeed = s_dal.Config.AvgWalkSpeed,
+                MaxDelTimeRnge = s_dal.Config.MaxDelTimeRnge,
+                RiskTimeRnge = s_dal.Config.RiskTimeRnge,
+                UnactiveTimeRnge = s_dal.Config.UnactiveTimeRnge
+            };
+        }
+    }
 
     /// <summary>
     /// Method for setting current configuration variables values for any BL class that may need it
     /// </summary>
-    // [MethodImpl(MethodImplOptions.Synchronized)] //stage 7
     internal static async Task SetConfig(BO.Config configuration)
-    { 
+    {
         Tools.ValidateConfig(configuration); // Validate input
 
         // Read current address safely (DAL access under lock)
@@ -150,7 +169,7 @@ internal static class AdminManager //stage 4
                 // If address is invalid, throw exception
                 if (coords == null)
                     throw new BO.BlInvalidStringException(
-                        $"Company address '{configuration.CompanyAddress}' is invalid.");
+                     $"Company address '{configuration.CompanyAddress}' is invalid.");
 
                 // Set new coordinates
                 newCoords = (coords.Value.Lat, coords.Value.Lon);
@@ -269,43 +288,42 @@ internal static class AdminManager //stage 4
             ConfigUpdatedObservers?.Invoke();
     }
 
-
     #endregion Configuration Variables
 
     //======== Database Initialization / Reset =========\\
 
     #region Database Initialization / Reset
 
-    internal static void ResetDB() //stage 4-7
+    internal static void ResetDB() //stage4-7
     {
-        lock (BlMutex) //stage 7
+        lock (BlMutex) //stage7
         {
-            s_dal.ResetDB(); //stage 4
-            AdminManager.UpdateClock(AdminManager.Now); //stage 5 - needed since we want the label on Pl to be updated
-            ConfigUpdatedObservers?.Invoke(); //stage 5 - needed to update PL 
+            s_dal.ResetDB(); //stage4
         }
+        AdminManager.UpdateClock(AdminManager.Now); //stage5 - needed since we want the label on Pl to be updated
+        ConfigUpdatedObservers?.Invoke(); //stage5 - needed to update PL 
     }
 
-    internal static void InitializeDB() //stage 4-7
+    internal static void InitializeDB() //stage4-7
     {
-        lock (BlMutex) //stage 7
+        lock (BlMutex) //stage7
         {
-            DalTest.Initialization.Do(); //stage 4
-            AdminManager.UpdateClock(AdminManager.Now);  //stage 5 - needed since we want the label on Pl to be updated           
-            ConfigUpdatedObservers?.Invoke(); //stage 5 - needed for update the PL
+            DalTest.Initialization.Do(); //stage4
         }
+        AdminManager.UpdateClock(AdminManager.Now); //stage5 - needed since we want the label on Pl to be updated 
+        ConfigUpdatedObservers?.Invoke(); //stage5 - needed for update the PL
     }
 
     #endregion Database Initialization / Reset
 
-    #endregion Stage 4-7
+    #endregion Stage4-7
 
-    #region Stage 7 base
+    #region Stage7 base
 
-    /// <summary>    
+    /// <summary> 
     /// Mutex to use from BL methods to get mutual exclusion while the simulator is running
     /// </summary>
-    internal static readonly object BlMutex = new(); // BlMutex = s_dal; // This field is actually the same as s_dal - it is defined for readability of locks
+    internal static readonly object BlMutex = new();
 
     /// <summary>
     /// The thread of the simulator
@@ -314,16 +332,16 @@ internal static class AdminManager //stage 4
 
     /// <summary>
     /// The Interval for clock updating
-    /// in minutes by second (default value is 1, will be set on Start())    
+    /// in minutes by second (default value is 1, will be set on Start()) 
     /// </summary>
     private static int s_interval = 1;
 
     /// <summary>
     /// The flag that signs whether simulator is running
-    /// 
+    /// </summary>
     private static volatile bool s_stop = false;
 
-    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7                                                 
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage7 
     public static void ThrowOnSimulatorIsRunning()
     {
         // Throw exception if simulator is running
@@ -331,7 +349,7 @@ internal static class AdminManager //stage 4
             throw new BO.BlTemporaryNotAvailableException("Cannot perform the operation since Simulator is running");
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7                                                 
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage7 
     internal static void Start(int interval)
     {
         if (s_thread is null)
@@ -343,14 +361,13 @@ internal static class AdminManager //stage 4
         }
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)] //stage 7                                                 
+    [MethodImpl(MethodImplOptions.Synchronized)] //stage7 
     internal static void Stop()
     {
         if (s_thread is not null)
         {
             s_stop = true;
-            s_thread.Interrupt(); //awake a sleeping thread
-            s_thread.Name = "ClockRunner stopped";
+            s_thread.Interrupt(); // Awake a sleeping thread
             s_thread = null;
         }
     }
@@ -359,31 +376,48 @@ internal static class AdminManager //stage 4
     {
         while (!s_stop)
         {
-            UpdateClock(Now.AddMinutes(s_interval));
-
-            _ = Task.Run(() =>
+            try
             {
-                try
-                {
-                    CourierManager.PeriodicCouriersUpdatesAsync();
-                }
-                catch
-                {
-                    // Ignore exceptions in periodic updates
-                }
-            });
+                Thread.Sleep(1000);
+            }
+            catch (ThreadInterruptedException)
+            {
+                // Thread was interrupted by Stop() - exit gracefully
+                break;
+            }
+
+            // Check again after sleep (in case Stop was called)
+            if (s_stop)
+                break;
 
             try
             {
-                Thread.Sleep(1000); // 1 second
+                if (s_interval != 0)
+                    UpdateClock(Now.AddMinutes(s_interval));
+
+                // Simulate courier activity asynchronously (do not block the simulator thread)
+                _ = Task.Run(async () =>
+                  {
+                      try
+                      {
+                          await CourierManager.SimulateCourierActivityAsync();
+                      }
+                      catch
+                      {
+                          // Ignore errors when simulator is stopping
+                      }
+                  });
             }
-            catch (ThreadInterruptedException) { }
+            catch
+            {
+                // Ignore any errors during clock update when stopping
+                if (s_stop)
+                    break;
+            }
         }
     }
 
-    #endregion Stage 7 base
+    #endregion Stage7 base
 
 }
-
-
 

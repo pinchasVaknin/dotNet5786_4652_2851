@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Logical service contract for order-related operations.
-/// Includes CRUD, List Retrieval, Order Actions (Cancel, Assign, Complete), and Summaries.
+/// Includes CRUD, list retrieval, order actions, and summaries.
 /// </summary>
 public interface IOrder : IObservable //stage 5
 {
@@ -14,37 +14,20 @@ public interface IOrder : IObservable //stage 5
     #region ListAndSummary
 
     /// <summary>
-    /// Returns summary counts of orders by all logical status combinations.
-    /// The array index corresponds to a logical order status (combined from
-    /// order status and on-time/late status).
+    /// Returns counts of orders by logical status.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (must be an admin).</param>
-    /// <returns>
-    /// An array of counts, where each cell i holds the number of orders
-    /// whose logical status equals status-i.
-    /// </returns>
+    /// <param name="requesterId">Requester ID (must be admin).</param>
+    /// <returns>Array of counts by logical status index.</returns>
     int[] GetOrderStatusSummary(int requesterId);
 
     /// <summary>
-    /// Retrieves a list of orders for the management screen.
-    /// Each order appears at most once, with its latest delivery (if any).
+    /// Gets orders list with optional filtering and sorting.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (admin).</param>
-    /// <param name="filterField">
-    /// Nullable enum indicating which field of OrderInList to filter by.
-    /// If null, no filtering is applied.
-    /// </param>
-    /// <param name="filterValue">
-    /// Nullable value to compare against the chosen filterField.
-    /// Used only when filterField is not null.
-    /// </param>
-    /// <param name="sortBy">
-    /// Nullable enum indicating which field of OrderInList to sort by.
-    /// If null, the list is sorted by order status.
-    /// </param>
-    /// <returns>
-    /// A filtered and sorted collection of <see cref="BO.OrderInList"/> objects.
-    /// </returns>
+    /// <param name="requesterId">Requester ID (must be admin).</param>
+    /// <param name="filterField">Optional field to filter by.</param>
+    /// <param name="filterValue">Optional value for the filter.</param>
+    /// <param name="sortBy">Optional field to sort by.</param>
+    /// <returns>Collection of <see cref="BO.OrderInList"/>.</returns>
     IEnumerable<BO.OrderInList> GetOrders(
         int requesterId,
         BO.OrderInListFilterBy? filterField = null,
@@ -52,21 +35,13 @@ public interface IOrder : IObservable //stage 5
         BO.OrderInListSortBy? sortBy = null);
 
     /// <summary>
-    /// Retrieves a list of closed deliveries handled by a specific courier.
+    /// Gets closed deliveries for a specific courier.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (admin or that courier).</param>
-    /// <param name="courierId">The courier whose closed deliveries are requested.</param>
-    /// <param name="typeFilter">
-    /// Nullable enum indicating the order type to filter by.
-    /// If null, all order types are returned.
-    /// </param>
-    /// <param name="sortBy">
-    /// Nullable enum indicating the sort field.
-    /// If null, the list is sorted by finish status and on-time status.
-    /// </param>
-    /// <returns>
-    /// A filtered and sorted collection of <see cref="BO.ClosedDeliveryInList"/> objects.
-    /// </returns>
+    /// <param name="requesterId">Requester ID (admin or that courier).</param>
+    /// <param name="courierId">Courier ID.</param>
+    /// <param name="typeFilter">Optional order type filter.</param>
+    /// <param name="sortBy">Optional sort field.</param>
+    /// <returns>Collection of <see cref="BO.ClosedDeliveryInList"/>.</returns>
     IEnumerable<BO.ClosedDeliveryInList> GetClosedDeliveriesByCourier(
         int requesterId,
         int courierId,
@@ -74,25 +49,13 @@ public interface IOrder : IObservable //stage 5
         BO.ClosedDeliverySortBy? sortBy = null);
 
     /// <summary>
-    /// Retrieves a list of open orders that a courier may choose to handle.
+    /// Gets open orders that a courier can choose.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (admin or that courier).</param>
-    /// <param name="courierId">
-    /// The ID of the courier for whom open orders are requested,
-    /// including air-distance from the courier's current location.
-    /// </param>
-    /// <param name="typeFilter">
-    /// Nullable enum indicating the order type to filter by.
-    /// If null, all open orders are returned.
-    /// </param>
-    /// <param name="sortBy">
-    /// Nullable enum indicating the sort field.
-    /// If null, the list is sorted by on-time status.
-    /// </param>
-    /// <returns>
-    /// A filtered and sorted collection of <see cref="BO.OpenOrderInList"/> objects,
-    /// including only orders that fit the courier's personal maximum air distance.
-    /// </returns>
+    /// <param name="requesterId">Requester ID (admin or that courier).</param>
+    /// <param name="courierId">Courier ID requesting the list.</param>
+    /// <param name="typeFilter">Optional order type filter.</param>
+    /// <param name="sortBy">Optional sort field.</param>
+    /// <returns>Collection of <see cref="BO.OpenOrderInList"/>.</returns>
     Task<IEnumerable<BO.OpenOrderInList>> GetOpenOrdersForCourier(
         int requesterId,
         int courierId,
@@ -106,34 +69,32 @@ public interface IOrder : IObservable //stage 5
     #region CRUD
 
     /// <summary>
-    /// Retrieves full logical details of a specific order.
+    /// Gets full order details by order ID.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (admin or relevant courier, as defined logically).</param>
-    /// <param name="orderId">The ID of the requested order.</param>
-    /// <returns>A <see cref="BO.Order"/> object with full details.</returns>
+    /// <param name="requesterId">Requester ID (admin or allowed courier).</param>
+    /// <param name="orderId">Order ID.</param>
+    /// <returns>The <see cref="BO.Order"/> details.</returns>
     BO.Order GetOrder(int requesterId, int orderId);
 
     /// <summary>
     /// Adds a new order to the system.
-    /// The order ID is generated automatically in the DAL.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (admin).</param>
-    /// <param name="order">The logical order object to add.</param>
+    /// <param name="requesterId">Requester ID (must be admin).</param>
+    /// <param name="order">Order details to add.</param>
     Task AddOrder(int requesterId, BO.Order order);
 
     /// <summary>
-    /// Updates details of an existing order.
+    /// Updates an existing order.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (admin).</param>
-    /// <param name="order">The logical order object containing updated details.</param>
+    /// <param name="requesterId">Requester ID (must be admin).</param>
+    /// <param name="order">Updated order details.</param>
     Task UpdateOrder(int requesterId, BO.Order order);
 
     /// <summary>
-    /// Deletes an order (used only by BlTest, not by the UI).
-    /// Always throws a logical exception indicating that orders cannot be deleted.
+    /// Deletes an order by order ID.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester.</param>
-    /// <param name="orderId">The ID of the order to delete.</param>
+    /// <param name="requesterId">Requester ID.</param>
+    /// <param name="orderId">Order ID to delete.</param>
     void DeleteOrder(int requesterId, int orderId);
 
     #endregion CRUD
@@ -143,32 +104,28 @@ public interface IOrder : IObservable //stage 5
     #region OrderActions
 
     /// <summary>
-    /// Cancels an order.
+    /// Cancels an order by order ID.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (admin or allowed user).</param>
-    /// <param name="orderId">The ID of the order to cancel.</param>
-    /// <remarks>
-    /// The request is legal only if the order is open or in progress but not yet supplied.
-    /// The implementation will either create a "virtual" delivery (for open orders)
-    /// or update the existing delivery (for orders in progress) with finish type Canceled
-    /// and finish time equal to the logical system clock.
-    /// </remarks>
+    /// <param name="requesterId">Requester ID (admin or allowed user).</param>
+    /// <param name="orderId">Order ID to cancel.</param>
     void CancelOrder(int requesterId, int orderId);
 
     /// <summary>
-    /// Assigns an order to a courier for handling (start of delivery).
+    /// Assigns an order to a courier for handling.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (admin or the courier himself, as defined logically).</param>
-    /// <param name="courierId">The ID of the courier taking the order.</param>
-    /// <param name="orderId">The ID of the order chosen for handling.</param>
+    /// <param name="requesterId">Requester ID (admin or that courier).</param>
+    /// <param name="courierId">Courier ID.</param>
+    /// <param name="orderId">Order ID to assign.</param>
+    /// <param name="actualDistance">Optional actual distance override.</param>
     Task AssignOrderToCourier(int requesterId, int courierId, int orderId, double? actualDistance = null);
 
     /// <summary>
-    /// Marks the end of handling an order by a courier (delivery supplied).
+    /// Completes handling of a delivery by a courier.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (must be the delivering courier).</param>
-    /// <param name="courierId">The ID of the courier (Teudat Zehut).</param>
-    /// <param name="deliveryId">The ID of the delivery for the order being completed.</param>
+    /// <param name="requesterId">Requester ID (must be the courier).</param>
+    /// <param name="courierId">Courier ID.</param>
+    /// <param name="deliveryId">Delivery ID to complete.</param>
+    /// <param name="finishType">Finish type (e.g., Supplied/Canceled).</param>
     void CompleteOrderHandling(int requesterId, int courierId, int deliveryId, BO.DeliveryFinishType finishType);
 
     #endregion OrderActions
@@ -178,12 +135,12 @@ public interface IOrder : IObservable //stage 5
     #region DeliveryHistory
 
     /// <summary>
-    /// Retrieves the delivery history for a specific order handled by a courier.
+    /// Gets delivery history of an order for a courier.
     /// </summary>
-    /// <param name="requesterId">The ID of the requester (admin or that courier).</param>
-    /// <param name="courierId">The ID of the courier whose delivery history is requested.</param>
-    /// <param name="orderId">The ID of the order whose delivery history is requested.</param>
-    /// <returns>A collection of <see cref="BO.DeliveryPerOrderInList"/> objects representing the delivery history.</returns>
+    /// <param name="requesterId">Requester ID (admin or that courier).</param>
+    /// <param name="courierId">Courier ID.</param>
+    /// <param name="orderId">Order ID.</param>
+    /// <returns>Collection of <see cref="BO.DeliveryPerOrderInList"/>.</returns>
     IEnumerable<BO.DeliveryPerOrderInList> GetDeliveryHistoryForCourier(int requesterId, int courierId, int orderId);
 
     #endregion DeliveryHistory
@@ -193,17 +150,17 @@ public interface IOrder : IObservable //stage 5
     #region AdditionalOperations
 
     /// <summary>
-    /// Update the order details with the provided items and their quantities.
+    /// Updates order items and quantities.
     /// </summary>
-    /// <param name="order">The order to update.</param>
-    /// <param name="items">A collection of tuples containing model names and their quantities.</param>
+    /// <param name="order">Order to update.</param>
+    /// <param name="items">Items list (model, quantity).</param>
     void UpdateOrderDetails(BO.Order order, IEnumerable<(string Model, int Quantity)> items);
 
     /// <summary>
-    /// Get the price of a product by its model name.
+    /// Returns product price by model name.
     /// </summary>
-    /// <param name="modelName">The model name of the product.</param>
-    /// <returns>The price of the product.</returns>
+    /// <param name="modelName">Product model name.</param>
+    /// <returns>Product price.</returns>
     double GetProductPrice(string modelName);
 
     #endregion AdditionalOperations

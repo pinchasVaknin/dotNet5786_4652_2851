@@ -17,6 +17,13 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
+            <Image Grid.Column="0"
+       HorizontalAlignment="Left"
+       VerticalAlignment="Center" 
+       Height="25" Width="25" Margin="10,0,0,0"
+       Source="/PL;component/Helpers/Image.ico" 
+       RenderOptions.BitmapScalingMode="HighQuality"/>
+
             <Label Grid.Column="0" 
                    Content="{Binding ElementName=_this, Path=Title}" 
                    Style="{StaticResource StandardLabel}" 

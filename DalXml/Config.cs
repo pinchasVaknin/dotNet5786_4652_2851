@@ -16,6 +16,7 @@ internal static class Config
 
     #region FileNames
 
+    // XML file names
     internal const string s_data_config_xml = "data-config.xml";
     internal const string s_orders_xml = "orders.xml";
     internal const string s_deliverys_xml = "deliverys.xml";

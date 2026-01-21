@@ -197,7 +197,6 @@ public class ConvertDeleteToEnabled : IValueConverter
 
 }
 
-
 public class ConvertCancelToEnabled : IValueConverter
 {
     private static readonly IBl s_bl = Factory.Get();
@@ -223,5 +222,64 @@ public class ConvertCancelToEnabled : IValueConverter
         throw new NotImplementedException();
     }
 
+}
+
+/// <summary>
+/// Converts a boolean to its inverse value.
+/// Used to disable controls when simulator is running.
+/// </summary>
+public class InverseBoolConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is bool boolValue)
+            return !boolValue;
+        return true;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is bool boolValue)
+        return !boolValue;
+        return false;
+    }
+}
+
+/// <summary>
+/// Converts a boolean (IsSimulatorRunning) to button text.
+/// Returns "Stop Simulator" when true, "Start Simulator" when false.
+/// </summary>
+public class SimulatorButtonTextConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is bool isRunning && isRunning)
+            return "Stop Simulator";
+        return "Start Simulator";
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+/// <summary>
+/// Converts a boolean (IsSimulatorRunning) to button background color.
+/// Returns Red when running (to stop), Green when not running (to start).
+/// </summary>
+public class SimulatorButtonColorConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is bool isRunning && isRunning)
+         return Brushes.OrangeRed;
+        return Brushes.SeaGreen;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
 }
 

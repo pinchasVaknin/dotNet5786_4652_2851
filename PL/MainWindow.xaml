@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL"
         xmlns:Controls="clr-namespace:PL.Controls"
-        mc:Ignorable="d"
+        xmlns:converters="clr-namespace:PL.Converters"
+      mc:Ignorable="d"
         Title="MainWindow"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
         Style="{StaticResource StandardWindow}"
@@ -13,169 +14,200 @@
         Loaded="Window_Loaded"
         Closed="Window_Closed">
 
+    <Window.Resources>
+<converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+     <converters:SimulatorButtonTextConverter x:Key="SimulatorButtonTextConverter"/>
+        <converters:SimulatorButtonColorConverter x:Key="SimulatorButtonColorConverter"/>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="*"/>
+  <ColumnDefinition Width="200"/>
+     <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" Background="{StaticResource DarkBlueBrush}">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+ <Grid.RowDefinitions>
+<RowDefinition Height="Auto"/>
+     <RowDefinition Height="*"/>
+    <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="Delivery System"
-                       Style="{StaticResource StandardLabel}"
-                       FontSize="22" Margin="0,20,0,30"/>
+        <Label Grid.Row="0" Content="Delivery System"
+          Style="{StaticResource StandardLabel}"
+        FontSize="22" Margin="0,20,0,30"/>
 
                 <StackPanel Grid.Row="1">
-                    <Button Content="Couriers List" Click="BtnShowCouriers_Click" Style="{StaticResource ActionButtonBaseStyle}" FontSize="15"/>
-                    <Button Content="Orders List" Click="BtnShowOrders_Click" Style="{StaticResource ActionButtonBaseStyle}" FontSize="15"/>
-                </StackPanel>
+<Button Content="Couriers List" Click="BtnShowCouriers_Click" Style="{StaticResource ActionButtonBaseStyle}" FontSize="15"/>
+           <Button Content="Orders List" Click="BtnShowOrders_Click" Style="{StaticResource ActionButtonBaseStyle}" FontSize="15"/>
+          </StackPanel>
 
-                <Button Grid.Row="3" Style="{StaticResource BtnLogout}" Click="BtnLogout_Click"/>
+    <Button Grid.Row="3" Style="{StaticResource BtnLogout}" Click="BtnLogout_Click"/>
 
-                <StackPanel Grid.Row="2" Margin="0,0,0,10">
-                    <Label Content="Database Actions:" Foreground="LightGray" Margin="10,0"/>
+       <StackPanel Grid.Row="2" Margin="0,0,0,10">
+    <Label Content="Database Actions:" Foreground="LightGray" Margin="10,0"/>
 
-                    <Button Content="Init DB" Background="{StaticResource LightBlueBrush}" Foreground="White" 
-                            Click="BtnInitDB_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
+  <Button Content="Init DB" Background="{StaticResource LightBlueBrush}" Foreground="White" 
+          Click="BtnInitDB_Click" Style="{StaticResource ActionButtonBaseStyle}"
+            IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
 
-                    <Button Content="Reset DB" Background="{StaticResource RedBrush}" Foreground="White" 
-                            Click="BtnResetDB_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
-                </StackPanel>
-            </Grid>
+      <Button Content="Reset DB" Background="{StaticResource RedBrush}" Foreground="White" 
+             Click="BtnResetDB_Click" Style="{StaticResource ActionButtonBaseStyle}"
+    IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+        </StackPanel>
+    </Grid>
         </Border>
 
         <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+     <Grid.RowDefinitions>
+   <RowDefinition Height="Auto"/>
                 <RowDefinition Height="80"/>
-                <RowDefinition Height="*"/>
+     <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Controls:TopBarControl Grid.Row="0" IsExitProgram="True" BackButtonVisibility="Collapsed"/>
+         <Controls:TopBarControl Grid.Row="0" IsExitProgram="True" BackButtonVisibility="Collapsed"/>
 
-            <Border Grid.Row="1" Background="#ECF0F1" BorderBrush="LightGray" BorderThickness="0,0,0,1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+          <Border Grid.Row="1" Background="#ECF0F1" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+    <Grid>
+ <Grid.ColumnDefinitions>
+         <ColumnDefinition Width="Auto"/>
+           <ColumnDefinition Width="*"/>
+     <ColumnDefinition Width="Auto"/>
+ </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Margin="20,0">
-                        <Label Content="System Time:" FontSize="14" Foreground="Gray" Width="150" FontFamily="Segoe UI Black" Background="{x:Null}"/>
-                        <Label Content="{Binding CurrentTime}" FontSize="24" FontWeight="Bold" 
-                               Foreground="{StaticResource DarkBlueBrush}" FontFamily="Bodoni MT Black"/>
-                    </StackPanel>
+   <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Margin="20,0">
+        <Label Content="System Time:" FontSize="14" Foreground="Gray" Width="150" FontFamily="Segoe UI Black" Background="{x:Null}"/>
+                <Label Content="{Binding CurrentTime}" FontSize="24" FontWeight="Bold" 
+           Foreground="{StaticResource DarkBlueBrush}" FontFamily="Bodoni MT Black"/>
+         </StackPanel>
 
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,20,0">
-                        <Label Content="Advance:" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                        <Button Content="+Min" Width="50" Height="35" Click="BtnAddMinute_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
-                        <Button Content="+Hour" Width="50" Height="35" Click="BtnAddHour_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
-                        <Button Content="+Day" Width="50" Height="35" Click="BtnAddDay_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
-                        <Button Content="+Year" Width="50" Height="35" Click="BtnAddYear_Click" Style="{StaticResource ActionButtonBaseStyle}"/>
-                    </StackPanel>
-                </Grid>
+      <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,20,0">
+            <Label Content="Advance:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+     <Button Content="+Min" Width="50" Height="35" Click="BtnAddMinute_Click" Style="{StaticResource ActionButtonBaseStyle}"
+       IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+           <Button Content="+Hour" Width="50" Height="35" Click="BtnAddHour_Click" Style="{StaticResource ActionButtonBaseStyle}"
+        IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+ <Button Content="+Day" Width="50" Height="35" Click="BtnAddDay_Click" Style="{StaticResource ActionButtonBaseStyle}"
+            IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+ <Button Content="+Year" Width="50" Height="35" Click="BtnAddYear_Click" Style="{StaticResource ActionButtonBaseStyle}"
+                    IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+  </StackPanel>
+    </Grid>
+      </Border>
+
+   <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="20">
+                 <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+   <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+       <RowDefinition Height="Auto"/>
+   </Grid.RowDefinitions>
+
+         <!-- Simulator Control Panel -->
+      <GroupBox Header="Simulator Control" Grid.Row="0" Margin="0,0,0,20" BorderBrush="{StaticResource DarkBlueBrush}">
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <Label Content="Clock Rate (minutes per second):" VerticalAlignment="Center" FontWeight="SemiBold"/>
+              <TextBox Text="{Binding Interval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+            Width="80" Height="30" Margin="10,0" 
+         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+           FontSize="14"
+         IsEnabled="{Binding IsSimulatorRunning, Converter={StaticResource InverseBoolConverter}}"/>
+     <Button Content="{Binding IsSimulatorRunning, Converter={StaticResource SimulatorButtonTextConverter}}"
+            Background="{Binding IsSimulatorRunning, Converter={StaticResource SimulatorButtonColorConverter}}"
+       Foreground="White"
+        Width="140" Height="35"
+           Click="BtnToggleSimulator_Click"
+     Style="{StaticResource ActionButtonBaseStyle}"/>
+       </StackPanel>
+        </GroupBox>
+
+       <GroupBox Header="Order Status Dashboard" Grid.Row="1" Margin="0,0,0,20" BorderBrush="{StaticResource DarkBlueBrush}">
+         <ItemsControl ItemsSource="{Binding DashboardStats, RelativeSource={RelativeSource AncestorType=Window}}">
+          <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+     <WrapPanel Orientation="Horizontal"/>
+             </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+ <Button Margin="8" Width="100" Height="70"
+     Click="BtnDashboardItem_Click"
+      Cursor="Hand">
+      <Button.Template>
+      <ControlTemplate TargetType="Button">
+  <Border Background="White" CornerRadius="8" BorderThickness="2" Padding="2">
+                <Border.BorderBrush>
+      <SolidColorBrush Color="{Binding StatusColor}"/>
+       </Border.BorderBrush>
+
+   <StackPanel VerticalAlignment="Center">
+         <TextBlock Text="{Binding Count}" 
+    HorizontalAlignment="Center" 
+         FontSize="22" FontWeight="Bold"
+    Foreground="#2C3E50"/>
+
+   <TextBlock Text="{Binding DisplayTitle}" 
+         HorizontalAlignment="Center" 
+         TextAlignment="Center"
+ FontSize="11" Foreground="Gray" TextWrapping="Wrap"/>
+        </StackPanel>
             </Border>
+      </ControlTemplate>
+           </Button.Template>
+                </Button>
+         </DataTemplate>
+          </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          </GroupBox>
 
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <Grid Margin="20">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+   <Label Grid.Row="2" Content="System Configuration" FontSize="18" Margin="0,0,0,15" 
+             BorderBrush="{StaticResource LightBlueBrush}" BorderThickness="0,0,0,2" FontFamily="Stencil">
+      <Label.Background>
+     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+    <GradientStop Color="Black"/>
+       <GradientStop Color="White" Offset="0.318"/>
+               </LinearGradientBrush>
+     </Label.Background>
+         </Label>
 
-                    <GroupBox Header="Order Status Dashboard" Grid.Row="0" Margin="0,0,0,20" BorderBrush="{StaticResource DarkBlueBrush}">
-                        <ItemsControl ItemsSource="{Binding DashboardStats, RelativeSource={RelativeSource AncestorType=Window}}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
+              <StackPanel Grid.Row="3">
+  <Grid Margin="0,5">
+    <Grid.RowDefinitions>
+   <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+     <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/>
+         <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
+             <RowDefinition Height="Auto"/>
+         <RowDefinition Height="Auto"/>
+         <RowDefinition Height="Auto"/>
+     </Grid.RowDefinitions>
 
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Margin="8" Width="100" Height="70"
-                                            Click="BtnDashboardItem_Click"
-                                            Cursor="Hand">
-                                        <Button.Template>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border Background="White" CornerRadius="8" BorderThickness="2" Padding="2">
-                                                    <Border.BorderBrush>
-                                                        <SolidColorBrush Color="{Binding StatusColor}"/>
-                                                    </Border.BorderBrush>
+    <Controls:LabeledTextBox Grid.Row="0" Label="Company Address:" Text="{Binding Configuration.CompanyAddress}"/>
+   <Controls:LabeledTextBox Grid.Row="1" Label="Max Air Distance:" Text="{Binding Configuration.MaxAirDistance}" InputStyle="{StaticResource NumericStyle}"/>
+              <Controls:LabeledTextBox Grid.Row="2" Label="Avg Car Speed (km/h):" Text="{Binding Configuration.AvgCarSpeed}" InputStyle="{StaticResource NumericStyle}"/>
+    <Controls:LabeledTextBox Grid.Row="3" Label="Avg Motorcycle Speed (km/h):" Text="{Binding Configuration.AvgMotorcycleSpeed}" InputStyle="{StaticResource NumericStyle}"/>
+           <Controls:LabeledTextBox Grid.Row="4" Label="Avg Bicycle Speed (km/h):" Text="{Binding Configuration.AvgBicycleSpeed}" InputStyle="{StaticResource NumericStyle}"/>
+            <Controls:LabeledTextBox Grid.Row="5" Label="Avg Walking Speed (km/h):" Text="{Binding Configuration.AvgWalkSpeed}" InputStyle="{StaticResource NumericStyle}"/>
+       <Controls:LabeledTextBox Grid.Row="6" Label="Max Delivery Time:" Text="{Binding Configuration.MaxDelTimeRnge}" InputStyle="{StaticResource NumericStyle}"/>
+    <Controls:LabeledTextBox Grid.Row="7" Label="Risk Time Range:" Text="{Binding Configuration.RiskTimeRnge}" InputStyle="{StaticResource NumericStyle}"/>
+         <Controls:LabeledTextBox Grid.Row="8" Label="Inactive Time Range:" Text="{Binding Configuration.UnactiveTimeRnge}" InputStyle="{StaticResource NumericStyle}"/>
 
-                                                    <StackPanel VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding Count}" 
-                                                                   HorizontalAlignment="Center" 
-                                                                   FontSize="22" FontWeight="Bold"
-                                                                   Foreground="#2C3E50"/>
-
-                                                        <TextBlock Text="{Binding DisplayTitle}" 
-                                                                   HorizontalAlignment="Center" 
-                                                                   TextAlignment="Center"
-                                                                   FontSize="11" Foreground="Gray" TextWrapping="Wrap"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Button.Template>
-                                    </Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </GroupBox>
-
-                    <Label Grid.Row="1" Content="System Configuration" FontSize="18" Margin="0,0,0,15" 
-                           BorderBrush="{StaticResource LightBlueBrush}" BorderThickness="0,0,0,2" FontFamily="Stencil">
-                        <Label.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="Black"/>
-                                <GradientStop Color="White" Offset="0.318"/>
-                            </LinearGradientBrush>
-                        </Label.Background>
-                    </Label>
-
-                    <StackPanel Grid.Row="2">
-                        <Grid Margin="0,5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Controls:LabeledTextBox Grid.Row="0" Label="Company Address:" Text="{Binding Configuration.CompanyAddress}"/>
-                            <Controls:LabeledTextBox Grid.Row="1" Label="Max Air Distance:" Text="{Binding Configuration.MaxAirDistance}" InputStyle="{StaticResource NumericStyle}"/>
-                            <Controls:LabeledTextBox Grid.Row="2" Label="Avg Car Speed (km/h):" Text="{Binding Configuration.AvgCarSpeed}" InputStyle="{StaticResource NumericStyle}"/>
-                            <Controls:LabeledTextBox Grid.Row="3" Label="Avg Motorcycle Speed (km/h):" Text="{Binding Configuration.AvgMotorcycleSpeed}" InputStyle="{StaticResource NumericStyle}"/>
-                            <Controls:LabeledTextBox Grid.Row="4" Label="Avg Bicycle Speed (km/h):" Text="{Binding Configuration.AvgBicycleSpeed}" InputStyle="{StaticResource NumericStyle}"/>
-                            <Controls:LabeledTextBox Grid.Row="5" Label="Avg Walking Speed (km/h):" Text="{Binding Configuration.AvgWalkSpeed}" InputStyle="{StaticResource NumericStyle}"/>
-                            <Controls:LabeledTextBox Grid.Row="6" Label="Max Delivery Time:" Text="{Binding Configuration.MaxDelTimeRnge}" InputStyle="{StaticResource NumericStyle}"/>
-                            <Controls:LabeledTextBox Grid.Row="7" Label="Risk Time Range:" Text="{Binding Configuration.RiskTimeRnge}" InputStyle="{StaticResource NumericStyle}"/>
-                            <Controls:LabeledTextBox Grid.Row="8" Label="Inactive Time Range:" Text="{Binding Configuration.UnactiveTimeRnge}" InputStyle="{StaticResource NumericStyle}"/>
-
-                            <Button Grid.Row="9"
-                                    Content="Save Configuration" 
-                                    HorizontalAlignment="Left" Height="35" Margin="0,20,0,0" 
-                                    Style="{StaticResource ActionButtonStyle}"
-                                    Click="BtnUpdateConfig_Click"/>
-                        </Grid>
-                    </StackPanel>
-                </Grid>
-            </ScrollViewer>
-        </Grid>
+    <Button Grid.Row="9"
+  Content="Save Configuration" 
+      HorizontalAlignment="Left" Height="35" Margin="0,20,0,0" 
+          Style="{StaticResource ActionButtonStyle}"
+         Click="BtnUpdateConfig_Click"/>
+             </Grid>
+ </StackPanel>
+    </Grid>
+   </ScrollViewer>
+   </Grid>
     </Grid>
 </Window>

@@ -41,20 +41,29 @@ internal static class DeliveryManager
     /// <returns>A list of <see cref="BO.DeliveryPerOrderInList"/> representing the delivery history.</returns>
     internal static List<BO.DeliveryPerOrderInList> BuildDeliveryPerOrderInList(DO.Order doOrder)
     {
-        // Get all deliveries associated with this order ID
-        var deliveries = s_dal.Delivery.ReadAll(d => d.OrderId == doOrder.OrderId);
+        IEnumerable<DO.Delivery> deliveries;
+        IEnumerable<DO.Courier> allCouriers;
+
+        lock (AdminManager.BlMutex) //stage 7
+        {
+            // Get all deliveries associated with this order ID
+            deliveries = s_dal.Delivery.ReadAll(d => d.OrderId == doOrder.OrderId).ToList();
+
+            // Get all couriers as a List
+            allCouriers = s_dal.Courier.ReadAll().ToList();
+        }
 
         var query =
             from delivery in deliveries
-                // Try to find the courier details
-            let doCourier = s_dal.Courier.Read(delivery.CourierId)
+
+                // Find courier in the list using LINQ
+            let doCourier = allCouriers.FirstOrDefault(c => c.CourierId == delivery.CourierId)
 
             select new BO.DeliveryPerOrderInList
             {
                 DeliveryId = delivery.DeliveryId,
                 CourierId = delivery.CourierId,
 
-                // Handle display name: if ID is 0 it's System/Admin, otherwise use Courier Name or "Unknown"
                 CourierFullName = (delivery.CourierId == 0)
                     ? "System/Admin"
                     : (doCourier?.CourierFullName ?? "Unknown Courier"),
@@ -62,7 +71,7 @@ internal static class DeliveryManager
                 ShipmentType = (BO.ShipmentType)delivery.ShipmentType,
                 StartDeliveryDate = delivery.DeliveryDate,
                 DeliveryFinishType = delivery.DeliveryFinishType.HasValue ?
-                                        (BO.DeliveryFinishType)delivery.DeliveryFinishType.Value : null,
+                                     (BO.DeliveryFinishType)delivery.DeliveryFinishType.Value : null,
                 FinishDeliveryTime = delivery.DeliveryFinishDate
             };
 
@@ -76,24 +85,30 @@ internal static class DeliveryManager
     /// <returns>A list of <see cref="BO.ClosedDeliveryInList"/>.</returns>
     internal static List<BO.ClosedDeliveryInList> BuildClosedDeliveryInList()
     {
-        // Filter only deliveries that have a finish type
-        var deliveries = s_dal.Delivery.ReadAll(d => d.DeliveryFinishType != null);
-        var config = AdminManager.GetConfig();
+        IEnumerable<DO.Delivery> deliveries;
+        IEnumerable<DO.Order> allOrders;
+        IEnumerable<DO.Courier> allCouriers;
+
+        lock (AdminManager.BlMutex) //stage 7
+        {
+            // Filter only deliveries that have a finish type
+            deliveries = s_dal.Delivery.ReadAll(d => d.DeliveryFinishType != null).ToList();
+
+            // Fetch all orders and couriers as Lists
+            allOrders = s_dal.Order.ReadAll().ToList();
+            allCouriers = s_dal.Courier.ReadAll().ToList();
+        }
 
         var query =
             from delivery in deliveries
 
-                // Retrieve related Order entity
-            let order = s_dal.Order.Read(delivery.OrderId)
+                // Find related Order in the list
+            let order = allOrders.FirstOrDefault(o => o.OrderId == delivery.OrderId)
 
-            // Retrieve related Courier entity
-            let thisCourier = (delivery.CourierId == 0) ? null : s_dal.Courier.Read(delivery.CourierId)
+            // Find related Courier in the list
+            let thisCourier = (delivery.CourierId == 0) ? null : allCouriers.FirstOrDefault(c => c.CourierId == delivery.CourierId)
 
-            // Ensure both Order and Courier exist
             where order != null
-
-            // Determine vehicle type, defaulting to Car if courier is null
-            let vehicle = thisCourier?.CourierVehicleType ?? DO.CourierVehicleType.Car
 
             // Calculate total time taken
             let totalHandleTime = (delivery.DeliveryFinishDate ?? delivery.DeliveryDate) - delivery.DeliveryDate
@@ -102,7 +117,7 @@ internal static class DeliveryManager
             {
                 DeliveryId = delivery.DeliveryId,
                 OrderId = delivery.OrderId,
-                TypeOfOrder = (BO.TypeOfOrder)order.TypeOfOrder,
+                TypeOfOrder = (BO.TypeOfOrder)order.TypeOfOrder, // No need for .Value if order is class
                 OrderAddress = order.OrderAddress,
                 ShipmentType = (BO.ShipmentType)delivery.ShipmentType,
                 ActualDistance = delivery.ActualDistance,

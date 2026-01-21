@@ -14,16 +14,27 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" Background="{StaticResource DarkBlueBrush}">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="📦" FontSize="60" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+            <Grid>
 
-                <Label Content="Delivery" Style="{StaticResource StandardLabel}" FontSize="24"/>
-                <Label Content="System" Style="{StaticResource StandardLabel}" FontSize="24"/>
+                <Image Source="/PL;component/Helpers/Image.ico"
+                       Height="30" Width="30" 
+                       Margin="10,10,0,0"
+                       VerticalAlignment="Top" 
+                       HorizontalAlignment="Left"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
 
-                <TextBlock Text="Secure Login" Foreground="LightGray" 
-                           HorizontalAlignment="Center" Margin="0,20,0,0" 
-                           FontFamily="Segoe UI" FontStyle="Italic"/>
-            </StackPanel>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                    <TextBlock Text="📦" FontSize="60" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+                    <Label Content="Delivery" Style="{StaticResource StandardLabel}" FontSize="24"/>
+                    <Label Content="System" Style="{StaticResource StandardLabel}" FontSize="24"/>
+
+                    <TextBlock Text="Secure Login" Foreground="LightGray" 
+                               HorizontalAlignment="Center" Margin="0,20,0,0" 
+                               FontFamily="Segoe UI" FontStyle="Italic"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <Grid Grid.Column="1" Background="White">

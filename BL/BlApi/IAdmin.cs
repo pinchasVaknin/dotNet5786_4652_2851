@@ -14,9 +14,28 @@ public interface IAdmin
 
     #region Observers
 
+    /// <summary>
+    /// Registers an observer for configuration changes.
+    /// </summary>
+    /// <param name="configObserver"> The action to invoke on configuration changes.</param>
     void AddConfigObserver(Action configObserver);
+
+    /// <summary>
+    /// Unregisters an observer for configuration changes.
+    /// </summary>
+    /// <param name="configObserver"> The action to remove from configuration change notifications.</param>
     void RemoveConfigObserver(Action configObserver);
+
+    /// <summary>
+    /// Registers an observer for system clock changes.
+    /// </summary>
+    /// <param name="clockObserver"> The action to invoke on clock changes.</param>
     void AddClockObserver(Action clockObserver);
+
+    /// <summary>
+    /// Unregisters an observer for system clock changes.
+    /// </summary>
+    /// <param name="clockObserver"> The action to remove from clock change notifications.</param>
     void RemoveClockObserver(Action clockObserver);
 
     #endregion Observers
@@ -32,16 +51,9 @@ public interface IAdmin
     DateTime GetClock();
 
     /// <summary>
-    /// Advances the logical system clock by one unit of time.
+    /// Advances the system clock by the specified time unit.
     /// </summary>
-    /// <param name="unit">
-    /// The time unit by which to advance the clock
-    /// (minute, hour, day, month, or year).
-    /// </param>
-    /// <remarks>
-    /// The implementation should compute the new time based on the current clock
-    /// and trigger any time-dependent periodic updates.
-    /// </remarks>
+    /// <param name="unit"> The time unit by which to advance the clock.</param>
     void ForwardClock(BO.TimeUnit unit);
 
     #endregion SystemClock
@@ -51,21 +63,16 @@ public interface IAdmin
     #region Configuration
 
     /// <summary>
-    /// Retrieves all relevant configuration values for the presentation layer.
+    /// Retrieves the current configuration settings.
     /// </summary>
-    /// <returns>
-    /// A <see cref="BO.Config"/> object containing configuration values
-    /// that are exposed upwards to the PL.
-    /// </returns>
+    /// <returns> A <see cref="BO.Config"/> object representing the current configuration settings.</returns>
     BO.Config GetConfig();
 
     /// <summary>
-    /// Updates configuration values based on the given logical config object.
+    /// Sets new configuration settings.
     /// </summary>
-    /// <param name="config">
-    /// A <see cref="BO.Config"/> object containing the configuration values
-    /// to be applied.
-    /// </param>
+    /// <param name="config"> The new configuration settings to apply.</param>
+    /// <returns> A task representing the asynchronous operation.</returns>
     Task SetConfig(BO.Config config);
 
     #endregion Configuration
@@ -101,10 +108,8 @@ public interface IAdmin
     public void StartSimulator(int interval);
 
     /// <summary>
-    /// Stops the simulator, halting all ongoing operations and releasing associated resources.
+    /// Stops the system simulator.
     /// </summary>
-    /// <remarks>This method should be called to gracefully terminate the simulator. Once stopped, the
-    /// simulator cannot be restarted without reinitialization.</remarks>
     public void StopSimulator();
 
     #endregion SimulatorControl

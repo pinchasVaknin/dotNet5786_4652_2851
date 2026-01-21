@@ -16,11 +16,11 @@ using System.Threading.Tasks;
 internal static class CourierManager
 {
 
-    //==================== Observer Manager (Stage 5) ===================\\
+    //==================== Observer Manager (Stage5) ===================\\
 
     #region ObserverManager
 
-    internal static ObserverManager Observers = new(); //stage 5
+    internal static ObserverManager Observers = new(); //stage5
 
     #endregion ObserverManager
 
@@ -108,15 +108,23 @@ internal static class CourierManager
     /// <returns>A list of <see cref="BO.CourierInList"/> objects.</returns>
     /// <exception cref="BO.BlXMLFileLoadCreateException">Thrown if there is a data access error.</exception>
     internal static IEnumerable<BO.CourierInList> GetListOfCouriers(
-        BO.CourierInListFilterBy? filterBy = null,
-        object? filterValue = null,
-        BO.CourierInListSortBy? sortBy = null)
+    BO.CourierInListFilterBy? filterBy = null,
+    object? filterValue = null,
+    BO.CourierInListSortBy? sortBy = null)
     {
         try
         {
-            // Get all couriers converted to BO.CourierInList
-            var boCouriers = from c in s_dal.Courier.ReadAll()
-                             select GetCourierInList(c.CourierId);
+            IEnumerable<BO.CourierInList> boCouriers;
+            List<int> courierIds;
+
+            lock (AdminManager.BlMutex)
+            {
+                courierIds = s_dal.Courier.ReadAll()
+                .Select(c => c.CourierId)
+                .ToList();
+            }
+
+            boCouriers = courierIds.Select(id => GetCourierInList(id));
 
             // Apply Filtering
             if (filterBy.HasValue && filterValue is not null)
@@ -176,20 +184,29 @@ internal static class CourierManager
     {
         try
         {
-            // Read DO courier
-            var doCourier = s_dal.Courier.Read(courierId) ??
+
+            IEnumerable<DO.Delivery> deliveries;
+            DO.Courier doCourier;
+            TimeSpan maxRange;
+
+            lock (AdminManager.BlMutex) //stage 7
+            {
+                // Read DO courier
+                doCourier = s_dal.Courier.Read(courierId) ??
                 throw new BO.BlDoesNotExistException($"Courier with ID={courierId} does not exist");
 
-            // Convert to full BO to reuse logic (calculations)
-            var deliveries = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.CourierId);
+                // Convert to full BO to reuse logic (calculations)
+                deliveries = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.CourierId).ToList();
+
+                maxRange = s_dal.Config.MaxDelTimeRnge;
+            }
 
             // Stats calculation
             var completedDeliveries = deliveries
-                .Where(d => d.DeliveryFinishType == DO.DeliveryFinishType.Completed)
-                .ToList();
+            .Where(d => d.DeliveryFinishType == DO.DeliveryFinishType.Completed)
+            .ToList();
 
             // On-time vs Late calculation
-            var maxRange = s_dal.Config.MaxDelTimeRnge;
             int onTime = completedDeliveries.Count(d => d.DeliveryFinishDate - d.DeliveryDate <= maxRange);
             int late = completedDeliveries.Count - onTime;
 
@@ -237,7 +254,10 @@ internal static class CourierManager
         {
             // Add new courier
             DO.Courier doCourier = ConvertBoToDoCourier(courier);
-            s_dal.Courier.Create(doCourier);
+            lock (AdminManager.BlMutex) //stage 7
+            {
+                s_dal.Courier.Create(doCourier);
+            }
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
@@ -263,10 +283,13 @@ internal static class CourierManager
 
         try
         {
-            DO.Courier doCourier = s_dal.Courier.Read(id)
+            lock (AdminManager.BlMutex) //stage 7
+            {
+                DO.Courier doCourier = s_dal.Courier.Read(id)
                 ?? throw new BO.BlDoesNotExistException($"Courier with ID={id} does not exist");
 
-            return ConvertDoToBoCourier(doCourier);
+                return ConvertDoToBoCourier(doCourier);
+            }
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
@@ -287,7 +310,8 @@ internal static class CourierManager
         {
             // Update courier
             DO.Courier doCourier = ConvertBoToDoCourier(courier);
-            s_dal.Courier.Update(doCourier);
+            lock (AdminManager.BlMutex) //stage 7
+                s_dal.Courier.Update(doCourier);
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
@@ -320,16 +344,19 @@ internal static class CourierManager
 
         try
         {
-            // Check if courier exists
-            DO.Courier? doCourier = s_dal.Courier.Read(id)
+            lock (AdminManager.BlMutex) //stage 7
+            {
+                // Check if courier exists
+                DO.Courier? doCourier = s_dal.Courier.Read(id)
                 ?? throw new BO.BlDoesNotExistException($"Courier with ID={id} does not exist");
 
-            // Check if can delete
-            if (!CanDelete(id))
-                throw new BO.BlCourierHasDeliveriesException($"Cannot delete courier->{id} because they have associated deliveries.");
+                // Check if can delete
+                if (!CanDelete(id))
+                    throw new BO.BlCourierHasDeliveriesException($"Cannot delete courier->{id} because they have associated deliveries.");
 
-            // Delete courier
-            s_dal.Courier.Delete(id);
+                // Delete courier
+                s_dal.Courier.Delete(id);
+            }
         }
         catch (DO.DalDoesNotExistException ex)
         {
@@ -356,29 +383,35 @@ internal static class CourierManager
     /// </summary>
     private static BO.Courier ConvertDoToBoCourier(DO.Courier doCourier)
     {
-        // Get deliveries
-        var deliveries = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.CourierId);
+        IEnumerable<DO.Delivery> deliveries;
+        TimeSpan maxRange;
+        DO.Order? activeOrder = null;
 
-        // Stats calculation
+        lock (AdminManager.BlMutex)
+        {
+            deliveries = s_dal.Delivery.ReadAll(d => d.CourierId == doCourier.CourierId).ToList();
+            maxRange = s_dal.Config.MaxDelTimeRnge;
+
+            var activeDeliveryCheck = deliveries.FirstOrDefault(d => d.DeliveryFinishType == null);
+            if (activeDeliveryCheck != null)
+            {
+                activeOrder = s_dal.Order.Read(activeDeliveryCheck.OrderId);
+            }
+        }
+
         var completedDeliveries = deliveries
-            .Where(d => d.DeliveryFinishType == DO.DeliveryFinishType.Completed)
-            .ToList();
+        .Where(d => d.DeliveryFinishType == DO.DeliveryFinishType.Completed)
+        .ToList();
 
-        // On-time vs Late calculation
-        var maxRange = s_dal.Config.MaxDelTimeRnge;
         int onTime = completedDeliveries.Count(d => d.DeliveryFinishDate - d.DeliveryDate <= maxRange);
         int late = completedDeliveries.Count - onTime;
 
-        // Active Order
+        BO.OrderInProgress? orderInProgress = null;
         var activeDelivery = deliveries.FirstOrDefault(d => d.DeliveryFinishType == null);
 
-        BO.OrderInProgress? orderInProgress = null;
-        if (activeDelivery is not null)
+        if (activeDelivery is not null && activeOrder is not null)
         {
-            var ord = s_dal.Order.Read(activeDelivery.OrderId) ??
-                 throw new BO.BlDoesNotExistException($"Order {activeDelivery.OrderId} for courier {doCourier.CourierId} not found");
-
-            orderInProgress = OrderManager.BuildOrderInProgress(ord, activeDelivery);
+            orderInProgress = OrderManager.BuildOrderInProgress(activeOrder, activeDelivery);
         }
 
         return new BO.Courier
@@ -402,17 +435,17 @@ internal static class CourierManager
     /// Converts a BO.Courier to a DO.Courier.
     /// </summary>
     private static DO.Courier ConvertBoToDoCourier(BO.Courier boCourier) =>
-        new DO.Courier(
-            CourierId: boCourier.CourierId,
-            CourierFullName: boCourier.CourierFullName,
-            CourierCellPhone: boCourier.CourierCellPhone,
-            CourierEmail: boCourier.CourierEmail,
-            CourierPassword: boCourier.CourierPassword,
-            CourierEnabled: boCourier.CourierIsActive,
-            MaxCourierDistance: boCourier.MaxCourierDistance,
-            SeniorityOfCourier: boCourier.StartWorkDate,
-            CourierVehicleType: (DO.CourierVehicleType)boCourier.VehicleType
-        );
+    new DO.Courier(
+    CourierId: boCourier.CourierId,
+    CourierFullName: boCourier.CourierFullName,
+    CourierCellPhone: boCourier.CourierCellPhone,
+    CourierEmail: boCourier.CourierEmail,
+    CourierPassword: boCourier.CourierPassword,
+    CourierEnabled: boCourier.CourierIsActive,
+    MaxCourierDistance: boCourier.MaxCourierDistance,
+    SeniorityOfCourier: boCourier.StartWorkDate,
+    CourierVehicleType: (DO.CourierVehicleType)boCourier.VehicleType
+    );
 
     #endregion Conversions
 
@@ -431,13 +464,16 @@ internal static class CourierManager
     {
         try
         {
-            // Check if there are ANY deliveries associated with this courier
-            bool hasDeliveries = s_dal.Delivery
+            lock (AdminManager.BlMutex) //stage 7
+            {
+                // Check if there are ANY deliveries associated with this courier
+                bool hasDeliveries = s_dal.Delivery
                 .ReadAll(d => d.CourierId == courierId) // Returns IEnumerable
                 .Any();                                 //stops at the first match
 
-            // Can delete only if no deliveries
-            return !hasDeliveries;
+                // Can delete only if no deliveries
+                return !hasDeliveries;
+            }
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
@@ -451,15 +487,29 @@ internal static class CourierManager
 
     #region PeriodicUpdates
 
+    private static readonly AsyncMutex s_periodicMutex = new(); //stage7
+    private static readonly AsyncMutex s_simulationMutex = new(); // stage 7 - prevent overlap
+    private static readonly Random s_rand = new();
+
     /// <summary>
     /// Performs periodic updates for couriers (e.g., setting them inactive if idle for too long).
     /// </summary>
     internal static void PeriodicCouriersUpdates(DateTime oldClock, DateTime newClock)
     {
+        // If the previous periodic update is still in progress, skip this invocation
+        if (s_periodicMutex.CheckAndSetInProgress())
+            return;
+
         try
         {
-            // Get all active couriers
-            var activeCouriers = s_dal.Courier.ReadAll(c => c.CourierEnabled).ToList();
+            IEnumerable<DO.Courier> activeCouriers;
+
+            lock (AdminManager.BlMutex) //stage7
+            {
+                // Get all active couriers (materialize to avoid deferred execution outside lock)
+                activeCouriers = s_dal.Courier.ReadAll(c => c.CourierEnabled).ToList();
+            }
+
             // Update each courier's activity status
             foreach (var courier in activeCouriers)
             {
@@ -467,12 +517,16 @@ internal static class CourierManager
                 UpdateCourierActivityByClosedDeliveries(courier, newClock);
             }
 
-            // Notify observers of the courier list update
+            // Notify observers of the courier list update (outside of any DAL lock)
             Observers.NotifyListUpdated();
         }
         catch (DO.DalXMLFileLoadCreateException ex)
         {
             throw new BO.BlXMLFileLoadCreateException("Failed to perform periodic courier updates", ex);
+        }
+        finally
+        {
+            s_periodicMutex.UnsetInProgress();
         }
     }
 
@@ -483,44 +537,72 @@ internal static class CourierManager
     {
         try
         {
-            bool hasActiveDelivery = s_dal.Delivery
-                .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType == null)
-                .Any();
+            // Local variables
+            bool hasActiveDelivery;
+            DO.Delivery? lastClosedDelivery;
+            TimeSpan unactiveTimeRnge;
 
+            // Snapshot under
+            lock (AdminManager.BlMutex) //stage7
+            {
+                // Check for active delivery
+                hasActiveDelivery = s_dal.Delivery
+                    .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType == null)
+                    .Any();
+
+                // Get last closed delivery
+                lastClosedDelivery = s_dal.Delivery
+                    .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType != null)
+                    .OrderByDescending(d => d.DeliveryFinishDate)
+                    .FirstOrDefault();
+
+                // Get unactive time range from config
+                unactiveTimeRnge = s_dal.Config.UnactiveTimeRnge;
+            }
+
+            // If courier has an active delivery, ensure they are marked active
             if (hasActiveDelivery)
             {
+                // Ensure courier is active
                 if (!courier.CourierEnabled)
                 {
+                    // Activate courier
                     var activeCourier = courier with { CourierEnabled = true };
-                    s_dal.Courier.Update(activeCourier);
+                    lock (AdminManager.BlMutex) //stage7
+                    {
+                        s_dal.Courier.Update(activeCourier);
+                    }
                     Observers.NotifyItemUpdated(courier.CourierId);
                 }
                 return;
             }
 
-            var lastClosedDelivery = s_dal.Delivery
-                .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishType != null)
-                .OrderByDescending(d => d.DeliveryFinishDate)
-                .FirstOrDefault();
-
-            var config = AdminManager.GetConfig();
+            // Determine if courier should be active
             bool shouldBeActive;
 
+            // Determine activity based on last closed delivery or seniority
             if (lastClosedDelivery is null)
             {
+                // No closed deliveries; use seniority date
                 var timeSinceStart = currentClock - courier.SeniorityOfCourier;
-                shouldBeActive = timeSinceStart < config.UnactiveTimeRnge;
+                shouldBeActive = timeSinceStart < unactiveTimeRnge;
             }
             else
             {
+                // Calculate time passed since last closed delivery
                 var timePassed = currentClock - lastClosedDelivery.DeliveryFinishDate;
-                shouldBeActive = timePassed < config.UnactiveTimeRnge;
+                shouldBeActive = timePassed < unactiveTimeRnge;
             }
 
+            // Update courier activity if changed
             if (courier.CourierEnabled != shouldBeActive)
             {
                 var updatedCourier = courier with { CourierEnabled = shouldBeActive };
-                s_dal.Courier.Update(updatedCourier);
+
+                lock (AdminManager.BlMutex) //stage7
+                {
+                    s_dal.Courier.Update(updatedCourier);
+                }
 
                 Observers.NotifyItemUpdated(courier.CourierId);
             }
@@ -535,105 +617,164 @@ internal static class CourierManager
         }
     }
 
-    internal static void PeriodicCouriersUpdatesAsync()
+    /// <summary>
+    /// Simulates courier activity by randomly assigning orders and completing deliveries.
+    /// </summary>
+    /// <returns> A task representing the asynchronous operation.</returns>
+    internal static async Task SimulateCourierActivityAsync()
     {
-        // Get deliveries in progress
-        List<DO.Delivery> deliveriesInProgress;
-        double speedCar, speedMotorcycle, speedBicycle, speedWalk;
-        DateTime currentSimClock;
-        double companyLat, companyLon;
+        // If the previous simulation is still in progress, skip this invocation
+        if (s_simulationMutex.CheckAndSetInProgress())
+            return;
 
-        // Read config and deliveries in progress under lock
-        lock (AdminManager.BlMutex)
+        try
         {
-            // Read config
-            var config = s_dal.Config;
-            currentSimClock = config.Clock;
+            List<DO.Courier> activeCouriers;
+            List<DO.Order> allOrders;
 
-            // Ensure company location is set
-            if (!config.Latitude.HasValue || !config.Longitude.HasValue)
-                return;
-
-            // Company location
-            companyLat = config.Latitude.Value;
-            companyLon = config.Longitude.Value;
-
-            // Speeds
-            speedCar = config.AvgCarSpeed;
-            speedMotorcycle = config.AvgMotorcycleSpeed;
-            speedBicycle = config.AvgBicycleSpeed;
-            speedWalk = config.AvgWalkSpeed;
-
-            // Deliveries in progress
-            deliveriesInProgress = s_dal.Delivery.ReadAll(d => d.DeliveryFinishDate == null).ToList();
-        }
-
-        // Process each delivery
-        foreach (var delivery in deliveriesInProgress)
-        {
-            // Process delivery update
-            bool statusChanged = false;
-            var updatedDelivery = delivery;
-
-            // Get courier and order details
-            DO.Courier courier;
-            DO.Order order;
-
-            // Read courier and order under lock
+            // Snapshot under lock (no awaits inside lock)
             lock (AdminManager.BlMutex)
             {
-                courier = s_dal.Courier.Read(c => c.CourierId == delivery.CourierId)!;
-                order = s_dal.Order.Read(o => o.OrderId == delivery.OrderId)!;
+                activeCouriers = s_dal.Courier.ReadAll(c => c.CourierEnabled).ToList();
+                allOrders = s_dal.Order.ReadAll().ToList();
             }
 
-            // Determine courier speed
-            double speed = courier.CourierVehicleType switch
+            if (activeCouriers.Count == 0 || allOrders.Count == 0)
+                return;
+
+            // Pick ONE courier per tick (keeps network calls under control)
+            DO.Courier courier = activeCouriers[s_rand.Next(activeCouriers.Count)];
+
+            // Does this courier currently have an open delivery?
+            DO.Delivery? activeDelivery;
+            lock (AdminManager.BlMutex)
             {
-                DO.CourierVehicleType.Car => speedCar,
-                DO.CourierVehicleType.Motorcycle => speedMotorcycle,
-                DO.CourierVehicleType.Bicycle => speedBicycle,
-                _ => speedWalk
-            };
-            if (speed <= 0) speed = 50;
-
-            // Calculate distance and required time
-            double airDistance = Tools.DistanceKm(companyLat, companyLon, order.OrderLatitude, order.OrderLongitude);
-
-            // Time required to cover the distance
-            double requiredHours = airDistance / speed;
-            TimeSpan requiredTime = TimeSpan.FromHours(requiredHours);
-
-            // Calculate time travelled
-            TimeSpan timeTravelled = currentSimClock - updatedDelivery.DeliveryDate;
-
-            // Check if delivery is completed
-            if (timeTravelled >= requiredTime)
-            {
-                // Mark delivery as completed
-                updatedDelivery = updatedDelivery with
-                {
-                    DeliveryFinishDate = currentSimClock,
-                    DeliveryFinishType = DO.DeliveryFinishType.Completed
-                };
-                statusChanged = true;
+                activeDelivery = s_dal.Delivery
+                    .ReadAll(d => d.CourierId == courier.CourierId && d.DeliveryFinishDate == null)
+                    .OrderByDescending(d => d.DeliveryDate)
+                    .FirstOrDefault();
             }
 
-            // Update delivery if status changed
-            if (statusChanged)
+            // If courier is busy -> maybe complete the delivery
+            if (activeDelivery is not null)
             {
-                lock (AdminManager.BlMutex)
+                if (ShouldCompleteNow(courier, activeDelivery))
                 {
-                    s_dal.Delivery.Update(updatedDelivery);
+                    // Mostly completed; sometimes returned (you can tune probabilities)
+                    BO.DeliveryFinishType finishType =
+                        (s_rand.NextDouble() < 0.90)
+                            ? BO.DeliveryFinishType.Completed
+                            : BO.DeliveryFinishType.Returned;
+
+                    // Use OrderManager helper so it updates DAL + does correct notifications
+                    OrderManager.CompleteOrderHandling(courier.CourierId, activeDelivery.DeliveryId, finishType);
                 }
 
-                // Notify observers of the delivery update
-                Observers.NotifyListUpdated();
-                Observers.NotifyItemUpdated(updatedDelivery.OrderId);
+                return;
+            }
 
-                // Notify OrderManager observers of the order update
-                OrderManager.Observers.NotifyItemUpdated(updatedDelivery.OrderId);
+            // Courier is idle -> maybe pick an order to handle
+            // Reduce network pressure: only sometimes attempt assignment
+            if (s_rand.NextDouble() > 0.35)
+                return;
+
+            // Try a few random candidates until one works
+            for (int attempt = 0; attempt < 5 && allOrders.Count > 0; attempt++)
+            {
+                DO.Order candidate = allOrders[s_rand.Next(allOrders.Count)];
+
+                try
+                {
+                    // Use OrderManager helper so it:
+                    // - validates order is open
+                    // - validates courier has no active delivery
+                    // - optionally computes actual distance (async)
+                    // - creates delivery
+                    // - does correct notifications (orderId + courierId)
+                    await OrderManager.AssignOrderToCourier(courier.CourierId, candidate.OrderId, actualDistance: null)
+                                      .ConfigureAwait(false);
+
+                    break; // success
+                }
+                catch (Exception)
+                {
+                    // Not assignable (not open / bad address / constraints / etc.) -> try another
+                    allOrders.Remove(candidate);
+                }
             }
         }
+        finally
+        {
+            s_simulationMutex.UnsetInProgress();
+        }
+    }
+
+    /// <summary>
+    /// Determines if a delivery should be marked as complete based on estimated time and randomness.
+    /// </summary>
+    /// <param name="courier"> The courier handling the delivery.</param>
+    /// <param name="delivery"> The courier handling the delivery.</param>
+    /// <returns> <see langword="true"/> if the delivery should be completed now; otherwise, <see langword="false"/>.</returns>
+    private static bool ShouldCompleteNow(DO.Courier courier, DO.Delivery delivery)
+    {
+        // Snapshot needed data under lock
+        DateTime now;
+        double avgCarSpeed, avgMotorSpeed, avgBicycleSpeed, avgWalkSpeed;
+        double? companyLat, companyLon;
+        DO.Order? order;
+
+        lock (AdminManager.BlMutex)
+        {
+            now = s_dal.Config.Clock;
+
+            avgCarSpeed = s_dal.Config.AvgCarSpeed;
+            avgMotorSpeed = s_dal.Config.AvgMotorcycleSpeed;
+            avgBicycleSpeed = s_dal.Config.AvgBicycleSpeed;
+            avgWalkSpeed = s_dal.Config.AvgWalkSpeed;
+
+            companyLat = s_dal.Config.Latitude;
+            companyLon = s_dal.Config.Longitude;
+
+            order = s_dal.Order.Read(o => o.OrderId == delivery.OrderId);
+        }
+
+        if (order is null)
+            return false;
+
+        // Prefer actual distance if exists; else fallback to air distance if company coords exist
+        double distanceKm;
+        if (delivery.ActualDistance.HasValue)
+        {
+            distanceKm = delivery.ActualDistance.Value;
+        }
+        else if (companyLat.HasValue && companyLon.HasValue)
+        {
+            distanceKm = Tools.DistanceKm(companyLat.Value, companyLon.Value, order.OrderLatitude, order.OrderLongitude);
+        }
+        else
+        {
+            distanceKm = 1.0; // safe fallback
+        }
+
+        double speed = courier.CourierVehicleType switch
+        {
+            DO.CourierVehicleType.Car => avgCarSpeed,
+            DO.CourierVehicleType.Motorcycle => avgMotorSpeed,
+            DO.CourierVehicleType.Bicycle => avgBicycleSpeed,
+            _ => avgWalkSpeed
+        };
+
+        if (speed <= 0)
+            speed = 10; // fallback
+
+        TimeSpan estimated = TimeSpan.FromHours(distanceKm / speed);
+
+        // If enough time passed -> complete
+        if (now - delivery.DeliveryDate >= estimated)
+            return true;
+
+        // Otherwise, small chance to complete early (simulating “reported done”)
+        return s_rand.NextDouble() < 0.05;
     }
 
     #endregion PeriodicUpdates

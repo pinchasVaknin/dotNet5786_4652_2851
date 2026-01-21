@@ -1,6 +1,7 @@
 ﻿namespace PL.Courier;
 
 using Tools;
+using PL.Helpers;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,9 @@ public partial class CourierWindow : Window
 
     // Flag to indicate if the window is in update mode.
     private bool _isUpdateMode = false;
+
+    // Stage 7: Mutex field for thread-safe observer updates
+    private readonly ObserverMutex _courierMutex = new();
 
     #endregion Fields
 
@@ -203,7 +207,22 @@ public partial class CourierWindow : Window
     #region Observers
 
     private void CourierObserver()
-                    => RefreshCourier();
+    {
+  #region Stage 7 (for multithreading)
+        if (_courierMutex.CheckAndSetLoadInProgressOrRestartRequired())
+    return;
+
+        Dispatcher.BeginInvoke(async () =>
+        {
+         // The actual work to be done on the UI thread
+  RefreshCourier();
+
+    // After completing the work, check if a restart was requested
+  if (await _courierMutex.UnsetLoadInProgressAndCheckRestartRequested())
+         CourierObserver();
+        });
+     #endregion Stage 7 (for multithreading)
+    }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
@@ -211,13 +230,13 @@ public partial class CourierWindow : Window
         if (!_isUpdateMode) return;
 
         s_bl.Courier.AddObserver(_courierId, CourierObserver);
-        RefreshCourier();
+RefreshCourier();
     }
 
     private void Window_Closed(object sender, EventArgs e)
     {
         // Only remove observer in update mode
-        if (!_isUpdateMode) return;
+     if (!_isUpdateMode) return;
 
         s_bl.Courier.RemoveObserver(_courierId, CourierObserver);
     }

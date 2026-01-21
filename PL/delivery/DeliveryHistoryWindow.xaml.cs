@@ -1,4 +1,5 @@
-﻿using PL.Tools;
+﻿using PL.Helpers;
+using PL.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,9 @@ public partial class DeliveryHistoryWindow : Window
 
     // Selected Delivery from the data grid
     public BO.ClosedDeliveryInList? SelectedDelivery { get; set; } = null;
+
+    // Stage 7: Mutex field for thread-safe observer updates
+    private readonly ObserverMutex _deliveryListMutex = new();
 
     #endregion Fields
 
@@ -99,16 +103,31 @@ public partial class DeliveryHistoryWindow : Window
     #region Observers
 
     private void DeliveryListObserver()
-                    => RefreshDeliveryList();
+    {
+   #region Stage 7 (for multithreading)
+   if (_deliveryListMutex.CheckAndSetLoadInProgressOrRestartRequired())
+   return;
+
+    Dispatcher.BeginInvoke(async () =>
+        {
+      // The actual work to be done on the UI thread
+        RefreshDeliveryList();
+
+            // After completing the work, check if a restart was requested
+     if (await _deliveryListMutex.UnsetLoadInProgressAndCheckRestartRequested())
+         DeliveryListObserver();
+        });
+        #endregion Stage 7 (for multithreading)
+    }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        s_bl.Order.AddObserver(DeliveryListObserver);
-        RefreshDeliveryList();
+      s_bl.Order.AddObserver(DeliveryListObserver);
+RefreshDeliveryList();
     }
 
     private void Window_Closed(object sender, EventArgs e)
-                    => s_bl.Order.RemoveObserver(DeliveryListObserver);
+     => s_bl.Order.RemoveObserver(DeliveryListObserver);
 
     #endregion Observers
 

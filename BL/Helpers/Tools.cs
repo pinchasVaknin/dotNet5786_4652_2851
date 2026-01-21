@@ -3,6 +3,7 @@
 using DalApi;
 using System;
 using System.Collections;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
@@ -21,7 +22,18 @@ internal static class Tools
     private static readonly IDal s_dal = Factory.Get;
 
     // Shared HttpClient for external requests to avoid socket exhaustion
-    internal static readonly HttpClient s_httpClient = new HttpClient();
+    internal static readonly HttpClient s_httpClient = CreateHttpClient();
+
+    private static HttpClient CreateHttpClient()
+    {
+        var client = new HttpClient();
+
+        // Nominatim requires a valid User-Agent header
+        if (!client.DefaultRequestHeaders.UserAgent.Any())
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("dotNet5786_4652_2851/1.0");
+
+        return client;
+    }
 
     //==================== Math & Schedule Logic ===================\\
 
@@ -451,28 +463,22 @@ internal static class Tools
         try
         {
             // Build the request URL
-            string url = $"https://nominatim.openstreetmap.org/search?q={address}&format=xml&limit=1";
+            string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(address)}&format=xml&limit=1";
 
-            // 3. Send request (Synchronous via GetAwaiter().GetResult() for consistency in sync flows)
-            using (var client = new HttpClient())
+            // Reuse shared HttpClient
+            var response = await s_httpClient.GetStringAsync(url).ConfigureAwait(false);
+
+            // Parse XML response
+            XElement xml = XElement.Parse(response);
+
+            if (xml.HasElements)
             {
-                // Nominatim requires a valid User-Agent header
-                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-
-                var response = await client.GetStringAsync(url);
-
-                // 4. Parse XML response
-                XElement xml = XElement.Parse(response);
-
-                if (xml.HasElements)
+                var place = xml.Element("place");
+                if (place != null)
                 {
-                    var place = xml.Element("place");
-                    if (place != null)
-                    {
-                        double lat = double.Parse(place.Attribute("lat").Value);
-                        double lon = double.Parse(place.Attribute("lon").Value);
-                        return (lat, lon);
-                    }
+                    double lat = double.Parse(place.Attribute("lat")!.Value);
+                    double lon = double.Parse(place.Attribute("lon")!.Value);
+                    return (lat, lon);
                 }
             }
         }
@@ -494,7 +500,7 @@ internal static class Tools
     /// <param name="toLat">Ending Latitude</param>
     /// <param name="toLon">Ending Longitude</param>
     /// <param name="vehicleType">The type of vehicle to determine routing profile (car, bike, foot).</param>
-    /// <returns>Distance in Kilometers, or 0 if calculation failed.</returns>
+    /// <returns>Distance in Kilometers, or0 if calculation failed.</returns>
     internal static async Task<double?> GetActualDistanceAsync(
         double? fromLat, double? fromLon,
         double? toLat, double? toLon,
@@ -518,20 +524,19 @@ internal static class Tools
             // Build API URL
             string url = $"https://router.project-osrm.org/table/v1/{profile}/{fromLon},{fromLat};{toLon},{toLat}?annotations=distance";
 
-            using (HttpClient client = new HttpClient())
+            // Reuse shared HttpClient
+            var response = await s_httpClient.GetAsync(url).ConfigureAwait(false);
+            if (response.IsSuccessStatusCode)
             {
-                var response = await client.GetAsync(url).ConfigureAwait(false);
-                if (response.IsSuccessStatusCode)
-                {
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    using JsonDocument doc = JsonDocument.Parse(jsonString);
-                    JsonElement root = doc.RootElement;
+                string jsonString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                using JsonDocument doc = JsonDocument.Parse(jsonString);
+                JsonElement root = doc.RootElement;
 
-                    // OSRM returns distance in meters, convert to KM
-                    double distanceMeters = root.GetProperty("distances")[0][1].GetDouble();
-                    return distanceMeters / 1000.0;
-                }
+                // OSRM returns distance in meters, convert to KM
+                double distanceMeters = root.GetProperty("distances")[0][1].GetDouble();
+                return distanceMeters /1000.0;
             }
+
             return 0;
         }
         catch (Exception ex)
@@ -542,5 +547,4 @@ internal static class Tools
     }
 
     #endregion ExternalAPIs
-
 }

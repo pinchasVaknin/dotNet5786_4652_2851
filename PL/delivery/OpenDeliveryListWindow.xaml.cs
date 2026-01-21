@@ -1,4 +1,5 @@
 ﻿using PL.Courier;
+using PL.Helpers;
 using PL.Order;
 using PL.Tools;
 using System;
@@ -31,6 +32,9 @@ public partial class OpenDeliveryListWindow : Window
 
     // Selected order from the data grid
     public BO.OpenOrderInList? SelectedOrder { get; set; } = null;
+
+    // Stage 7: Mutex field for thread-safe observer updates
+    private readonly ObserverMutex _orderListMutex = new();
 
     #endregion Fields
 
@@ -119,8 +123,23 @@ public partial class OpenDeliveryListWindow : Window
 
     #region Observers
 
-    private async void OrderListObserver()
-                    => await RefreshOrderListAsync();
+    private void OrderListObserver()
+    {
+        #region Stage 7 (for multithreading)
+        if (_orderListMutex.CheckAndSetLoadInProgressOrRestartRequired())
+            return;
+
+        Dispatcher.BeginInvoke(async () =>
+            {
+                // The actual work to be done on the UI thread
+                await RefreshOrderListAsync();
+
+                // After completing the work, check if a restart was requested
+                if (await _orderListMutex.UnsetLoadInProgressAndCheckRestartRequested())
+                    OrderListObserver();
+            });
+        #endregion Stage 7 (for multithreading)
+    }
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
@@ -138,7 +157,7 @@ public partial class OpenDeliveryListWindow : Window
     }
 
     private void Window_Closed(object sender, EventArgs e)
-                    => s_bl.Order.RemoveObserver(OrderListObserver);
+        => s_bl.Order.RemoveObserver(OrderListObserver);
 
     #endregion Observers
 

@@ -59,12 +59,8 @@ sealed internal class DalList : IDal
     public IConfig Config { get; } = new ConfigImplementation();
 
     /// <summary>
-    /// Resets the database by deleting all records and restoring default configurations.
+    /// Removes all stored couriers, orders and deliveries, and resets configuration values to defaults.
     /// </summary>
-    /// <remarks>
-    /// This method deletes all entries from the Courier, Order, and Delivery tables, and resets the
-    /// configuration settings to their default values. Use with caution as this operation is irreversible.
-    /// </remarks>
     public void ResetDB()
     {
         Courier.DeleteAll();

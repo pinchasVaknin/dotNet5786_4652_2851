@@ -14,7 +14,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Helpers\Image.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\BL\BL.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Helpers\Image.ico">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
 	</ItemGroup>
 
 </Project>

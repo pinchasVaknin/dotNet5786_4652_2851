@@ -1,4 +1,5 @@
 ﻿using PL.delivery;
+using PL.Helpers;
 using PL.Order;
 using PL.Tools;
 using System;
@@ -29,6 +30,9 @@ public partial class OrderWindow : Window
 
     // Flag to indicate if loading the order failed
     private bool _LoadFailed = false;
+
+    // Stage 7: Mutex field for thread-safe observer updates
+ private readonly ObserverMutex _orderMutex = new();
 
     #endregion Fields
 
@@ -508,19 +512,34 @@ public partial class OrderWindow : Window
     #region Observers
 
     private void OrderObserver()
-                    =>RefreshOrder();
+ {
+        #region Stage 7 (for multithreading)
+        if (_orderMutex.CheckAndSetLoadInProgressOrRestartRequired())
+     return;
+
+    Dispatcher.BeginInvoke(async () =>
+     {
+   // The actual work to be done on the UI thread
+     RefreshOrder();
+
+         // After completing the work, check if a restart was requested
+    if (await _orderMutex.UnsetLoadInProgressAndCheckRestartRequested())
+      OrderObserver();
+        });
+  #endregion Stage 7 (for multithreading)
+    }
 
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        if (!IsUpdateMode) return;
-        s_bl.Order.AddObserver(_orderId, OrderObserver);
+ if (!IsUpdateMode) return;
+      s_bl.Order.AddObserver(_orderId, OrderObserver);
     }
 
     private void Window_Closed(object sender, EventArgs e)
     {
         if (!IsUpdateMode) return;
-        s_bl.Order.RemoveObserver(_orderId, OrderObserver);
+      s_bl.Order.RemoveObserver(_orderId, OrderObserver);
     }
 
     #endregion Observers
